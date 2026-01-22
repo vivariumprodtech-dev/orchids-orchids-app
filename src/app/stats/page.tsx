@@ -786,17 +786,16 @@ function StatsContent() {
                   <div className="flex-1">
                       <div className="mb-1 flex items-center gap-1">
                         <WaterIcon />
-                        <span className="text-secondary-custom">Water</span>
-                      </div>
-                      <div className="mb-4">
-                        <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                        <span className="text-secondary-custom">/2L</span>
-                      </div>
-                    <div className="text-tertiary-custom" style={{ color: waterStatus.color }}>
-                      {waterStatus.text}
+                          <span className="text-secondary-custom">Water</span>
+                        </div>
+                        <div className="mb-4">
+                          <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
+                          <span className="text-secondary-custom">/2L</span>
+                        </div>
+                      <StatusBadge text={waterStatus.text} connotation={waterStatus.connotation} />
                     </div>
-                  </div>
-                  <CircleProgress value={waterLiters} max={waterTarget} size={65} strokeWidth={6} color="#73B0FF">
+                    <CircleProgress value={waterLiters} max={waterTarget} size={65} strokeWidth={6} color="#73B0FF">
+
                     {waterProgress >= 0.95 ? (
                       <div className="text-primary-custom !text-2xl">✓</div>
                     ) : (
