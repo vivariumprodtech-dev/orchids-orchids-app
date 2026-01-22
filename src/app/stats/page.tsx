@@ -713,10 +713,10 @@ function StatsContent() {
                     {calorieStatus.text}
                   </div>
               </div>
-              <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
-                <div className="text-center text-primary-custom !text-2xl" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
-                  {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                </div>
+                <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                  <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
+                    {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                  </div>
                 <div className="text-tertiary-custom">
                   {isOver ? "surplus" : "kcal left"}
                 </div>
