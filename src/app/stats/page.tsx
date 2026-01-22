@@ -757,13 +757,42 @@ function StatsContent() {
         </div>
 
         <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-lg font-bold text-slate-800">Daily Calories</h2>
+            <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
             <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2.5">
-                    <div className="flex items-center gap-3 text-[15px]">
+                    <div className="flex items-center gap-3 text-secondary-custom">
                       <UtensilsIcon />
-                      <span>{data.calories.toLocaleString("it-IT")}/{totalTarget.toLocaleString("it-IT")} <span className="text-gray-400">(goal + active)</span></span>
+                      <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
                     </div>
+                    <div className="flex items-center gap-3 text-secondary-custom">
+                      <FlagIcon />
+                      <span>{BMR.toLocaleString("it-IT")} goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
+                    </div>
+                    <div className="flex items-center gap-3 text-secondary-custom">
+                      <FootprintsIcon />
+                      <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
+                    </div>
+                  <div 
+                    className="mt-3 inline-block rounded-lg px-3 py-2 text-primary-custom"
+                    style={{
+                      background: calorieStatus.bg,
+                      color: calorieStatus.color
+                    }}
+                  >
+                    {calorieStatus.text}
+                  </div>
+              </div>
+              <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                <div className="text-center text-primary-custom !text-2xl" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
+                  {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                </div>
+                <div className="text-tertiary-custom">
+                  {isOver ? "surplus" : "kcal left"}
+                </div>
+              </CircleProgress>
+            </div>
+          </div>
+
                     <div className="flex items-center gap-3 text-[15px]">
                       <FlagIcon />
                       <span>{BMR.toLocaleString("it-IT")} goal <span className="text-gray-400">(BMR - deficit)</span></span>
