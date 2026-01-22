@@ -828,8 +828,8 @@ function StatsContent() {
       {data.alcohol && (
         <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
           <div className="flex items-center">
-            <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-xl">
-              🍷
+            <div className="mr-4">
+              <AlcoholIcon />
             </div>
             <div>
               <div className="flex items-center gap-2">
