@@ -791,10 +791,10 @@ function StatsContent() {
           </div>
 
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <MacroCard icon="🥩" iconBg="#FFE5E5" name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} />
-        <MacroCard icon="🍞" iconBg="#FFF4E5" name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
-        <MacroCard icon="🥑" iconBg="#F0E5FF" name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
-        <MacroCard icon="🌾" iconBg="#E8F5E9" name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
+        <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} />
+        <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
+        <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
+        <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
       </div>
 
       <div className="mb-4 flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
