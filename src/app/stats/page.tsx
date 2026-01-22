@@ -846,7 +846,6 @@ function StatsContent() {
         </div>
       </div>
     );
-  }
 }
 
 export default function StatsPage() {
