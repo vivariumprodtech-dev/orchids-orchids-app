@@ -462,9 +462,6 @@ function MacroCard({
             )}
             <span className="text-sm font-medium text-gray-700">{name}</span>
           </div>
-
-            <span className="text-sm font-medium text-gray-700">{name}</span>
-          </div>
           <div className="mb-2">
             <span className="text-2xl font-bold text-gray-900">{Math.round(value)}</span>
             <span className="text-base text-gray-400">/{target}g</span>
