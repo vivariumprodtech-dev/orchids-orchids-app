@@ -718,6 +718,9 @@ function StatsContent() {
           >
             Giada.
           </div>
+          <div className="text-primary-custom">
+            {displayDate}
+          </div>
         </div>
 
         <div className="mb-5 flex justify-between gap-2">
