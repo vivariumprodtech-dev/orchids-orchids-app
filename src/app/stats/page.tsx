@@ -455,85 +455,84 @@ function MacroCard({
   const surplus = value - target;
   const left = Math.round(target - value);
 
-  let status = "";
-  let statusColor = "#333";
-  let circleText = `${left}g`;
-  let circleLabel = "left";
-  let circleTextColor = "#333";
-  let isCheckmark = false;
-
-  if (isToday) {
-    const dayProgress = Math.max(0, Math.min(1, (new Date().getHours() - 7) / 15));
-    const expected = target * dayProgress;
-    const diff = value - expected;
-    const tolerance = target * 0.15;
-
-    if (progress >= 0.85 && progress <= 1.15) {
-      status = "On target";
-      statusColor = "#4CAF50";
-      circleText = "✓";
-      circleLabel = "";
-      isCheckmark = true;
-    } else if (value > target) {
-      status = "↑ over";
-      statusColor = "#FF5252";
-      circleText = `+${Math.round(surplus)}g`;
-      circleLabel = "";
-      circleTextColor = "#FF5252";
-    } else if (diff < -tolerance) {
-      status = "Behind schedule";
-      statusColor = "#FF9800";
-    } else {
-      status = "On track";
-      statusColor = "#4CAF50";
-    }
-    } else {
+    let statusText = "";
+    let connotation: "good" | "warning" | "danger" = "good";
+    let circleText = `${left}g`;
+    let circleLabel = "left";
+    let circleTextColor = "#333";
+    let isCheckmark = false;
+  
+    if (isToday) {
+      const dayProgress = Math.max(0, Math.min(1, (new Date().getHours() - 7) / 15));
+      const expected = target * dayProgress;
+      const diff = value - expected;
+      const tolerance = target * 0.15;
+  
       if (progress >= 0.85 && progress <= 1.15) {
-        status = "On target";
-        statusColor = "#4CAF50";
+        statusText = "good";
+        connotation = "good";
         circleText = "✓";
         circleLabel = "";
         isCheckmark = true;
       } else if (value > target) {
-        status = "↑ over";
-        statusColor = "#FF5252";
+        statusText = "over";
+        connotation = "danger";
         circleText = `+${Math.round(surplus)}g`;
         circleLabel = "";
-        circleTextColor = "#FF5252";
+        circleTextColor = "#C10127";
+      } else if (diff < -tolerance) {
+        statusText = "low";
+        connotation = "warning";
       } else {
-        status = "Under target";
-        statusColor = "#FF9800";
+        statusText = "good";
+        connotation = "good";
+      }
+    } else {
+      if (progress >= 0.85 && progress <= 1.15) {
+        statusText = "good";
+        connotation = "good";
+        circleText = "✓";
+        circleLabel = "";
+        isCheckmark = true;
+      } else if (value > target) {
+        statusText = "over";
+        connotation = "danger";
+        circleText = `+${Math.round(surplus)}g`;
+        circleLabel = "";
+        circleTextColor = "#C10127";
+      } else {
+        statusText = "low";
+        connotation = "warning";
       }
     }
-
-  return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-        <div className="flex-1">
-            <div className="mb-1 flex items-center gap-1">
-              {iconBg ? (
-                <div
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                  style={{ background: iconBg }}
-                >
-                  {icon}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  {icon}
-                </div>
-              )}
-              <span className="text-secondary-custom">{name}</span>
-            </div>
-            <div className="mb-4">
-              <span className="text-primary-custom">{Math.round(value)}</span>
-              <span className="text-secondary-custom">/{target}g</span>
-            </div>
-          <div className="text-tertiary-custom" style={{ color: statusColor }}>
-            {status}
+  
+    return (
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+          <div className="flex-1">
+              <div className="mb-1 flex items-center gap-1">
+                {iconBg ? (
+                  <div
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                    style={{ background: iconBg }}
+                  >
+                    {icon}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    {icon}
+                  </div>
+                )}
+                <span className="text-secondary-custom">{name}</span>
+              </div>
+              <div className="mb-4">
+                <span className="text-primary-custom">{Math.round(value)}</span>
+                <span className="text-secondary-custom">/{target}g</span>
+              </div>
+            <StatusBadge text={statusText} connotation={connotation} />
           </div>
-        </div>
-          <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+            <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+
               <div
                 className="font-bold"
                 style={{ fontSize: isCheckmark ? 28 : 14, color: circleTextColor }}
