@@ -644,24 +644,18 @@ function StatsContent() {
             <h2 className="mb-4 text-lg font-bold text-slate-800">Daily Calories</h2>
             <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2.5">
-                  <div className="flex items-center gap-3 text-[15px]">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#39B2B0]">
-                      <Utensils className="h-4 w-4 text-white" />
+                    <div className="flex items-center gap-3 text-[15px]">
+                      <UtensilsIcon />
+                      <span>{data.calories.toLocaleString("it-IT")}/{totalTarget.toLocaleString("it-IT")} <span className="text-gray-400">(goal + active)</span></span>
                     </div>
-                    <span>{data.calories.toLocaleString("it-IT")}/{totalTarget.toLocaleString("it-IT")} <span className="text-gray-400">(goal + active)</span></span>
-                  </div>
-                  <div className="flex items-center gap-3 text-[15px]">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A8B1CF]">
-                      <Flag className="h-4 w-4 text-white" />
+                    <div className="flex items-center gap-3 text-[15px]">
+                      <FlagIcon />
+                      <span>{BMR.toLocaleString("it-IT")} goal <span className="text-gray-400">(BMR - deficit)</span></span>
                     </div>
-                    <span>{BMR.toLocaleString("it-IT")} goal <span className="text-gray-400">(BMR - deficit)</span></span>
-                  </div>
-                  <div className="flex items-center gap-3 text-[15px]">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF9E57]">
-                      <Footprints className="h-4 w-4 text-white" />
+                    <div className="flex items-center gap-3 text-[15px]">
+                      <FootprintsIcon />
+                      <span>{data.activeCalories.toLocaleString("it-IT")} active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                     </div>
-                    <span>{data.activeCalories.toLocaleString("it-IT")} active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
-                  </div>
                   <div 
 
                     className="mt-3 inline-block rounded-lg px-3 py-2 text-base font-bold"
