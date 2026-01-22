@@ -378,6 +378,7 @@ function MacroCard({
   target,
   color,
   isToday,
+  centered = false,
 }: {
   icon: React.ReactNode;
   iconBg?: string;
@@ -386,6 +387,7 @@ function MacroCard({
   target: number;
   color: string;
   isToday: boolean;
+  centered?: boolean;
 }) {
   const progress = value / target;
   const surplus = value - target;
