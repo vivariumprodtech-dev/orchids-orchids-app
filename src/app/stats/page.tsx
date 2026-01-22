@@ -688,6 +688,15 @@ function StatsContent() {
 
     const waterStatus = getWaterStatus();
 
+    const getAlcoholStatus = () => {
+      if (!data.alcohol) return { text: "good", connotation: "good" as const };
+      if (data.alcohol.grams <= 20) return { text: "good", connotation: "good" as const };
+      if (data.alcohol.grams <= 40) return { text: "moderate", connotation: "warning" as const };
+      return { text: "high", connotation: "danger" as const };
+    };
+
+    const alcoholStatus = getAlcoholStatus();
+
   return (
     <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
         <div className="mb-5 flex items-center justify-between">
