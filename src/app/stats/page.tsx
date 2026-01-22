@@ -735,7 +735,7 @@ function StatsContent() {
       <div className="mb-4 flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex-1">
             <div className="mb-2 flex items-center">
-              <div className="mr-4">
+              <div className="mr-1">
                 <WaterIcon />
               </div>
                 <div>
