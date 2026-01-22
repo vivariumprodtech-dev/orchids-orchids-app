@@ -687,154 +687,163 @@ function StatsContent() {
           })}
         </div>
 
-        <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
-            <div className="flex items-center justify-between">
-                <div className="flex-1 space-y-2.5">
-                    <div className="flex items-center gap-1 text-secondary-custom">
-                      <UtensilsIcon />
-                      <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
-                    </div>
-                    <div className="flex items-center gap-1 text-secondary-custom">
-                      <FlagIcon />
-                      <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
-                    </div>
-                    <div className="flex items-center gap-1 text-secondary-custom">
-                      <FootprintsIcon />
-                      <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
-                    </div>
-                  <div 
-                    className="mt-3 inline-block rounded-lg px-3 py-2 text-primary-custom"
-                    style={{
-                      background: calorieStatus.bg,
-                      color: calorieStatus.color
-                    }}
-                  >
-                    {calorieStatus.text}
+        <div className="space-y-8">
+          {/* Section 1: kcal card, macro cards, process food, water and alcohol */}
+          <div className="space-y-3">
+            <div className="rounded-2xl bg-white p-4 shadow-sm">
+                <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
+                <div className="flex items-center justify-between">
+                    <div className="flex-1 space-y-2.5">
+                        <div className="flex items-center gap-1 text-secondary-custom">
+                          <UtensilsIcon />
+                          <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
+                        </div>
+                        <div className="flex items-center gap-1 text-secondary-custom">
+                          <FlagIcon />
+                          <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
+                        </div>
+                        <div className="flex items-center gap-1 text-secondary-custom">
+                          <FootprintsIcon />
+                          <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
+                        </div>
+                      <div 
+                        className="mt-3 inline-block rounded-lg px-3 py-2 text-primary-custom"
+                        style={{
+                          background: calorieStatus.bg,
+                          color: calorieStatus.color
+                        }}
+                      >
+                        {calorieStatus.text}
+                      </div>
                   </div>
-              </div>
-                <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
-                  <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
-                    {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                  </div>
-                <div className="text-tertiary-custom">
-                  {isOver ? "surplus" : "kcal left"}
+                    <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                      <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
+                        {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                      </div>
+                    <div className="text-tertiary-custom">
+                      {isOver ? "surplus" : "kcal left"}
+                    </div>
+                  </CircleProgress>
                 </div>
-              </CircleProgress>
-            </div>
-          </div>
-
-      <div className="mb-4 grid grid-cols-2 gap-3">
-        <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} />
-        <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
-        <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
-        <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
-        <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} />
-      </div>
-
-      <div className="mb-4 flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
-        <div className="flex-1">
-            <div className="mb-2 flex items-center">
-              <div className="mr-1">
-                <WaterIcon />
               </div>
-                  <div>
-                    <div className="text-primary-custom">
-                      <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                      <span className="text-secondary-custom">/2L</span>
-                    </div>
-                  </div>
-            </div>
-          <div className="text-tertiary-custom" style={{ color: waterStatus.color }}>
-            {waterStatus.text}
-          </div>
-        </div>
-        <CircleProgress value={waterLiters} max={waterTarget} size={80} strokeWidth={8}>
-          {waterProgress >= 0.95 ? (
-            <div className="text-primary-custom !text-3xl">✓</div>
-          ) : (
-            <>
-              <div className="text-primary-custom !text-lg">{waterLeft}L</div>
-              <div className="text-tertiary-custom !not-italic">left</div>
-            </>
-          )}
-        </CircleProgress>
-      </div>
 
-      {data.alcohol && (
-        <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-          <div className="flex items-center">
-            <div className="mr-1">
-              <AlcoholIcon />
+            <div className="grid grid-cols-2 gap-3">
+              <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} />
+              <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
+              <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
+              <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
+              <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} />
             </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-primary-custom">{data.alcohol.grams}g</span>
-                  <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal Alcohol intake</span>
-                </div>
-              <div className="mt-1 flex items-center gap-2">
-                <span className="text-tertiary-custom">(Based on your weight)</span>
-                <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-tertiary-custom !not-italic !font-bold">on track</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-          <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-primary-custom">
-              Food log → <span className="text-primary-custom">{data.calories}</span> Kcal total
-            </h2>
-            {!isToday && data.meals && data.meals.length > 0 ? (
-              <div className="space-y-4">
-                {data.meals.map((meal, mealIndex) => (
-                  <div key={mealIndex} className="border-b border-gray-100 pb-4 last:border-0">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-primary-custom">{meal.meal}</span>
-                      <span className="text-secondary-custom"><span className="text-primary-custom">{meal.totalCalories}</span> Kcal</span>
+            <div className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm">
+              <div className="flex-1">
+                  <div className="mb-2 flex items-center">
+                    <div className="mr-1">
+                      <WaterIcon />
                     </div>
-                    <div className="space-y-2 pl-2">
-                      {meal.foods.map((food, foodIndex) => (
-                        <div key={foodIndex} className="border-l-2 border-gray-200 pl-3">
-                          <div className="flex justify-between">
-                            <span className="text-secondary-custom">{food.name}</span>
-                            <span className="text-tertiary-custom !not-italic">{food.calories} kcal</span>
-                          </div>
-                          <div className="flex gap-2 text-tertiary-custom !not-italic">
-                            <span>🥩 {food.pro}g</span>
-                            <span>🍞 {food.carb}g</span>
-                            <span>🥑 {food.fat}g</span>
-                            <span>🌾 {food.fiber}g</span>
+                        <div>
+                          <div className="text-primary-custom">
+                            <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
+                            <span className="text-secondary-custom">/2L</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
                   </div>
-                ))}
+                <div className="text-tertiary-custom" style={{ color: waterStatus.color }}>
+                  {waterStatus.text}
+                </div>
               </div>
-            ) : data.foods.length === 0 ? (
-              <div className="py-5 text-center text-tertiary-custom">Nessun cibo loggato</div>
-            ) : (
-              <div className="space-y-3">
-                {(showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
-                  <div key={i} className="border-b border-gray-100 pb-3 last:border-0">
-                    <div className="mb-1.5 flex justify-between">
-                      <span className="text-primary-custom !font-medium">{food.name}</span>
-                      <span className="text-tertiary-custom !not-italic">
-                        {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </div>
-                    <div className="mb-1.5 text-primary-custom">• <span className="text-primary-custom">{food.calories}</span> Kcal</div>
-                    <div className="flex gap-3 text-tertiary-custom !not-italic">
-                      <span>🥩 {food.pro || 0}g</span>
-                      <span>🍞 {food.carb || 0}g</span>
-                      <span>🥑 {food.fat || 0}g</span>
-                      <span>🌾 {food.fiber || 0}g</span>
+              <CircleProgress value={waterLiters} max={waterTarget} size={80} strokeWidth={8}>
+                {waterProgress >= 0.95 ? (
+                  <div className="text-primary-custom !text-3xl">✓</div>
+                ) : (
+                  <>
+                    <div className="text-primary-custom !text-lg">{waterLeft}L</div>
+                    <div className="text-tertiary-custom !not-italic">left</div>
+                  </>
+                )}
+              </CircleProgress>
+            </div>
+
+            {data.alcohol && (
+              <div className="rounded-2xl bg-white p-4 shadow-sm">
+                <div className="flex items-center">
+                  <div className="mr-1">
+                    <AlcoholIcon />
+                  </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-primary-custom">{data.alcohol.grams}g</span>
+                        <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal Alcohol intake</span>
+                      </div>
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="text-tertiary-custom">(Based on your weight)</span>
+                      <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-tertiary-custom !not-italic !font-bold">on track</span>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
             )}
+          </div>
+
+          {/* Section 2: Food log section */}
+          <div>
+              <div className="rounded-2xl bg-white p-4 shadow-sm">
+                <h2 className="mb-4 text-primary-custom">
+                  Food log → <span className="text-primary-custom">{data.calories}</span> Kcal total
+                </h2>
+                {!isToday && data.meals && data.meals.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.meals.map((meal, mealIndex) => (
+                      <div key={mealIndex} className="border-b border-gray-100 pb-4 last:border-0">
+                        <div className="mb-3 flex items-center justify-between">
+                          <span className="text-primary-custom">{meal.meal}</span>
+                          <span className="text-secondary-custom"><span className="text-primary-custom">{meal.totalCalories}</span> Kcal</span>
+                        </div>
+                        <div className="space-y-2 pl-2">
+                          {meal.foods.map((food, foodIndex) => (
+                            <div key={foodIndex} className="border-l-2 border-gray-200 pl-3">
+                              <div className="flex justify-between">
+                                <span className="text-secondary-custom">{food.name}</span>
+                                <span className="text-tertiary-custom !not-italic">{food.calories} kcal</span>
+                              </div>
+                              <div className="flex gap-2 text-tertiary-custom !not-italic">
+                                <span>🥩 {food.pro}g</span>
+                                <span>🍞 {food.carb}g</span>
+                                <span>🥑 {food.fat}g</span>
+                                <span>🌾 {food.fiber}g</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : data.foods.length === 0 ? (
+                  <div className="py-5 text-center text-tertiary-custom">Nessun cibo loggato</div>
+                ) : (
+                  <div className="space-y-3">
+                    {(showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
+                      <div key={i} className="border-b border-gray-100 pb-3 last:border-0">
+                        <div className="mb-1.5 flex justify-between">
+                          <span className="text-primary-custom !font-medium">{food.name}</span>
+                          <span className="text-tertiary-custom !not-italic">
+                            {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        <div className="mb-1.5 text-primary-custom">• <span className="text-primary-custom">{food.calories}</span> Kcal</div>
+                        <div className="flex gap-3 text-tertiary-custom !not-italic">
+                          <span>🥩 {food.pro || 0}g</span>
+                          <span>🍞 {food.carb || 0}g</span>
+                          <span>🥑 {food.fat || 0}g</span>
+                          <span>🌾 {food.fiber || 0}g</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+          </div>
+        </div>
       </div>
     </div>
   );
