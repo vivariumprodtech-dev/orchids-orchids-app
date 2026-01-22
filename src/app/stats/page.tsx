@@ -767,11 +767,11 @@ function StatsContent() {
             <div className="mr-1">
               <AlcoholIcon />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-primary-custom !text-xl">{data.alcohol.grams}g</span>
-                <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal Alcohol intake</span>
-              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-primary-custom">{data.alcohol.grams}g</span>
+                  <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal Alcohol intake</span>
+                </div>
               <div className="mt-1 flex items-center gap-2">
                 <span className="text-tertiary-custom">(Based on your weight)</span>
                 <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-tertiary-custom !not-italic !font-bold">on track</span>
