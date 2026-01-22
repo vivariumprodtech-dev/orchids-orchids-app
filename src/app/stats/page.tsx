@@ -764,7 +764,7 @@ function StatsContent() {
       {data.alcohol && (
         <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
           <div className="flex items-center">
-            <div className="mr-4">
+            <div className="mr-1">
               <AlcoholIcon />
             </div>
             <div>
