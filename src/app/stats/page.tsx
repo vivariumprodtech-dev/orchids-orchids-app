@@ -372,7 +372,6 @@ function AlcoholIcon() {
 }
 
 function MacroCard({
-
   icon,
   iconBg,
   name,
@@ -381,8 +380,8 @@ function MacroCard({
   color,
   isToday,
 }: {
-  icon: string;
-  iconBg: string;
+  icon: React.ReactNode;
+  iconBg?: string;
   name: string;
   value: number;
   target: number;
@@ -449,12 +448,21 @@ function MacroCard({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="mb-3 flex items-center gap-2">
-            <div
-              className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-              style={{ background: iconBg }}
-            >
-              {icon}
-            </div>
+            {iconBg ? (
+              <div
+                className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                style={{ background: iconBg }}
+              >
+                {icon}
+              </div>
+            ) : (
+              <div className="flex h-7 w-7 items-center justify-center">
+                {icon}
+              </div>
+            )}
+            <span className="text-sm font-medium text-gray-700">{name}</span>
+          </div>
+
             <span className="text-sm font-medium text-gray-700">{name}</span>
           </div>
           <div className="mb-2">
