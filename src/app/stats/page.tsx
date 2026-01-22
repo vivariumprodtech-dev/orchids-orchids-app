@@ -800,8 +800,8 @@ function StatsContent() {
       <div className="mb-4 flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex-1">
             <div className="mb-2 flex items-center">
-              <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-sky-50 text-xl">
-                💧
+              <div className="mr-4">
+                <WaterIcon />
               </div>
                 <div>
                   <div className="text-xl font-bold text-gray-900">
