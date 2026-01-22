@@ -845,8 +845,8 @@ function StatsContent() {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default function StatsPage() {
