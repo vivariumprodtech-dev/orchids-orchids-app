@@ -446,9 +446,9 @@ function MacroCard({
 
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between">
+      <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
         <div className="flex-1">
-            <div className="mb-3 flex items-center gap-1">
+            <div className="mb-1 flex items-center gap-1">
               {iconBg ? (
                 <div
                   className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
@@ -463,7 +463,7 @@ function MacroCard({
               )}
               <span className="text-secondary-custom">{name}</span>
             </div>
-            <div className="mb-2">
+            <div className="mb-4">
               <span className="text-primary-custom">{Math.round(value)}</span>
               <span className="text-secondary-custom">/{target}g</span>
             </div>
