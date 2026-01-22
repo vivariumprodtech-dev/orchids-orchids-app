@@ -665,32 +665,33 @@ function StatsContent() {
       if (diff > tolerance) {
         return { text: "ahead", connotation: "warning" as const };
       }
-      if (diff < -tolerance * 2) {
-        return { text: "way behind", connotation: "danger" as const };
-      }
-      return { text: "behind", connotation: "warning" as const };
-    };
+        if (diff < -tolerance * 2) {
+          return { text: "way behind", connotation: "danger" as const };
+        }
+        return { text: "on track", connotation: "on-track" as const };
+      };
 
-    const calorieStatus = getCalorieStatus();
+      const calorieStatus = getCalorieStatus();
 
-    const getWaterStatus = () => {
-      if (!isToday) {
+      const getWaterStatus = () => {
+        if (!isToday) {
+          if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
+          return { text: "low", connotation: "warning" as const };
+        }
+        
+        const now = new Date();
+        const hour = now.getHours();
+        const dayProgress = Math.max(0, Math.min(1, (hour - 7) / 15));
+        const expected = waterTarget * dayProgress;
+        const diff = waterLiters - expected;
+        const tolerance = waterTarget * 0.15;
+
         if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
-        return { text: "low", connotation: "warning" as const };
-      }
-      
-      const now = new Date();
-      const hour = now.getHours();
-      const dayProgress = Math.max(0, Math.min(1, (hour - 7) / 15));
-      const expected = waterTarget * dayProgress;
-      const diff = waterLiters - expected;
-      const tolerance = waterTarget * 0.15;
+        if (waterLiters > waterTarget) return { text: "over", connotation: "danger" as const };
+        if (diff < -tolerance) return { text: "on track", connotation: "on-track" as const };
+        return { text: "good", connotation: "good" as const };
+      };
 
-      if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
-      if (waterLiters > waterTarget) return { text: "over", connotation: "danger" as const };
-      if (diff < -tolerance) return { text: "low", connotation: "warning" as const };
-      return { text: "good", connotation: "good" as const };
-    };
 
     const waterStatus = getWaterStatus();
 
