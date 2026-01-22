@@ -691,15 +691,15 @@ function StatsContent() {
             <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
             <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2.5">
-                    <div className="flex items-center gap-3 text-secondary-custom">
+                    <div className="flex items-center gap-1 text-secondary-custom">
                       <UtensilsIcon />
                       <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
                     </div>
-                    <div className="flex items-center gap-3 text-secondary-custom">
+                    <div className="flex items-center gap-1 text-secondary-custom">
                       <FlagIcon />
                       <span>{BMR.toLocaleString("it-IT")} goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
                     </div>
-                    <div className="flex items-center gap-3 text-secondary-custom">
+                    <div className="flex items-center gap-1 text-secondary-custom">
                       <FootprintsIcon />
                       <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                     </div>
