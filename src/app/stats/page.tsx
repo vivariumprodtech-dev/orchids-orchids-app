@@ -455,11 +455,11 @@ function MacroCard({
                   {icon}
                 </div>
               ) : (
-                <div className="flex h-7 w-7 items-center justify-center">
+                <div className="flex items-center justify-center">
                   {icon}
                 </div>
               )}
-              <span className="text-primary-custom">{name}</span>
+              <span className="text-secondary-custom">{name}</span>
             </div>
             <div className="mb-2">
               <span className="text-primary-custom">{Math.round(value)}</span>
