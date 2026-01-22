@@ -487,8 +487,8 @@ function MacroCard({
         circleLabel = "";
         circleTextColor = "#C10127";
       } else if (diff < -tolerance) {
-        statusText = "low";
-        connotation = "warning";
+        statusText = "on track";
+        connotation = "on-track";
       } else {
         statusText = "good";
         connotation = "good";
