@@ -443,34 +443,35 @@ function MacroCard({
       }
     }
 
-  return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="mb-3 flex items-center gap-2">
-            {iconBg ? (
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                style={{ background: iconBg }}
-              >
-                {icon}
-              </div>
-            ) : (
-              <div className="flex h-7 w-7 items-center justify-center">
-                {icon}
-              </div>
-            )}
-            <span className="text-sm font-medium text-gray-700">{name}</span>
+    return (
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="mb-3 flex items-center gap-2">
+              {iconBg ? (
+                <div
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                  style={{ background: iconBg }}
+                >
+                  {icon}
+                </div>
+              ) : (
+                <div className="flex h-7 w-7 items-center justify-center">
+                  {icon}
+                </div>
+              )}
+              <span className="text-primary-custom">{name}</span>
+            </div>
+            <div className="mb-2">
+              <span className="text-primary-custom !text-2xl">{Math.round(value)}</span>
+              <span className="text-secondary-custom">/{target}g</span>
+            </div>
+            <div className="text-tertiary-custom" style={{ color: statusColor }}>
+              {status}
+            </div>
           </div>
-          <div className="mb-2">
-            <span className="text-2xl font-bold text-gray-900">{Math.round(value)}</span>
-            <span className="text-base text-gray-400">/{target}g</span>
-          </div>
-          <div className="text-xs font-semibold" style={{ color: statusColor }}>
-            {status}
-          </div>
-        </div>
-          <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+            <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+
               <div
                 className="font-bold"
                 style={{ fontSize: isCheckmark ? 28 : 14, color: circleTextColor }}
