@@ -76,6 +76,39 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --text-secondary: #1A1C1E;
+  --placeholder-color: #5A658D;
+  --action-components-hover-color: #757FA0;
+}
+
+@layer components {
+  .text-primary-custom {
+    color: var(--text-secondary);
+    font-family: "DM Sans", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+  }
+
+  .text-secondary-custom {
+    color: var(--placeholder-color);
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .text-tertiary-custom {
+    color: var(--action-components-hover-color);
+    font-family: "DM Sans", sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 16px;
+  }
 }
 
 .dark {
