@@ -634,24 +634,13 @@ function StatsContent() {
     const getCalorieStatus = () => {
       if (!isToday) {
         const diff = data.calories - totalTarget;
-        if (Math.abs(diff) <= 50) return { text: "On target", color: "#4CAF50", bg: "#E8F5E9" };
-        if (diff > 0) {
-          let statusColor = "#ff0000";
-          let bg = "#FFEBEE";
-          if (diff <= 100) {
-            statusColor = "#ffd700";
-            bg = "#FFFDE7";
-          } else if (diff <= 300) {
-            statusColor = "#ff8c00";
-            bg = "#FFF3E0";
-          }
-          return { text: "Over limit", color: statusColor, bg: bg };
-        }
-        return { text: "Under target", color: "#FF9800", bg: "#FFF3E0" };
+        if (Math.abs(diff) <= 50) return { text: "good", connotation: "good" as const };
+        if (diff > 0) return { text: "over", connotation: "danger" as const };
+        return { text: "low", connotation: "warning" as const };
       }
 
       if (data.calories === 0) {
-        return { text: "No meals logged", color: "#9E9E9E", bg: "#F5F5F5" };
+        return { text: "no meals", connotation: "warning" as const };
       }
 
       const now = new Date();
@@ -662,26 +651,26 @@ function StatsContent() {
       const tolerance = totalTarget * 0.15;
 
       if (Math.abs(diff) <= tolerance) {
-        return { text: "On track", color: "#4CAF50", bg: "#E8F5E9" };
+        return { text: "good", connotation: "good" as const };
       }
       if (diff > tolerance * 2) {
-        return { text: "Way ahead of schedule!", color: "#FF5252", bg: "#FFEBEE" };
+        return { text: "way ahead", connotation: "danger" as const };
       }
       if (diff > tolerance) {
-        return { text: "Slightly ahead", color: "#FF9800", bg: "#FFF3E0" };
+        return { text: "ahead", connotation: "warning" as const };
       }
       if (diff < -tolerance * 2) {
-        return { text: "Way behind schedule", color: "#FF9800", bg: "#FFF3E0" };
+        return { text: "way behind", connotation: "danger" as const };
       }
-      return { text: "Slightly behind", color: "#2196F3", bg: "#E3F2FD" };
+      return { text: "behind", connotation: "warning" as const };
     };
 
     const calorieStatus = getCalorieStatus();
 
     const getWaterStatus = () => {
       if (!isToday) {
-        if (waterProgress >= 0.95) return { text: "On target", color: "#4CAF50" };
-        return { text: "Under target", color: "#FF9800" };
+        if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
+        return { text: "low", connotation: "warning" as const };
       }
       
       const now = new Date();
@@ -691,10 +680,10 @@ function StatsContent() {
       const diff = waterLiters - expected;
       const tolerance = waterTarget * 0.15;
 
-      if (waterProgress >= 0.95) return { text: "On target", color: "#4CAF50" };
-      if (waterLiters > waterTarget) return { text: "↑ over", color: "#FF5252" };
-      if (diff < -tolerance) return { text: "Behind schedule", color: "#FF9800" };
-      return { text: "On track", color: "#4CAF50" };
+      if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
+      if (waterLiters > waterTarget) return { text: "over", connotation: "danger" as const };
+      if (diff < -tolerance) return { text: "low", connotation: "warning" as const };
+      return { text: "good", connotation: "good" as const };
     };
 
     const waterStatus = getWaterStatus();
