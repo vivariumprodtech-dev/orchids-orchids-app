@@ -738,12 +738,12 @@ function StatsContent() {
               <div className="mr-1">
                 <WaterIcon />
               </div>
-                <div>
-                  <div className="text-primary-custom !text-xl">
-                    <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                    <span className="text-secondary-custom">/2L</span>
+                  <div>
+                    <div className="text-primary-custom">
+                      <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
+                      <span className="text-secondary-custom">/2L</span>
+                    </div>
                   </div>
-                </div>
             </div>
           <div className="text-tertiary-custom !italic !font-bold" style={{ color: waterStatus.color }}>
             {waterStatus.text}
