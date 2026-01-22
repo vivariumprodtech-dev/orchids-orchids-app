@@ -461,10 +461,10 @@ function MacroCard({
               )}
               <span className="text-primary-custom">{name}</span>
             </div>
-          <div className="mb-2">
-            <span className="text-primary-custom !text-2xl">{Math.round(value)}</span>
-            <span className="text-secondary-custom">/{target}g</span>
-          </div>
+            <div className="mb-2">
+              <span className="text-primary-custom">{Math.round(value)}</span>
+              <span className="text-secondary-custom">/{target}g</span>
+            </div>
           <div className="text-tertiary-custom" style={{ color: statusColor }}>
             {status}
           </div>
