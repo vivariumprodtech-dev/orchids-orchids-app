@@ -176,6 +176,68 @@ const DAY_15_DATA: StatsData = {
 
 const INITIAL_FOODS_DISPLAY = 5;
 
+function StatusBadge({ 
+  text, 
+  connotation 
+}: { 
+  text: string; 
+  connotation: "good" | "warning" | "danger" 
+}) {
+  const styles = {
+    good: {
+      bg: "#F5FAF8",
+      color: "#199761",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3L4.5 8.5L2 6" stroke="#199761" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    warning: {
+      bg: "#FFF9D6",
+      color: "#A56D00",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9V3M6 9L3 6M6 9L9 6" stroke="#A56D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    danger: {
+      bg: "#FEF5F7",
+      color: "#C10127",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 3V9M6 3L3 6M6 3L9 6" stroke="#C10127" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    }
+  };
+
+  const style = styles[connotation];
+
+  return (
+    <div 
+      style={{
+        display: "flex",
+        height: "20px",
+        padding: "2px 6px",
+        alignItems: "center",
+        gap: "2px",
+        borderRadius: "100px",
+        background: style.bg,
+        color: style.color,
+        fontFamily: "var(--font-dm-sans)",
+        fontSize: "12px",
+        fontWeight: "600",
+        lineHeight: "16px",
+      }}
+    >
+      {style.icon}
+      <span>{text}</span>
+    </div>
+  );
+}
+
 function CircleProgress({
   value,
   max,
