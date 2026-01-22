@@ -831,12 +831,13 @@ function StatsContent() {
                             <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
                           </div>
                         </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-tertiary-custom">(Weight based)</span>
-                        <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-tertiary-custom !not-italic !font-bold">on track</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-tertiary-custom">(Weight based)</span>
+                          <StatusBadge text={alcoholStatus.text} connotation={alcoholStatus.connotation} />
+                        </div>
                       </div>
-                    </div>
-                    <CircleProgress value={data.alcohol.grams} max={30} size={65} strokeWidth={6} color="#CE6194">
+                      <CircleProgress value={data.alcohol.grams} max={30} size={65} strokeWidth={6} color="#CE6194">
+
                       <div className="text-primary-custom !text-sm !font-bold">{30 - data.alcohol.grams}g</div>
                       <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
                     </CircleProgress>
