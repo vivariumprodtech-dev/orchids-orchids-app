@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 interface FoodEntry {
   name: string;
