@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, useRef } from "react";
-import { Utensils, Flag, Footprints } from "lucide-react";
 
 interface FoodEntry {
   name: string;
