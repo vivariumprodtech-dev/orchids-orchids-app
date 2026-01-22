@@ -758,17 +758,10 @@ function StatsContent() {
                           <FootprintsIcon />
                           <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                         </div>
-                      <div 
-                        className="mt-3 inline-block rounded-lg px-3 py-2 text-primary-custom"
-                        style={{
-                          background: calorieStatus.bg,
-                          color: calorieStatus.color
-                        }}
-                      >
-                        {calorieStatus.text}
-                      </div>
-                  </div>
-                    <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                        <StatusBadge text={calorieStatus.text} connotation={calorieStatus.connotation} />
+                    </div>
+                      <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+
                       <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
                         {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
                       </div>
