@@ -795,6 +795,7 @@ function StatsContent() {
         <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
         <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
         <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
+        <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} />
       </div>
 
       <div className="mb-4 flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
