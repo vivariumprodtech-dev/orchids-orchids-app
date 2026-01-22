@@ -181,7 +181,7 @@ function StatusBadge({
   connotation 
 }: { 
   text: string; 
-  connotation: "good" | "warning" | "danger" 
+  connotation: "good" | "warning" | "danger" | "on-track"
 }) {
   const styles = {
     good: {
@@ -210,6 +210,11 @@ function StatusBadge({
           <path d="M6 3V9M6 3L3 6M6 3L9 6" stroke="#C10127" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
+    },
+    "on-track": {
+      bg: "#F9F9FB",
+      color: "#3B4361",
+      icon: null
     }
   };
 
@@ -218,7 +223,7 @@ function StatusBadge({
   return (
     <div 
       style={{
-        display: "flex",
+        display: "inline-flex",
         height: "20px",
         padding: "2px 6px",
         alignItems: "center",
@@ -230,6 +235,7 @@ function StatusBadge({
         fontSize: "12px",
         fontWeight: "600",
         lineHeight: "16px",
+        width: "fit-content"
       }}
     >
       {style.icon}
