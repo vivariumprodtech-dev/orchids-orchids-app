@@ -732,54 +732,61 @@ function StatsContent() {
               <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
               <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
               <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
-              <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} />
             </div>
 
-            <div className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm">
-              <div className="flex-1">
-                  <div className="mb-2 flex items-center">
-                    <div className="mr-1">
+            <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} />
+
+            <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                    <div className="mb-3 flex items-center gap-1">
                       <WaterIcon />
+                      <span className="text-secondary-custom">Water</span>
                     </div>
-                        <div>
-                          <div className="text-primary-custom">
-                            <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                            <span className="text-secondary-custom">/2L</span>
-                          </div>
-                        </div>
+                    <div className="mb-2">
+                      <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
+                      <span className="text-secondary-custom">/2L</span>
+                    </div>
+                  <div className="text-tertiary-custom" style={{ color: waterStatus.color }}>
+                    {waterStatus.text}
                   </div>
-                <div className="text-tertiary-custom" style={{ color: waterStatus.color }}>
-                  {waterStatus.text}
                 </div>
+                <CircleProgress value={waterLiters} max={waterTarget} size={65} strokeWidth={6} color="#73B0FF">
+                  {waterProgress >= 0.95 ? (
+                    <div className="text-primary-custom !text-2xl">✓</div>
+                  ) : (
+                    <>
+                      <div className="text-primary-custom !text-sm !font-bold">{waterLeft}L</div>
+                      <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                    </>
+                  )}
+                </CircleProgress>
               </div>
-              <CircleProgress value={waterLiters} max={waterTarget} size={80} strokeWidth={8}>
-                {waterProgress >= 0.95 ? (
-                  <div className="text-primary-custom !text-3xl">✓</div>
-                ) : (
-                  <>
-                    <div className="text-primary-custom !text-lg">{waterLeft}L</div>
-                    <div className="text-tertiary-custom !not-italic">left</div>
-                  </>
-                )}
-              </CircleProgress>
             </div>
 
             {data.alcohol && (
               <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <div className="flex items-center">
-                  <div className="mr-1">
-                    <AlcoholIcon />
-                  </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-primary-custom">{data.alcohol.grams}g</span>
-                        <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal Alcohol intake</span>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                      <div className="mb-3 flex items-center gap-1">
+                        <AlcoholIcon />
+                        <span className="text-secondary-custom">Alcohol</span>
                       </div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="text-tertiary-custom">(Based on your weight)</span>
+                      <div className="mb-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-primary-custom">{data.alcohol.grams}g</span>
+                          <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
+                        </div>
+                      </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-tertiary-custom">(Weight based)</span>
                       <span className="rounded-full bg-slate-50 px-2.5 py-0.5 text-tertiary-custom !not-italic !font-bold">on track</span>
                     </div>
                   </div>
+                  <CircleProgress value={data.alcohol.grams} max={30} size={65} strokeWidth={6} color="#CE6194">
+                    <div className="text-primary-custom !text-sm !font-bold">{30 - data.alcohol.grams}g</div>
+                    <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                  </CircleProgress>
                 </div>
               </div>
             )}
