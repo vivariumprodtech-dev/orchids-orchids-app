@@ -860,7 +860,7 @@ function StatsContent() {
               <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
             </div>
 
-              <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
+              <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
 
               <div className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between">
