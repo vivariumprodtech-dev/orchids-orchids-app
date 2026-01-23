@@ -350,19 +350,21 @@ function ShadcnRadialProgress({
   } satisfies ChartConfig;
 
   return (
-    <div className="relative flex items-center justify-center p-0" style={{ width: size, height: size }}>
+    <div className="relative p-0" style={{ width: size, height: size }}>
       <ChartContainer
         config={chartConfig}
         className="aspect-square h-full w-full p-0"
       >
-          <RadialBarChart
-            data={chartData}
-            startAngle={90}
-            endAngle={-270}
-            innerRadius="80%"
-            outerRadius="100%"
-            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-          >
+        <RadialBarChart
+          data={chartData}
+          startAngle={90}
+          endAngle={-270}
+          innerRadius="80%"
+          outerRadius="100%"
+          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+          cx="50%"
+          cy="50%"
+        >
           <PolarAngleAxis
             type="number"
             domain={[0, max]}
@@ -377,7 +379,7 @@ function ShadcnRadialProgress({
           />
         </RadialBarChart>
       </ChartContainer>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
         {children}
       </div>
     </div>
