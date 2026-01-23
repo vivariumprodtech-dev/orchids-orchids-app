@@ -732,7 +732,7 @@ function StatsContent() {
                 // Dot rule: ONLY red, ONLY past days, ONLY if missing alert
                 const isPast = dayNum < 17;
                 let showRedDot = false;
-                if (isPast) {
+                if (isPast && !isDisabled) {
                   const dayData = dayNum === 13 ? DAY_13_DATA : 
                                  dayNum === 14 ? DAY_14_DATA : 
                                  dayNum === 15 ? DAY_15_DATA : 
