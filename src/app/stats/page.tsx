@@ -552,7 +552,7 @@ function MacroCard({
   centered?: boolean;
 }) {
   const left = Math.round(target - value);
-  let badge: { text: string; connotation: any } = { text: "good", connotation: "good" };
+  let badge: { text: string; connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral" } = { text: "good", connotation: "good" };
   let circleText = `${left}g`;
   let circleLabel = "left";
   let isCheckmark = false;
