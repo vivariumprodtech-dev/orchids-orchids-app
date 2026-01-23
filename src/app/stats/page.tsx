@@ -753,13 +753,17 @@ function StatsContent() {
                       </div>
                       <div className="flex-shrink-0">
                           <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
-                            {waterLiters >= waterTarget ? (
-                              <div className="text-primary-custom !text-xl">✓</div>
-                            ) : (
-                              <>
-                                <div className="text-primary-custom !text-[12px] !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
-                                <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
-                              </>
+                            <div 
+                              className="font-bold" 
+                              style={{ 
+                                fontSize: waterLiters >= waterTarget ? "20px" : "12px",
+                                color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
+                              }}
+                            >
+                              {waterLiters >= waterTarget ? "✓" : `${(waterTarget - waterLiters).toFixed(1)}L`}
+                            </div>
+                            {waterLiters < waterTarget && (
+                              <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
                             )}
                           </ShadcnRadialProgress>
                       </div>
