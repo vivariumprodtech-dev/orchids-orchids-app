@@ -487,33 +487,29 @@ function MacroCard({
 }) {
     const left = Math.round(target - value);
     let badge: { text: string; connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral" } = { text: "good", connotation: "good" };
-    let circleText = `${left}g`;
-    let circleLabel = "left";
+    let circleText = value > target ? `+${Math.abs(left)}g` : `${Math.max(0, left)}g`;
+    let circleLabel = value > target ? "over" : "left";
     let isCheckmark = false;
 
     if (type === "processed") {
       badge = getProcessedFoodBadge(value, target);
       circleText = `${Math.round((value / target) * 100)}%`;
-      circleLabel = "";
+      circleLabel = value > target ? "over" : "";
     } else if (type === "water") {
       badge = getWaterBadge(value, target);
-      const litersLeft = (target - value).toFixed(1);
-      circleText = value >= target ? "✓" : `${litersLeft}L`;
-      circleLabel = value >= target ? "" : "left";
-      isCheckmark = value >= target;
+      const diff = target - value;
+      isCheckmark = value >= target && value <= target * 1.05;
+      circleText = isCheckmark ? "✓" : (value > target ? `+${Math.abs(diff).toFixed(1)}L` : `${diff.toFixed(1)}L`);
+      circleLabel = isCheckmark ? "" : (value > target ? "over" : "left");
     } else if (type === "alcohol") {
       // handled separately in main content for now, but keeping for consistency
       } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
         badge = getMacroBadge(type, value, target, isToday);
         if (value >= target * 0.97 && value <= target * 1.03) {
-
-        circleText = "✓";
-        circleLabel = "";
-        isCheckmark = true;
-      } else if (value > target) {
-        circleText = `+${Math.round(value - target)}g`;
-        circleLabel = "";
-      }
+          circleText = "✓";
+          circleLabel = "";
+          isCheckmark = true;
+        }
     }
 
     return (
