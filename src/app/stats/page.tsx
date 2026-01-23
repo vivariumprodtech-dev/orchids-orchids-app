@@ -330,12 +330,16 @@ function ShadcnRadialProgress({
   max,
   size = 120,
   color = "#4ECDC4",
+  innerRadius = "80%",
+  outerRadius = "100%",
   children,
 }: {
   value: number;
   max: number;
   size?: number;
   color?: string;
+  innerRadius?: string;
+  outerRadius?: string;
   children?: React.ReactNode;
 }) {
   const chartData = [
@@ -359,8 +363,8 @@ function ShadcnRadialProgress({
           data={chartData}
           startAngle={90}
           endAngle={-270}
-          innerRadius="80%"
-          outerRadius="100%"
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
           margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
           cx="50%"
           cy="50%"
