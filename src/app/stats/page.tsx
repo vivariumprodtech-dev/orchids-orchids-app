@@ -628,17 +628,18 @@ function MacroCard({
 function StatsContent() {
   const searchParams = useSearchParams();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-  const [data, setData] = useState<StatsData>({
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-    fats: 0,
-    fiber: 0,
-    water: 0,
-    activeCalories: 0,
-    foods: [],
-  });
-  const [showAllFoods, setShowAllFoods] = useState(false);
+    const [data, setData] = useState<StatsData>({
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      fiber: 0,
+      water: 0,
+      activeCalories: 0,
+      foods: [],
+    });
+    const showAllFoods = false;
+
 
   useEffect(() => {
     if (selectedDay === 13) {
