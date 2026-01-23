@@ -723,38 +723,82 @@ function StatsContent() {
           </div>
         </div>
 
-        <div className="mb-5 flex justify-between gap-2">
-          {["S", "S", "M", "T", "W", "T", "F"].map((day, i) => {
-            const dayNum = 10 + i;
-            const isTodayDay = dayNum === 16;
-            const isSelected = selectedDay === dayNum;
-            const isClickable = dayNum === 13 || dayNum === 14 || dayNum === 15 || isTodayDay;
-            const isViewingPast = selectedDay !== null;
-            return (
-              <div
-                key={i}
-                onClick={() => {
-                  if (dayNum === 13 || dayNum === 14 || dayNum === 15) {
-                    setSelectedDay(dayNum);
-                  } else if (isTodayDay) {
-                    setSelectedDay(null);
-                  }
-                }}
-                className={`flex-1 rounded-xl py-3 text-center transition-all ${
-                  isSelected ? "bg-teal-400 text-white" : 
-                  (isTodayDay && !isViewingPast) ? "bg-teal-400 text-white" : 
-                  (isTodayDay && isViewingPast) ? "cursor-pointer bg-blue-100 text-blue-600 font-semibold" :
-                  isClickable ? "cursor-pointer bg-white opacity-70 hover:opacity-100" : "bg-white opacity-40"
-                }`}
-              >
-                <div className="text-xs font-semibold">{day}</div>
-                <div className="text-lg font-bold">{dayNum}</div>
-                {dayNum === 13 && <div className="mx-auto mt-1 h-1.5 w-1.5 rounded-full bg-red-500" />}
-                {dayNum === 15 && <div className="mx-auto mt-1 h-1.5 w-1.5 rounded-full bg-yellow-400" />}
-              </div>
-            );
-          })}
-        </div>
+          <div className="mb-5 flex justify-between gap-2">
+            {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => {
+              const dayNum = 11 + i;
+              const isTodayDay = dayNum === 17;
+              const isSelected = selectedDay === dayNum || (isTodayDay && selectedDay === null);
+              const isClickable = dayNum >= 12 && dayNum <= 17;
+              const isDisabled = !isClickable;
+
+              // Background colors
+              let bgColor = "#FFFFFF";
+              if (isSelected) {
+                bgColor = "#9EDDE2";
+              } else if (isDisabled) {
+                bgColor = "#ECEDF2";
+              } else if (isTodayDay) {
+                bgColor = "#E2F7F9";
+              }
+
+              // Font colors
+              let textColor = "#5A658D";
+              if (isSelected) {
+                textColor = "#262C44";
+              } else if (isDisabled) {
+                textColor = "#CBCEDB";
+              } else if (isTodayDay) {
+                textColor = "#088D98";
+              }
+
+              return (
+                <div
+                  key={i}
+                  onClick={() => {
+                    if (isClickable) {
+                      if (isTodayDay) {
+                        setSelectedDay(null);
+                      } else {
+                        setSelectedDay(dayNum);
+                      }
+                    }
+                  }}
+                  className="flex-1 rounded-full py-4 text-center transition-all"
+                  style={{ 
+                    backgroundColor: bgColor,
+                    cursor: isClickable ? "pointer" : "default",
+                    fontFamily: '"DM Sans", sans-serif'
+                  }}
+                >
+                  <div 
+                    style={{ 
+                      fontSize: "14px", 
+                      fontWeight: 700, 
+                      color: textColor,
+                      fontStyle: "normal"
+                    }}
+                  >
+                    {day}
+                  </div>
+                  <div 
+                    style={{ 
+                      fontSize: "14px", 
+                      fontWeight: (isTodayDay || isSelected) ? 700 : 400, 
+                      color: textColor,
+                      fontStyle: "normal",
+                      marginTop: "4px"
+                    }}
+                  >
+                    {dayNum}
+                  </div>
+                  <div className="flex justify-center mt-1">
+                    {dayNum === 13 && <div className="h-1.5 w-1.5 rounded-full bg-[#E9566E]" />}
+                    {dayNum !== 13 && <div className="h-1.5 w-1.5" />}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
         <div className="space-y-8">
           {calorieBadge.showAlert && <MissingAlert />}
