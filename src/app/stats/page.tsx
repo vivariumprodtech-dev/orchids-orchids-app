@@ -334,57 +334,122 @@ function MissingAlert() {
   );
 }
 
-function CircleProgress({
+function ShadcnRadialProgress({
   value,
   max,
   size = 120,
-  strokeWidth = 12,
   color = "#4ECDC4",
   children,
 }: {
   value: number;
   max: number;
   size?: number;
-  strokeWidth?: number;
   color?: string;
   children?: React.ReactNode;
 }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const progress = Math.min(value / max, 1);
-  const offset = circumference - progress * circumference;
+  const chartData = [
+    { name: "progress", value: value, fill: color },
+  ];
+
+  const chartConfig = {
+    progress: {
+      label: "Progress",
+      color: color,
+    },
+  } satisfies ChartConfig;
+
+  // Calculate end angle based on percentage
+  const percentage = Math.min(value / max, 1);
+  const endAngle = 90 - (360 * percentage);
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg
-        width={size}
-        height={size}
-        style={{ transform: "rotate(-90deg)" }}
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-square h-full w-full"
       >
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#e0e0e0"
-          strokeWidth={strokeWidth}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          style={{ transition: "stroke-dashoffset 0.5s ease" }}
-        />
-      </svg>
+        <RadialBarChart
+          data={chartData}
+          startAngle={90}
+          endAngle={endAngle}
+          innerRadius="80%"
+          outerRadius="100%"
+        >
+          <PolarAngleAxis
+            type="number"
+            domain={[0, max]}
+            angleAxisId={0}
+            tick={false}
+          />
+          <RadialBar
+            background
+            dataKey="value"
+            cornerRadius={10}
+            fill="var(--color-progress)"
+          />
+        </RadialBarChart>
+      </ChartContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         {children}
       </div>
+    </div>
+  );
+}
+
+function CalorieTrendChart({ currentCalories }: { currentCalories: number }) {
+  const trendData = [
+    { day: "13 Jan", kcal: DAY_13_DATA.calories },
+    { day: "14 Jan", kcal: DAY_14_DATA.calories },
+    { day: "15 Jan", kcal: DAY_15_DATA.calories },
+    { day: "Today", kcal: currentCalories },
+  ];
+
+  const chartConfig = {
+    kcal: {
+      label: "Calories",
+      color: "#7DD3C0",
+    },
+  } satisfies ChartConfig;
+
+  return (
+    <div className="rounded-2xl bg-white p-4 shadow-sm">
+      <h2 className="mb-4 text-primary-custom">Calorie Trend</h2>
+      <ChartContainer config={chartConfig} className="h-[150px] w-full">
+        <AreaChart
+          data={trendData}
+          margin={{
+            left: -20,
+            right: 12,
+          }}
+        >
+          <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.1} />
+          <XAxis
+            dataKey="day"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={(value) => value}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            fontSize={10}
+          />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
+          />
+          <Area
+            dataKey="kcal"
+            type="natural"
+            fill="var(--color-kcal)"
+            fillOpacity={0.4}
+            stroke="var(--color-kcal)"
+            stackId="a"
+          />
+        </AreaChart>
+      </ChartContainer>
     </div>
   );
 }
