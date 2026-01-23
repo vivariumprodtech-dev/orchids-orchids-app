@@ -356,10 +356,6 @@ function ShadcnRadialProgress({
     },
   } satisfies ChartConfig;
 
-  // Calculate end angle based on percentage
-  const percentage = Math.min(value / max, 1);
-  const endAngle = 90 - (360 * percentage);
-
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
       <ChartContainer
@@ -369,7 +365,7 @@ function ShadcnRadialProgress({
         <RadialBarChart
           data={chartData}
           startAngle={90}
-          endAngle={endAngle}
+          endAngle={-270}
           innerRadius="80%"
           outerRadius="100%"
         >
@@ -380,7 +376,7 @@ function ShadcnRadialProgress({
             tick={false}
           />
           <RadialBar
-            background
+            background={{ fill: "#E5E7EB" }}
             dataKey="value"
             cornerRadius={10}
             fill="var(--color-progress)"
