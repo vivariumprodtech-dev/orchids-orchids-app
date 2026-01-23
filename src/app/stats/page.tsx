@@ -706,9 +706,9 @@ function StatsContent() {
           {/* Section 1: kcal card, macro cards, process food, water and alcohol */}
           <div className="space-y-3">
             <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
                 <div className="flex items-center justify-between">
                     <div className="flex-1 space-y-2.5">
+                        <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
                         <div className="flex items-center gap-1 text-secondary-custom">
                           <BadgeIconSm semantic="Lunch" />
                           <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
