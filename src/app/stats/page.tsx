@@ -515,54 +515,56 @@ function MacroCard({
     return (
       <div className="relative rounded-2xl bg-white p-[16px] shadow-sm">
         <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-          <div className={`flex-1 ${!centered ? "pr-[72px]" : ""}`}>
-            <div className="mb-1 flex items-center gap-1">
-              {iconBg ? (
-                <div
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                  style={{ background: iconBg }}
-                >
-                  {icon}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  {icon}
-                </div>
-              )}
-              <span className="text-secondary-custom">{name}</span>
-            </div>
-            <div className="mb-4">
-              {type === "alcohol" ? (
-                <div className="flex items-center gap-1">
-                  <span className="text-primary-custom">{Math.round(value)}g</span>
-                  <span className="text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
-                </div>
-              ) : (
-                <>
-                  <span className="text-primary-custom">{type === "water" ? value.toFixed(1) : Math.round(value)}</span>
-                  <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              {type === "alcohol" && <span className="text-tertiary-custom !not-italic">(Weight based)</span>}
-              <StatusBadge text={badge.text} connotation={badge.connotation} />
-            </div>
-          </div>
-          <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
-            <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
+            <div className={`flex-1 ${(!centered && type !== "processed" && type !== "alcohol") ? "pr-[72px]" : ""}`}>
+              <div className="mb-1 flex items-center gap-1">
+                {iconBg ? (
                   <div
-                    className="font-bold"
-                    style={{ 
-                      fontSize: 12, 
-                      color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
-                    }}
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                    style={{ background: iconBg }}
                   >
-                    {circleText}
+                    {icon}
                   </div>
-                {circleLabel && <div style={{ fontSize: "10px", color: "#9FA5BC" }}>{circleLabel}</div>}
-              </ShadcnRadialProgress>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    {icon}
+                  </div>
+                )}
+                <span className="text-secondary-custom">{name}</span>
+              </div>
+              <div className="mb-4">
+                {type === "alcohol" ? (
+                  <div className="flex items-center gap-1">
+                    <span className="text-primary-custom">{Math.round(value)}g</span>
+                    <span className="text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
+                  </div>
+                ) : (
+                  <>
+                    <span className="text-primary-custom">{type === "water" ? value.toFixed(1) : Math.round(value)}</span>
+                    <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {type === "alcohol" && <span className="text-tertiary-custom !not-italic">(Weight based)</span>}
+                <StatusBadge text={badge.text} connotation={badge.connotation} />
+              </div>
             </div>
+            {type !== "processed" && type !== "alcohol" && (
+              <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
+                <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
+                      <div
+                        className="font-bold"
+                        style={{ 
+                          fontSize: 12, 
+                          color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
+                        }}
+                      >
+                        {circleText}
+                      </div>
+                    {circleLabel && <div style={{ fontSize: "10px", color: "#9FA5BC" }}>{circleLabel}</div>}
+                  </ShadcnRadialProgress>
+                </div>
+            )}
           </div>
         </div>
       );
