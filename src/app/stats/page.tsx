@@ -825,59 +825,59 @@ function StatsContent() {
           {/* Section 2: Food log section */}
           <div>
               <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <h2 className="mb-4 text-primary-custom">
-                  Food log → <span className="text-primary-custom">{data.calories}</span> Kcal total
-                </h2>
-                {!isToday && data.meals && data.meals.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.meals.map((meal, mealIndex) => (
-                      <div key={mealIndex} className="border-b border-gray-100 pb-4 last:border-0">
-                        <div className="mb-3 flex items-center justify-between">
-                          <span className="text-primary-custom">{meal.meal}</span>
-                          <span className="text-secondary-custom"><span className="text-primary-custom">{meal.totalCalories}</span> Kcal</span>
-                        </div>
-                        <div className="space-y-2 pl-2">
-                          {meal.foods.map((food, foodIndex) => (
-                            <div key={foodIndex} className="border-l-2 border-gray-200 pl-3">
-                              <div className="flex justify-between">
-                                <span className="text-secondary-custom">{food.name}</span>
-                                <span className="text-tertiary-custom !not-italic">{food.calories} kcal</span>
+                  <h2 className="mb-4 text-primary-custom">
+                    Food log → <span className="text-primary-custom">{data.calories}</span> Kcal total
+                  </h2>
+                  {!isToday && data.meals && data.meals.length > 0 ? (
+                    <div className="space-y-4">
+                      {data.meals.map((meal, mealIndex) => (
+                        <div key={mealIndex} className="border-b border-gray-100 pb-4 last:border-0">
+                          <div className="mb-3 flex items-center justify-between">
+                            <span className="text-primary-custom">{meal.meal}</span>
+                            <span className="text-secondary-custom"><span className="text-primary-custom">{meal.totalCalories}</span> Kcal</span>
+                          </div>
+                          <div className="space-y-2 pl-2">
+                            {meal.foods.map((food, foodIndex) => (
+                              <div key={foodIndex} className="border-l-2 border-gray-200 pl-3">
+                                <div className="flex justify-between">
+                                  <span className="text-secondary-custom">{food.name}</span>
+                                  <span className="text-tertiary-custom">{food.calories} kcal</span>
+                                </div>
+                                <div className="flex gap-2 text-tertiary-custom">
+                                  <span>🥩 {food.pro}g</span>
+                                  <span>🍞 {food.carb}g</span>
+                                  <span>🥑 {food.fat}g</span>
+                                  <span>🌾 {food.fiber}g</span>
+                                </div>
                               </div>
-                              <div className="flex gap-2 text-tertiary-custom !not-italic">
-                                <span>🥩 {food.pro}g</span>
-                                <span>🍞 {food.carb}g</span>
-                                <span>🥑 {food.fat}g</span>
-                                <span>🌾 {food.fiber}g</span>
-                              </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : data.foods.length === 0 ? (
-                  <div className="py-5 text-center text-tertiary-custom">Nessun cibo loggato</div>
-                ) : (
-                  <div className="space-y-3">
-                    {(showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
-                      <div key={i} className="border-b border-gray-100 pb-3 last:border-0">
-                        <div className="mb-1.5 flex justify-between">
-                          <span className="text-primary-custom !font-medium">{food.name}</span>
-                          <span className="text-tertiary-custom !not-italic">
-                            {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
-                          </span>
+                      ))}
+                    </div>
+                  ) : data.foods.length === 0 ? (
+                    <div className="py-5 text-center text-tertiary-custom">Nessun cibo loggato</div>
+                  ) : (
+                    <div className="space-y-3">
+                      {(showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
+                        <div key={i} className="border-b border-gray-100 pb-3 last:border-0">
+                          <div className="mb-1.5 flex justify-between">
+                            <span className="text-primary-custom !font-medium">{food.name}</span>
+                            <span className="text-tertiary-custom">
+                              {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                          <div className="mb-1.5 text-primary-custom">• <span className="text-primary-custom">{food.calories}</span> Kcal</div>
+                          <div className="flex gap-3 text-tertiary-custom">
+                            <span>🥩 {food.pro || 0}g</span>
+                            <span>🍞 {food.carb || 0}g</span>
+                            <span>🥑 {food.fat || 0}g</span>
+                            <span>🌾 {food.fiber || 0}g</span>
+                          </div>
                         </div>
-                        <div className="mb-1.5 text-primary-custom">• <span className="text-primary-custom">{food.calories}</span> Kcal</div>
-                        <div className="flex gap-3 text-tertiary-custom !not-italic">
-                          <span>🥩 {food.pro || 0}g</span>
-                          <span>🍞 {food.carb || 0}g</span>
-                          <span>🥑 {food.fat || 0}g</span>
-                          <span>🌾 {food.fiber || 0}g</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
               </div>
           </div>
         </div>
