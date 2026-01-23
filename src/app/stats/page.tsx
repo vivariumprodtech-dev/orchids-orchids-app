@@ -789,7 +789,7 @@ function StatsContent() {
 
               <MacroCard 
                 icon={<BadgeIconSm semantic="Water" />} 
-                name="Water" 
+                name="Water intake" 
                 value={waterLiters} 
                 target={waterTarget} 
                 color={BadgeIconColors.Water} 
@@ -800,7 +800,7 @@ function StatsContent() {
 
               <MacroCard 
                 icon={<BadgeIconSm semantic="ProcessFood" />} 
-                name="Process Food" 
+                name="Process food" 
                 value={0} 
                 target={100} 
                 color={BadgeIconColors.ProcessFood} 
@@ -811,7 +811,7 @@ function StatsContent() {
     
               <MacroCard 
                 icon={<BadgeIconSm semantic="Alcohol" />} 
-                name="Alcohol" 
+                name="Alcohol intake" 
                 value={data.alcohol?.grams || 0} 
                 target={30} 
                 color={BadgeIconColors.Alcohol} 
