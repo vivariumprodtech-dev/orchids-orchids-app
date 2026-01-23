@@ -489,6 +489,7 @@ function MacroCard({
     let badge: { text: string; connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral" } = { text: "good", connotation: "good" };
     let circleText = value > target ? `+${Math.abs(left)}g` : `${Math.max(0, left)}g`;
     let circleLabel = value > target ? "over" : "left";
+    let helpText = "";
 
     if (type === "processed") {
       badge = getProcessedFoodBadge(value, target);
@@ -496,79 +497,106 @@ function MacroCard({
       const displayVal = Math.round(Math.abs(diff));
       circleText = value > target ? `+${displayVal}%` : `${displayVal}%`;
       circleLabel = value > target ? "over" : "left";
+      helpText = "(Base limit 50% of total)";
     } else if (type === "water") {
       badge = getWaterBadge(value, target);
       const diff = target - value;
       const displayVal = Math.abs(Number(diff.toFixed(1)));
       circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
       circleLabel = value > target ? "over" : "left";
+      helpText = "(Count in liters)";
     } else if (type === "alcohol") {
-      badge = getAlcoholBadge(value * 7, target * 7); // Rough approx since target is gram-based here
+      badge = getAlcoholBadge(value * 7, target * 7);
       const diff = target - value;
       const displayVal = Math.round(Math.abs(diff));
       circleText = value > target ? `+${displayVal}g` : `${displayVal}g`;
       circleLabel = value > target ? "over" : "left";
+      helpText = "(Based on your weight)";
     } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
       badge = getMacroBadge(type, value, target, isToday);
     }
 
+    const isSpecial = type === "water" || type === "processed" || type === "alcohol";
+
     return (
       <div className="relative rounded-2xl bg-white p-[16px] shadow-sm">
         <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-            <div className={`flex-1 ${(!centered && type !== "processed" && type !== "alcohol") ? "pr-[72px]" : ""}`}>
-              <div className="mb-1 flex items-center gap-1">
-                {iconBg ? (
-                  <div
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                    style={{ background: iconBg }}
-                  >
-                    {icon}
-                  </div>
-                ) : (
+          <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[72px]" : ""}`}>
+            {isSpecial ? (
+              <div className="flex flex-col gap-[8px]">
+                <div className="flex items-center gap-1.5">
                   <div className="flex items-center justify-center">
                     {icon}
                   </div>
-                )}
-                <span className="text-secondary-custom">{name}</span>
-              </div>
-              <div className="mb-4">
-                {type === "alcohol" ? (
-                  <div className="flex items-center gap-1">
-                    <span className="text-primary-custom">{Math.round(value)}g</span>
-                    <span className="text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
+                  <div className="flex items-baseline gap-1">
+                    {type === "alcohol" ? (
+                      <>
+                        <span className="text-[16px] font-bold text-primary-custom">{Math.round(value)}g</span>
+                        <span className="text-[16px] text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
+                        <span className="ml-0.5 text-[16px] text-secondary-custom">{name}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-[16px] font-bold text-primary-custom">
+                          {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
+                        </span>
+                        <span className="text-[16px] text-secondary-custom">
+                          /{target}{type === "water" ? "" : type === "processed" ? "%" : "g"} {name}
+                        </span>
+                      </>
+                    )}
                   </div>
-                ) : (
-                  <>
-                    <span className="text-primary-custom">{type === "water" ? value.toFixed(1) : Math.round(value)}</span>
-                    <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                {type === "alcohol" && <span className="text-tertiary-custom !not-italic">(Weight based)</span>}
-                <StatusBadge text={badge.text} connotation={badge.connotation} />
-              </div>
-            </div>
-            {type !== "processed" && type !== "alcohol" && (
-              <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
-                <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
-                      <div
-                        className="font-bold"
-                        style={{ 
-                          fontSize: 12, 
-                          color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
-                        }}
-                      >
-                        {circleText}
-                      </div>
-                    {circleLabel && <div style={{ fontSize: "10px", color: "#9FA5BC" }}>{circleLabel}</div>}
-                  </ShadcnRadialProgress>
                 </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[14px] italic text-tertiary-custom">{helpText}</span>
+                  <StatusBadge text={badge.text} connotation={badge.connotation} />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="mb-1 flex items-center gap-1">
+                  {iconBg ? (
+                    <div
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                      style={{ background: iconBg }}
+                    >
+                      {icon}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      {icon}
+                    </div>
+                  )}
+                  <span className="text-secondary-custom">{name}</span>
+                </div>
+                <div className="mb-4">
+                  <span className="text-primary-custom">{Math.round(value)}</span>
+                  <span className="text-secondary-custom">/{target}g</span>
+                </div>
+                <StatusBadge text={badge.text} connotation={badge.connotation} />
+              </>
             )}
           </div>
+          {(type === "water" || (!isSpecial && !centered)) && (
+            <div className={centered || type === "water" ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
+              <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
+                <div
+                  className="font-bold"
+                  style={{ 
+                    fontSize: 12, 
+                    color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
+                  }}
+                >
+                  {circleText}
+                </div>
+                {circleLabel && <div style={{ fontSize: "10px", color: "#9FA5BC" }}>{circleLabel}</div>}
+              </ShadcnRadialProgress>
+            </div>
+          )}
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
 
 function StatsContent() {
