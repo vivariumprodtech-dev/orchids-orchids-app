@@ -700,8 +700,6 @@ function StatsContent() {
     const waterTarget = 2.0;
 
     const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
-    const waterBadge = getWaterBadge(waterLiters, waterTarget);
-    const alcoholBadge = getAlcoholBadge(data.alcohol?.calories || 0, totalTarget);
 
     const calCircleColor = BadgeIconColors.Lunch;
 
