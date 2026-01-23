@@ -789,12 +789,20 @@ function StatsContent() {
                               <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                             </div>
                           </div>
-                          <div className="flex-shrink-0">
-                            <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
-                              <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
-                              <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
-                            </ShadcnRadialProgress>
-                          </div>
+                            <div className="flex-shrink-0">
+                              <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
+                                <div 
+                                  className="font-bold" 
+                                  style={{ 
+                                    fontSize: "12px",
+                                    color: alcoholBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
+                                  }}
+                                >
+                                  {Math.max(0, 30 - data.alcohol.grams)}g
+                                </div>
+                                <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
+                              </ShadcnRadialProgress>
+                            </div>
                     </div>
                   </div>
 
