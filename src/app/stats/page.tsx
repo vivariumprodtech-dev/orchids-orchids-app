@@ -569,9 +569,10 @@ function MacroCard({
     isCheckmark = value >= target;
   } else if (type === "alcohol") {
     // handled separately in main content for now, but keeping for consistency
-  } else if (type) {
-    badge = getMacroBadge(type as any, value, target, isToday);
-    if (value >= target * 0.97 && value <= target * 1.03) {
+    } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
+      badge = getMacroBadge(type, value, target, isToday);
+      if (value >= target * 0.97 && value <= target * 1.03) {
+
       circleText = "✓";
       circleLabel = "";
       isCheckmark = true;
