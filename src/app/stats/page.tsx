@@ -820,43 +820,44 @@ function StatsContent() {
                         </div>
                       <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                     </div>
-                      <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={65} color="#73B0FF">
-                        {waterLiters >= waterTarget ? (
-                          <div className="text-primary-custom !text-2xl">✓</div>
-                        ) : (
-                          <>
-                            <div className="text-primary-custom !text-sm !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
-                            <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
-                          </>
-                        )}
-                      </ShadcnRadialProgress>
+                        <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={75} color="#73B0FF">
+                          {waterLiters >= waterTarget ? (
+                            <div className="text-primary-custom !text-2xl">✓</div>
+                          ) : (
+                            <>
+                              <div className="text-primary-custom !text-[12px] !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
+                              <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                            </>
+                          )}
+                        </ShadcnRadialProgress>
 
+                  </div>
                 </div>
-              </div>
 
-              {data.alcohol && (
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                        <div className="mb-1 flex items-center gap-1">
-                          <BadgeIconSm semantic="Alcohol" />
-                          <span className="text-secondary-custom">Alcohol</span>
-                        </div>
-                        <div className="mb-4">
-                          <div className="flex items-center gap-1">
-                            <span className="text-primary-custom">{data.alcohol.grams}g</span>
-                            <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
+                {data.alcohol && (
+                  <div className="rounded-2xl bg-white p-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                          <div className="mb-1 flex items-center gap-1">
+                            <BadgeIconSm semantic="Alcohol" />
+                            <span className="text-secondary-custom">Alcohol</span>
+                          </div>
+                          <div className="mb-4">
+                            <div className="flex items-center gap-1">
+                              <span className="text-primary-custom">{data.alcohol.grams}g</span>
+                              <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-tertiary-custom">(Weight based)</span>
+                            <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-tertiary-custom">(Weight based)</span>
-                          <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
-                        </div>
-                      </div>
-                      <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={65} color="#CE6194">
-                        <div className="text-primary-custom !text-sm !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
-                        <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
-                      </ShadcnRadialProgress>
+                        <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={75} color="#CE6194">
+                          <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
+                          <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                        </ShadcnRadialProgress>
+
 
                   </div>
                 </div>
