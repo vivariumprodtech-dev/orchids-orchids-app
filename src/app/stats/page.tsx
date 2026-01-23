@@ -350,10 +350,10 @@ function ShadcnRadialProgress({
   } satisfies ChartConfig;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+    <div className="relative flex items-center justify-center p-0" style={{ width: size, height: size }}>
       <ChartContainer
         config={chartConfig}
-        className="aspect-square h-full w-full"
+        className="aspect-square h-full w-full p-0"
       >
           <RadialBarChart
             data={chartData}
