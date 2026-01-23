@@ -787,15 +787,15 @@ function StatsContent() {
                         </div>
                         <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                     </div>
-                      <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                        <ShadcnRadialProgress value={data.calories} max={totalTarget} color={calCircleColor}>
+                          <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
+                            {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                          </div>
+                          <div className="text-tertiary-custom">
+                            {isOver ? "surplus" : "kcal left"}
+                          </div>
+                        </ShadcnRadialProgress>
 
-                      <div className="text-center text-primary-custom" style={{ color: isOver ? calCircleColor : "var(--text-secondary)" }}>
-                        {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                      </div>
-                    <div className="text-tertiary-custom">
-                      {isOver ? "surplus" : "kcal left"}
-                    </div>
-                  </CircleProgress>
                 </div>
               </div>
 
