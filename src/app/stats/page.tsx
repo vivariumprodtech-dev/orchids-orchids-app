@@ -547,7 +547,8 @@ function MacroCard({
                 className="font-bold"
                 style={{ 
                   fontSize: isCheckmark ? 28 : 12, 
-                  color: badge.connotation === "danger" ? "#C10127" : "#333" 
+                    color: badge.connotation === "danger" ? "#C10127" : "#262C44" 
+
                 }}
               >
                 {circleText}
