@@ -497,7 +497,8 @@ function MacroCard({
     } else if (type === "water") {
       badge = getWaterBadge(value, target);
       const diff = target - value;
-      circleText = value > target ? `+${Math.abs(diff).toFixed(1)}L` : `${Math.max(0, diff).toFixed(1)}L`;
+      const displayVal = Math.abs(Number(diff.toFixed(1)));
+      circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
       circleLabel = value > target ? "over" : "left";
     } else if (type === "alcohol") {
       // handled separately in main content for now, but keeping for consistency
