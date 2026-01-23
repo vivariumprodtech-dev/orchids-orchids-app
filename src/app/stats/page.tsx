@@ -362,13 +362,14 @@ function ShadcnRadialProgress({
         config={chartConfig}
         className="aspect-square h-full w-full"
       >
-        <RadialBarChart
-          data={chartData}
-          startAngle={90}
-          endAngle={-270}
-          innerRadius="80%"
-          outerRadius="100%"
-        >
+          <RadialBarChart
+            data={chartData}
+            startAngle={90}
+            endAngle={-270}
+            innerRadius="80%"
+            outerRadius="100%"
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+          >
           <PolarAngleAxis
             type="number"
             domain={[0, max]}
