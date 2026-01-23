@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import BadgeIconSm from "@/components/BadgeIconSm";
+import BadgeIconSm, { BadgeIconColors } from "@/components/BadgeIconSm";
 import {
   PolarAngleAxis,
   RadialBar,
