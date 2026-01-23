@@ -7,7 +7,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  Label,
   PolarAngleAxis,
   RadialBar,
   RadialBarChart,
@@ -20,7 +19,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { cn } from "@/lib/utils";
 
 interface FoodEntry {
   name: string;
