@@ -608,18 +608,19 @@ function MacroCard({
           </div>
           <StatusBadge text={badge.text} connotation={badge.connotation} />
         </div>
-        <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
-          <div
-            className="font-bold"
-            style={{ 
-              fontSize: isCheckmark ? 28 : 14, 
-              color: badge.connotation === "danger" ? "#C10127" : "#333" 
-            }}
-          >
-            {circleText}
-          </div>
-          {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
-        </CircleProgress>
+          <ShadcnRadialProgress value={value} max={target} size={65} color={color}>
+            <div
+              className="font-bold"
+              style={{ 
+                fontSize: isCheckmark ? 28 : 14, 
+                color: badge.connotation === "danger" ? "#C10127" : "#333" 
+              }}
+            >
+              {circleText}
+            </div>
+            {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
+          </ShadcnRadialProgress>
+
       </div>
     </div>
   );
