@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import BadgeIconSm from "@/components/BadgeIconSm";
 
 interface FoodEntry {
   name: string;
@@ -827,15 +828,15 @@ function StatsContent() {
                 <div className="flex items-center justify-between">
                     <div className="flex-1 space-y-2.5">
                         <div className="flex items-center gap-1 text-secondary-custom">
-                          <UtensilsIcon />
+                          <BadgeIconSm semantic="Lunch" />
                           <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
                         </div>
                         <div className="flex items-center gap-1 text-secondary-custom">
-                          <FlagIcon />
+                          <BadgeIconSm semantic="Goal" />
                           <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
                         </div>
                         <div className="flex items-center gap-1 text-secondary-custom">
-                          <FootprintsIcon />
+                          <BadgeIconSm semantic="KcalActive" />
                           <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                         </div>
                         <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
@@ -853,9 +854,9 @@ function StatsContent() {
               </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} type="protein" />
-              <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
-              <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} type="fat" />
+              <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} type="protein" />
+              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
+              <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} type="fat" />
               <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
             </div>
 
