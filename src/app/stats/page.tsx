@@ -507,6 +507,83 @@ function AlcoholIcon() {
   );
 }
 
+function getCalorieBadge(consumed: number, target: number, isToday: boolean) {
+  if (target === 0) return { text: "No target", connotation: "neutral" as const };
+  
+  const tolerance = target * 0.03;
+  const isNear = consumed >= target - tolerance && consumed <= target + tolerance;
+  
+  if (!isToday) {
+    if (consumed < target * 0.5) return { text: "missing", connotation: "danger" as const, showAlert: true };
+    if (consumed > target + tolerance) return { text: "Calories over target", connotation: "danger" as const };
+    if (isNear) return { text: "Calories on target 🎯", connotation: "good" as const };
+    if (consumed < target - tolerance) return { text: "Calories low", connotation: "warning" as const };
+  } else {
+    if (consumed > target + tolerance) return { text: "Calories over target", connotation: "danger" as const };
+    if (isNear) return { text: "Calories on target 🎯", connotation: "good" as const };
+    if (consumed < target - tolerance) return { text: "Calories on track", connotation: "on-track" as const };
+  }
+  return { text: "Calories on track", connotation: "on-track" as const };
+}
+
+function getMacroBadge(type: "protein" | "carbs" | "fat" | "fiber", consumed: number, target: number, isToday: boolean) {
+  if (target === 0) return { text: "No target", connotation: "neutral" as const };
+
+  if (isToday && consumed < target) {
+    // Check "Over" rules even on current day if it's already over
+    const overThresholds = {
+      protein: 1.5,
+      fiber: 1.5,
+      fat: 1.03,
+      carbs: 1.03
+    };
+    if (consumed > target * overThresholds[type]) {
+      return { text: "over", connotation: "danger" as const };
+    }
+    return { text: "on track", connotation: "on-track" as const };
+  }
+
+  // Past day or Over target logic
+  const rules = {
+    protein: { over: 1.5, low: 0.03, near: 0.03 },
+    fiber: { over: 1.5, low: 0.06, near: 0.06 },
+    fat: { over: 1.03, low: 0.1, near: 0.1 },
+    carbs: { over: 1.03, low: 0.1, near: 0.1 }
+  };
+
+  const r = rules[type];
+  if (consumed > target * r.over) return { text: "over", connotation: "danger" as const };
+  
+  const isNear = consumed >= target * (1 - r.near) && consumed <= target * (1 + r.near);
+  if (isNear) return { text: "good", connotation: "good" as const };
+  
+  if (consumed < target * (1 - r.low)) return { text: "low", connotation: "warning" as const };
+  
+  return { text: "good", connotation: "good" as const };
+}
+
+function getProcessedFoodBadge(consumed: number, target: number) {
+  if (target === 0) return { text: "No target", connotation: "neutral" as const };
+  const percentage = (consumed / target) * 100;
+  if (percentage < 25) return { text: "Great 🏆", connotation: "great" as const };
+  if (percentage <= 49) return { text: "Good", connotation: "good" as const };
+  return { text: "Over", connotation: "danger" as const };
+}
+
+function getWaterBadge(consumed: number, target: number) {
+  if (target === 0) return { text: "No target", connotation: "neutral" as const };
+  if (consumed > target * 1.5) return { text: "Over", connotation: "danger" as const };
+  if (consumed < target * 0.1) return { text: "Low", connotation: "warning" as const };
+  return { text: "Good", connotation: "good" as const };
+}
+
+function getAlcoholBadge(alcoholKcal: number, totalTarget: number) {
+  if (alcoholKcal === 0) return { text: "Good", connotation: "good" as const };
+  const limit = totalTarget * 0.06;
+  if (alcoholKcal < limit) return { text: "Within limit", connotation: "on-track" as const };
+  return { text: "Over limit", connotation: "danger" as const };
+}
+
 function MacroCard({
   icon,
   iconBg,
@@ -515,6 +592,7 @@ function MacroCard({
   target,
   color,
   isToday,
+  type,
   centered = false,
 }: {
   icon: React.ReactNode;
@@ -524,98 +602,76 @@ function MacroCard({
   target: number;
   color: string;
   isToday: boolean;
+  type?: "protein" | "carbs" | "fat" | "fiber" | "processed" | "water" | "alcohol";
   centered?: boolean;
 }) {
-  const progress = value / target;
-  const surplus = value - target;
   const left = Math.round(target - value);
+  let badge: { text: string; connotation: any } = { text: "good", connotation: "good" };
+  let circleText = `${left}g`;
+  let circleLabel = "left";
+  let isCheckmark = false;
 
-    let statusText = "";
-    let connotation: "good" | "warning" | "danger" = "good";
-    let circleText = `${left}g`;
-    let circleLabel = "left";
-    let circleTextColor = "#333";
-    let isCheckmark = false;
-  
-    if (isToday) {
-      const dayProgress = Math.max(0, Math.min(1, (new Date().getHours() - 7) / 15));
-      const expected = target * dayProgress;
-      const diff = value - expected;
-      const tolerance = target * 0.15;
-  
-      if (progress >= 0.85 && progress <= 1.15) {
-        statusText = "good";
-        connotation = "good";
-        circleText = "✓";
-        circleLabel = "";
-        isCheckmark = true;
-      } else if (value > target) {
-        statusText = "over";
-        connotation = "danger";
-        circleText = `+${Math.round(surplus)}g`;
-        circleLabel = "";
-        circleTextColor = "#C10127";
-      } else if (diff < -tolerance) {
-        statusText = "on track";
-        connotation = "on-track";
-      } else {
-        statusText = "good";
-        connotation = "good";
-      }
-    } else {
-      if (progress >= 0.85 && progress <= 1.15) {
-        statusText = "good";
-        connotation = "good";
-        circleText = "✓";
-        circleLabel = "";
-        isCheckmark = true;
-      } else if (value > target) {
-        statusText = "over";
-        connotation = "danger";
-        circleText = `+${Math.round(surplus)}g`;
-        circleLabel = "";
-        circleTextColor = "#C10127";
-      } else {
-        statusText = "low";
-        connotation = "warning";
-      }
+  if (type === "processed") {
+    badge = getProcessedFoodBadge(value, target);
+    circleText = `${Math.round((value / target) * 100)}%`;
+    circleLabel = "";
+  } else if (type === "water") {
+    badge = getWaterBadge(value, target);
+    const litersLeft = (target - value).toFixed(1);
+    circleText = value >= target ? "✓" : `${litersLeft}L`;
+    circleLabel = value >= target ? "" : "left";
+    isCheckmark = value >= target;
+  } else if (type === "alcohol") {
+    // handled separately in main content for now, but keeping for consistency
+  } else if (type) {
+    badge = getMacroBadge(type as any, value, target, isToday);
+    if (value >= target * 0.97 && value <= target * 1.03) {
+      circleText = "✓";
+      circleLabel = "";
+      isCheckmark = true;
+    } else if (value > target) {
+      circleText = `+${Math.round(value - target)}g`;
+      circleLabel = "";
     }
-  
-    return (
-      <div className="rounded-2xl bg-white p-4 shadow-sm">
-        <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-          <div className="flex-1">
-              <div className="mb-1 flex items-center gap-1">
-                {iconBg ? (
-                  <div
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                    style={{ background: iconBg }}
-                  >
-                    {icon}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    {icon}
-                  </div>
-                )}
-                <span className="text-secondary-custom">{name}</span>
-              </div>
-              <div className="mb-4">
-                <span className="text-primary-custom">{Math.round(value)}</span>
-                <span className="text-secondary-custom">/{target}g</span>
-              </div>
-            <StatusBadge text={statusText} connotation={connotation} />
-          </div>
-            <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+  }
 
+  return (
+    <div className="rounded-2xl bg-white p-4 shadow-sm">
+      <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+        <div className="flex-1">
+          <div className="mb-1 flex items-center gap-1">
+            {iconBg ? (
               <div
-                className="font-bold"
-                style={{ fontSize: isCheckmark ? 28 : 14, color: circleTextColor }}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                style={{ background: iconBg }}
               >
-                {circleText}
+                {icon}
               </div>
-            {circleLabel && <div className="text-tertiary-custom !not-italic">{circleLabel}</div>}
-          </CircleProgress>
+            ) : (
+              <div className="flex items-center justify-center">
+                {icon}
+              </div>
+            )}
+            <span className="text-secondary-custom">{name}</span>
+          </div>
+          <div className="mb-4">
+            <span className="text-primary-custom">{Math.round(value)}</span>
+            <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
+          </div>
+          <StatusBadge text={badge.text} connotation={badge.connotation} />
+        </div>
+        <CircleProgress value={value} max={target} size={65} strokeWidth={6} color={color}>
+          <div
+            className="font-bold"
+            style={{ 
+              fontSize: isCheckmark ? 28 : 14, 
+              color: badge.connotation === "danger" ? "#C10127" : "#333" 
+            }}
+          >
+            {circleText}
+          </div>
+          {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
+        </CircleProgress>
       </div>
     </div>
   );
