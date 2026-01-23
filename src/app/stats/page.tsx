@@ -752,82 +752,18 @@ function StatsContent() {
 
     const waterLiters = data.water / 1000;
     const waterTarget = 2.0;
-    const waterProgress = waterLiters / waterTarget;
-    const waterLeft = (waterTarget - waterLiters).toFixed(1);
+
+    const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
+    const waterBadge = getWaterBadge(waterLiters, waterTarget);
+    const alcoholBadge = getAlcoholBadge(data.alcohol?.calories || 0, totalTarget);
 
     let calCircleColor = "#4ECDC4";
     if (isOver) {
-      if (surplus <= 100) calCircleColor = "#ffd700";
-      else if (surplus <= 300) calCircleColor = "#ff8c00";
+      const surplusVal = data.calories - totalTarget;
+      if (surplusVal <= 100) calCircleColor = "#ffd700";
+      else if (surplusVal <= 300) calCircleColor = "#ff8c00";
       else calCircleColor = "#ff0000";
     }
-
-    const getCalorieStatus = () => {
-      if (!isToday) {
-        const diff = data.calories - totalTarget;
-        if (Math.abs(diff) <= 50) return { text: "good", connotation: "good" as const };
-        if (diff > 0) return { text: "over", connotation: "danger" as const };
-        return { text: "low", connotation: "warning" as const };
-      }
-
-      if (data.calories === 0) {
-        return { text: "no meals", connotation: "warning" as const };
-      }
-
-      const now = new Date();
-      const hour = now.getHours();
-      const dayProgress = Math.max(0, Math.min(1, (hour - 7) / 15));
-      const expectedCalories = totalTarget * dayProgress;
-      const diff = data.calories - expectedCalories;
-      const tolerance = totalTarget * 0.15;
-
-      if (Math.abs(diff) <= tolerance) {
-        return { text: "good", connotation: "good" as const };
-      }
-      if (diff > tolerance * 2) {
-        return { text: "way ahead", connotation: "danger" as const };
-      }
-      if (diff > tolerance) {
-        return { text: "ahead", connotation: "warning" as const };
-      }
-        if (diff < -tolerance * 2) {
-          return { text: "way behind", connotation: "danger" as const };
-        }
-        return { text: "on track", connotation: "on-track" as const };
-      };
-
-      const calorieStatus = getCalorieStatus();
-
-      const getWaterStatus = () => {
-        if (!isToday) {
-          if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
-          return { text: "low", connotation: "warning" as const };
-        }
-        
-        const now = new Date();
-        const hour = now.getHours();
-        const dayProgress = Math.max(0, Math.min(1, (hour - 7) / 15));
-        const expected = waterTarget * dayProgress;
-        const diff = waterLiters - expected;
-        const tolerance = waterTarget * 0.15;
-
-        if (waterProgress >= 0.95) return { text: "good", connotation: "good" as const };
-        if (waterLiters > waterTarget) return { text: "over", connotation: "danger" as const };
-        if (diff < -tolerance) return { text: "on track", connotation: "on-track" as const };
-        return { text: "good", connotation: "good" as const };
-      };
-
-
-    const waterStatus = getWaterStatus();
-
-    const getAlcoholStatus = () => {
-      if (!data.alcohol) return { text: "good", connotation: "good" as const };
-      if (data.alcohol.grams <= 20) return { text: "good", connotation: "good" as const };
-      if (data.alcohol.grams <= 40) return { text: "moderate", connotation: "warning" as const };
-      return { text: "high", connotation: "danger" as const };
-    };
-
-    const alcoholStatus = getAlcoholStatus();
 
   return (
     <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
@@ -881,6 +817,7 @@ function StatsContent() {
         </div>
 
         <div className="space-y-8">
+          {calorieBadge.showAlert && <MissingAlert />}
           {/* Section 1: kcal card, macro cards, process food, water and alcohol */}
           <div className="space-y-3">
             <div className="rounded-2xl bg-white p-4 shadow-sm">
@@ -899,7 +836,7 @@ function StatsContent() {
                           <FootprintsIcon />
                           <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                         </div>
-                        <StatusBadge text={calorieStatus.text} connotation={calorieStatus.connotation} />
+                        <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                     </div>
                       <CircleProgress value={data.calories} max={totalTarget} color={calCircleColor}>
 
@@ -914,13 +851,13 @@ function StatsContent() {
               </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} />
-              <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} />
-              <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} />
-              <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} />
+              <MacroCard icon={<ProteinIcon />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} type="protein" />
+              <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
+              <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} type="fat" />
+              <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
             </div>
 
-              <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} centered />
+              <MacroCard icon={<ProcessFoodIcon />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
 
               <div className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between">
@@ -933,15 +870,15 @@ function StatsContent() {
                           <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
                           <span className="text-secondary-custom">/2L</span>
                         </div>
-                      <StatusBadge text={waterStatus.text} connotation={waterStatus.connotation} />
+                      <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                     </div>
                     <CircleProgress value={waterLiters} max={waterTarget} size={65} strokeWidth={6} color="#73B0FF">
 
-                    {waterProgress >= 0.95 ? (
+                    {waterLiters >= waterTarget ? (
                       <div className="text-primary-custom !text-2xl">✓</div>
                     ) : (
                       <>
-                        <div className="text-primary-custom !text-sm !font-bold">{waterLeft}L</div>
+                        <div className="text-primary-custom !text-sm !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
                         <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
                       </>
                     )}
@@ -965,12 +902,12 @@ function StatsContent() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-tertiary-custom">(Weight based)</span>
-                          <StatusBadge text={alcoholStatus.text} connotation={alcoholStatus.connotation} />
+                          <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                         </div>
                       </div>
                       <CircleProgress value={data.alcohol.grams} max={30} size={65} strokeWidth={6} color="#CE6194">
 
-                      <div className="text-primary-custom !text-sm !font-bold">{30 - data.alcohol.grams}g</div>
+                      <div className="text-primary-custom !text-sm !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
                       <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
                     </CircleProgress>
                   </div>
