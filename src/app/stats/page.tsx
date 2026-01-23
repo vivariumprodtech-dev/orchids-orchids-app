@@ -832,7 +832,7 @@ function StatsContent() {
                           <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
                         </div>
                         <div className="flex items-center gap-1 text-secondary-custom">
-                          <FlagIcon />
+                          <BadgeIconSm semantic="Goal" />
                           <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
                         </div>
                         <div className="flex items-center gap-1 text-secondary-custom">
