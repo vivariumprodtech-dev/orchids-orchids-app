@@ -777,7 +777,7 @@ function StatsContent() {
                       }
                     }
                   }}
-                  className="flex-1 rounded-full py-4 text-center transition-all"
+                  className="flex-1 rounded-full py-2 text-center transition-all"
                   style={{ 
                     backgroundColor: bgColor,
                     cursor: isClickable ? "pointer" : "default",
