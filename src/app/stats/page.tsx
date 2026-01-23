@@ -416,7 +416,7 @@ function ProteinIcon() {
 
 function CarbsIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
       <rect width="20" height="20" rx="10" fill="#FFBC58"/>
       <g clip-path="url(#clip0_428_17672)">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M12.3536 7.64645C12.5488 7.84171 12.5488 8.15829 12.3536 8.35355L5.35355 15.3536C5.15829 15.5488 4.84171 15.5488 4.64645 15.3536C4.45118 15.1583 4.45118 14.8417 4.64645 14.6464L11.6464 7.64645C11.8417 7.45118 12.1583 7.45118 12.3536 7.64645Z" fill="white"/>
