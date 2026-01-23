@@ -543,16 +543,15 @@ function MacroCard({
           </div>
           <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
             <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
-              <div
-                className="font-bold"
-                style={{ 
-                  fontSize: isCheckmark ? 28 : 12, 
-                    color: badge.connotation === "danger" ? "#C10127" : "#262C44" 
-
-                }}
-              >
-                {circleText}
-              </div>
+                <div
+                  className="font-bold"
+                  style={{ 
+                    fontSize: isCheckmark ? 28 : 12, 
+                    color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
+                  }}
+                >
+                  {circleText}
+                </div>
               {circleLabel && <div className="text-tertiary-custom !not-italic !text-[12px]">{circleLabel}</div>}
             </ShadcnRadialProgress>
           </div>
