@@ -855,7 +855,7 @@ function StatsContent() {
 
             <div className="grid grid-cols-2 gap-3">
               <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} type="protein" />
-              <MacroCard icon={<CarbsIcon />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
+              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
               <MacroCard icon={<FatsIcon />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} type="fat" />
               <MacroCard icon={<FiberIcon />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
             </div>
