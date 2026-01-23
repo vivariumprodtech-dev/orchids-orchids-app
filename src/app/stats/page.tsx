@@ -604,7 +604,7 @@ function MacroCard({
             </div>
             <StatusBadge text={badge.text} connotation={badge.connotation} />
           </div>
-            <ShadcnRadialProgress value={value} max={target} size={75} color={color}>
+            <ShadcnRadialProgress value={value} max={target} size={85} color={color}>
               <div
                 className="font-bold"
                 style={{ 
@@ -614,7 +614,7 @@ function MacroCard({
               >
                 {circleText}
               </div>
-              {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
+              {circleLabel && <div className="text-tertiary-custom !not-italic !text-[12px]">{circleLabel}</div>}
             </ShadcnRadialProgress>
 
         </div>
