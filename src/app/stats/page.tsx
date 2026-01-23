@@ -196,7 +196,7 @@ function StatusBadge({
     great: {
       bg: "#F5FAF8",
       color: "#199761",
-      icon: <span className="text-[12px]">🏆</span>
+      icon: null
     },
     warning: {
       bg: "#FFF9D6",
