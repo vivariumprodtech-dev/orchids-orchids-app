@@ -854,9 +854,9 @@ function StatsContent() {
                             <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                           </div>
                         </div>
-                        <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={75} color="#CE6194">
+                        <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={85} color="#CE6194">
                           <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
-                          <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                          <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
                         </ShadcnRadialProgress>
 
 
