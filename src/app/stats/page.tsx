@@ -836,7 +836,7 @@ function StatsContent() {
                           <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
                         </div>
                         <div className="flex items-center gap-1 text-secondary-custom">
-                          <FootprintsIcon />
+                          <BadgeIconSm semantic="KcalActive" />
                           <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
                         </div>
                         <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
