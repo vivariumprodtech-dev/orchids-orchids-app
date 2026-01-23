@@ -4,20 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import BadgeIconSm from "@/components/BadgeIconSm";
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
   PolarAngleAxis,
   RadialBar,
   RadialBarChart,
-  XAxis,
-  YAxis,
 } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 
 interface FoodEntry {
