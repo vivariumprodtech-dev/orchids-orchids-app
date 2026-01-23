@@ -821,17 +821,17 @@ function StatsContent() {
                         </div>
                       <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                     </div>
-                    <CircleProgress value={waterLiters} max={waterTarget} size={65} strokeWidth={6} color="#73B0FF">
+                      <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={65} color="#73B0FF">
+                        {waterLiters >= waterTarget ? (
+                          <div className="text-primary-custom !text-2xl">✓</div>
+                        ) : (
+                          <>
+                            <div className="text-primary-custom !text-sm !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
+                            <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
+                          </>
+                        )}
+                      </ShadcnRadialProgress>
 
-                    {waterLiters >= waterTarget ? (
-                      <div className="text-primary-custom !text-2xl">✓</div>
-                    ) : (
-                      <>
-                        <div className="text-primary-custom !text-sm !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
-                        <div className="text-tertiary-custom !not-italic !text-[10px]">left</div>
-                      </>
-                    )}
-                  </CircleProgress>
                 </div>
               </div>
 
