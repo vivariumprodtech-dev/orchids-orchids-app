@@ -384,64 +384,6 @@ function ShadcnRadialProgress({
   );
 }
 
-function CalorieTrendChart({ currentCalories }: { currentCalories: number }) {
-  const trendData = [
-    { day: "13 Jan", kcal: DAY_13_DATA.calories },
-    { day: "14 Jan", kcal: DAY_14_DATA.calories },
-    { day: "15 Jan", kcal: DAY_15_DATA.calories },
-    { day: "Today", kcal: currentCalories },
-  ];
-
-  const chartConfig = {
-    kcal: {
-      label: "Calories",
-      color: "#7DD3C0",
-    },
-  } satisfies ChartConfig;
-
-  return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <h2 className="mb-4 text-primary-custom">Calorie Trend</h2>
-      <ChartContainer config={chartConfig} className="h-[150px] w-full">
-        <AreaChart
-          data={trendData}
-          margin={{
-            left: -20,
-            right: 12,
-          }}
-        >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.1} />
-          <XAxis
-            dataKey="day"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) => value}
-          />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            fontSize={10}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Area
-            dataKey="kcal"
-            type="natural"
-            fill="var(--color-kcal)"
-            fillOpacity={0.4}
-            stroke="var(--color-kcal)"
-            stackId="a"
-          />
-        </AreaChart>
-      </ChartContainer>
-    </div>
-  );
-}
-
 function getCalorieBadge(consumed: number, target: number, isToday: boolean) {
 
   if (target === 0) return { text: "No target", connotation: "neutral" as const };
