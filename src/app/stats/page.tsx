@@ -821,9 +821,9 @@ function StatsContent() {
                         </div>
                       <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                     </div>
-                        <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={85} color="#73B0FF">
+                        <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color="#73B0FF">
                           {waterLiters >= waterTarget ? (
-                            <div className="text-primary-custom !text-2xl">✓</div>
+                            <div className="text-primary-custom !text-xl">✓</div>
                           ) : (
                             <>
                               <div className="text-primary-custom !text-[12px] !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
