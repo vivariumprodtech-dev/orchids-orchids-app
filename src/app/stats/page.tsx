@@ -517,7 +517,7 @@ function MacroCard({
     }
 
     return (
-      <div className="relative rounded-2xl bg-white p-4 shadow-sm">
+      <div className="relative rounded-2xl bg-white p-[16px] shadow-sm">
         <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
           <div className={`flex-1 ${!centered ? "pr-[72px]" : ""}`}>
             <div className="mb-1 flex items-center gap-1">
@@ -541,7 +541,7 @@ function MacroCard({
             </div>
             <StatusBadge text={badge.text} connotation={badge.connotation} />
           </div>
-          <div className={centered ? "" : "absolute top-4 right-4"}>
+          <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
             <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
               <div
                 className="font-bold"
