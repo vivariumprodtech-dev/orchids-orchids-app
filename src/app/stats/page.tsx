@@ -583,7 +583,13 @@ function MacroCard({
           </div>
           {(type === "water" || (!isSpecial && !centered)) && (
             <div className={centered || type === "water" ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
-              <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
+              <ShadcnRadialProgress 
+                value={value} 
+                max={target} 
+                size={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? 69 : 72} 
+                color={color}
+                innerRadius={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? "79.1%" : "80%"}
+              >
                 <div
                   className="font-bold"
                   style={{ 
