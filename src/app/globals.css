@@ -86,16 +86,16 @@
 @layer components {
   .text-primary-custom {
     color: var(--text-secondary);
-    font-family: "DM Sans", sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 24px;
+    line-height: 20px;
   }
 
   .text-secondary-custom {
     color: var(--placeholder-color);
-    font-family: "DM Sans", sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -104,7 +104,7 @@
 
   .text-tertiary-custom {
     color: var(--action-components-hover-color);
-    font-family: "DM Sans", sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 12px;
     font-style: italic;
     font-weight: 400;
