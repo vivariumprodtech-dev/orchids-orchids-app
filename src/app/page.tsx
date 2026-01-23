@@ -43,7 +43,7 @@ export default function Home() {
       </div>
 
       <div className="mt-12 rounded-xl bg-white/80 p-6 shadow-sm backdrop-blur">
-        <h3 className="mb-3 font-semibold text-gray-800">Setup Bot Telegram:</h3>
+        <h3 className="mb-3 font-semibold" style={{ color: '#262C44' }}>Setup Bot Telegram:</h3>
         <ol className="space-y-2 text-sm text-gray-600">
           <li>1. Configura <code className="rounded bg-gray-100 px-1">TELEGRAM_BOT_TOKEN</code> in .env</li>
           <li>2. Configura <code className="rounded bg-gray-100 px-1">NEXT_PUBLIC_WEBAPP_URL</code> col tuo URL</li>
