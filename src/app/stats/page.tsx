@@ -726,10 +726,26 @@ function StatsContent() {
               const dayNum = 11 + i;
               const isTodayDay = dayNum === 17;
               const isSelected = selectedDay === dayNum || (isTodayDay && selectedDay === null);
-              const isClickable = dayNum >= 12 && dayNum <= 17;
-              const isDisabled = !isClickable;
+                const isClickable = dayNum >= 12 && dayNum <= 17;
+                const isDisabled = !isClickable;
 
-              // Background colors
+                // Dot rule: ONLY red, ONLY past days, ONLY if missing alert
+                const isPast = dayNum < 17;
+                let showRedDot = false;
+                if (isPast) {
+                  const dayData = dayNum === 13 ? DAY_13_DATA : 
+                                 dayNum === 14 ? DAY_14_DATA : 
+                                 dayNum === 15 ? DAY_15_DATA : 
+                                 (isSelected ? data : null);
+                  const consumed = dayData ? dayData.calories : 0;
+                  const target = BMR + (dayData ? dayData.activeCalories : 0);
+                  if (consumed < target * 0.5) {
+                    showRedDot = true;
+                  }
+                }
+
+                // Background colors
+
               let bgColor = "#FFFFFF";
               if (isSelected) {
                 bgColor = "#9EDDE2";
