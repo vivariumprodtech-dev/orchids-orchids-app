@@ -181,7 +181,7 @@ function StatusBadge({
   connotation 
 }: { 
   text: string; 
-  connotation: "good" | "warning" | "danger" | "on-track"
+  connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral"
 }) {
   const styles = {
     good: {
@@ -192,6 +192,11 @@ function StatusBadge({
           <path d="M10 3L4.5 8.5L2 6" stroke="#199761" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
+    },
+    great: {
+      bg: "#F5FAF8",
+      color: "#199761",
+      icon: <span className="text-[12px]">🏆</span>
     },
     warning: {
       bg: "#FFF9D6",
@@ -215,6 +220,11 @@ function StatusBadge({
       bg: "#F9F9FB",
       color: "#3B4361",
       icon: null
+    },
+    neutral: {
+      bg: "#F2F2F2",
+      color: "#666666",
+      icon: null
     }
   };
 
@@ -225,21 +235,80 @@ function StatusBadge({
       style={{
         display: "inline-flex",
         height: "20px",
-        padding: "2px 6px",
+        padding: "0 8px",
         alignItems: "center",
-        gap: "2px",
+        gap: "4px",
         borderRadius: "100px",
         background: style.bg,
         color: style.color,
         fontFamily: "var(--font-dm-sans)",
         fontSize: "12px",
         fontWeight: "600",
-        lineHeight: "16px",
-        width: "fit-content"
+        lineHeight: "1",
+        width: "fit-content",
+        whiteSpace: "nowrap"
       }}
     >
       {style.icon}
       <span>{text}</span>
+    </div>
+  );
+}
+
+function MissingAlert() {
+  return (
+    <div 
+      style={{
+        background: "#FEF5F7",
+        borderRadius: "16px",
+        padding: "12px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "12px",
+        marginBottom: "16px"
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+        <div 
+          style={{ 
+            color: "#C10127", 
+            fontFamily: "var(--font-dm-sans)", 
+            fontWeight: "600", 
+            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px"
+          }}
+        >
+          <span>🚨</span> Something might be missing
+        </div>
+        <div 
+          style={{ 
+            color: "#C10127", 
+            fontSize: "13px",
+            lineHeight: "1.4"
+          }}
+        >
+          Tell me in the chat if there are missing meals to adjust this day.
+        </div>
+      </div>
+      <button
+        onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://t.me/your_bot" } }, "*")}
+        style={{
+          background: "white",
+          borderRadius: "100px",
+          padding: "6px 12px",
+          color: "#3B4361",
+          fontSize: "13px",
+          fontWeight: "600",
+          border: "none",
+          cursor: "pointer",
+          whiteSpace: "nowrap"
+        }}
+      >
+        Go to chat
+      </button>
     </div>
   );
 }
