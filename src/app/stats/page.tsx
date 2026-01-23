@@ -642,13 +642,7 @@ function StatsContent() {
     const waterBadge = getWaterBadge(waterLiters, waterTarget);
     const alcoholBadge = getAlcoholBadge(data.alcohol?.calories || 0, totalTarget);
 
-    let calCircleColor = "#4ECDC4";
-    if (isOver) {
-      const surplusVal = data.calories - totalTarget;
-      if (surplusVal <= 100) calCircleColor = "#ffd700";
-      else if (surplusVal <= 300) calCircleColor = "#ff8c00";
-      else calCircleColor = "#ff0000";
-    }
+    const calCircleColor = BadgeIconColors.Lunch;
 
   return (
     <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
