@@ -747,22 +747,22 @@ function StatsContent() {
                           </div>
                         <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                       </div>
-                      <div className="flex-shrink-0">
-                          <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
-                            <div 
-                              className="font-bold" 
-                              style={{ 
-                                fontSize: waterLiters >= waterTarget ? "20px" : "12px",
-                                color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
-                              }}
-                            >
-                              {waterLiters >= waterTarget ? "✓" : `${(waterTarget - waterLiters).toFixed(1)}L`}
-                            </div>
-                            {waterLiters < waterTarget && (
-                              <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
-                            )}
-                          </ShadcnRadialProgress>
-                      </div>
+                        <div className="flex-shrink-0">
+                            <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
+                              <div 
+                                className="font-bold" 
+                                style={{ 
+                                  fontSize: (waterLiters >= waterTarget && waterLiters <= waterTarget * 1.05) ? "20px" : "12px",
+                                  color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
+                                }}
+                              >
+                                {(waterLiters >= waterTarget && waterLiters <= waterTarget * 1.05) ? "✓" : (waterLiters > waterTarget ? `+${(waterLiters - waterTarget).toFixed(1)}L` : `${(waterTarget - waterLiters).toFixed(1)}L`)}
+                              </div>
+                              <div className="text-tertiary-custom !not-italic !text-[12px]">
+                                {(waterLiters >= waterTarget && waterLiters <= waterTarget * 1.05) ? "" : (waterLiters > waterTarget ? "over" : "left")}
+                              </div>
+                            </ShadcnRadialProgress>
+                        </div>
                     </div>
                   </div>
   
