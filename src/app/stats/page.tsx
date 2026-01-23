@@ -492,7 +492,9 @@ function MacroCard({
 
     if (type === "processed") {
       badge = getProcessedFoodBadge(value, target);
-      circleText = `${Math.round((value / target) * 100)}%`;
+      const diff = target - value;
+      const displayVal = Math.round(Math.abs(diff));
+      circleText = value > target ? `+${displayVal}%` : `${displayVal}%`;
       circleLabel = value > target ? "over" : "left";
     } else if (type === "water") {
       badge = getWaterBadge(value, target);
@@ -533,80 +535,93 @@ function MacroCard({
           </div>
           <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
             <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
-                <div
-                  className="font-bold"
-                  style={{ 
-                    fontSize: 12, 
-                    color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
-                  }}
-                >
-                  {circleText}
-                </div>
-              {circleLabel && <div className="text-tertiary-custom !not-italic !text-[12px]">{circleLabel}</div>}
-            </ShadcnRadialProgress>
+                  <div
+                    className="font-bold"
+                    style={{ 
+                      fontSize: 12, 
+                      color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
+                    }}
+                  >
+                    {circleText}
+                  </div>
+                {circleLabel && <div style={{ fontSize: "10px", color: "#9FA5BC" }}>{circleLabel}</div>}
+              </ShadcnRadialProgress>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
 
 function StatsContent() {
   const searchParams = useSearchParams();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-    const [data, setData] = useState<StatsData>({
-      calories: 0,
-      protein: 0,
-      carbs: 0,
-      fats: 0,
-      fiber: 0,
-      water: 0,
-      activeCalories: 0,
-      foods: [],
-    });
-    const showAllFoods = false;
-
-
-  useEffect(() => {
-    if (selectedDay === 13) {
-      setData(DAY_13_DATA);
-      return;
-    }
-    if (selectedDay === 14) {
-      setData(DAY_14_DATA);
-      return;
-    }
-    if (selectedDay === 15) {
-      setData(DAY_15_DATA);
-      return;
-    }
-
-    const calories = parseInt(searchParams.get("calories") || "0");
-    const protein = parseFloat(searchParams.get("protein") || "0");
-    const carbs = parseFloat(searchParams.get("carbs") || "0");
-    const fats = parseFloat(searchParams.get("fats") || "0");
-    const fiber = parseFloat(searchParams.get("fiber") || "0");
-    const water = parseInt(searchParams.get("water") || "0");
-    const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
-
-    const foodsParam = searchParams.get("foods");
-    let foods: FoodEntry[] = [];
-    if (foodsParam) {
-      foods = foodsParam.split("|").map((f) => {
-        const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
-        return {
-          name,
-          grams: parseInt(grams),
-          calories: parseInt(cals),
-          pro: parseFloat(pro),
-          carb: parseFloat(carb),
-          fat: parseFloat(fat),
-          fiber: parseFloat(fib) || 0,
-        };
+      const [data, setData] = useState<StatsData>({
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+        fiber: 0,
+        water: 0,
+        activeCalories: 0,
+        foods: [],
+        alcohol: { grams: 0, calories: 0 },
       });
-    }
-
-    setData({ calories, protein, carbs, fats, fiber, water, activeCalories, foods });
+      const showAllFoods = false;
+  
+  
+    useEffect(() => {
+      if (selectedDay === 13) {
+        setData(DAY_13_DATA);
+        return;
+      }
+      if (selectedDay === 14) {
+        setData(DAY_14_DATA);
+        return;
+      }
+      if (selectedDay === 15) {
+        setData(DAY_15_DATA);
+        return;
+      }
+  
+      const calories = parseInt(searchParams.get("calories") || "0");
+      const protein = parseFloat(searchParams.get("protein") || "0");
+      const carbs = parseFloat(searchParams.get("carbs") || "0");
+      const fats = parseFloat(searchParams.get("fats") || "0");
+      const fiber = parseFloat(searchParams.get("fiber") || "0");
+      const water = parseInt(searchParams.get("water") || "0");
+      const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
+      const alcoholGrams = parseInt(searchParams.get("alcohol_grams") || "0");
+      const alcoholKcal = parseInt(searchParams.get("alcohol_kcal") || "0");
+  
+      const foodsParam = searchParams.get("foods");
+      let foods: FoodEntry[] = [];
+      if (foodsParam) {
+        foods = foodsParam.split("|").map((f) => {
+          const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
+          return {
+            name,
+            grams: parseInt(grams),
+            calories: parseInt(cals),
+            pro: parseFloat(pro),
+            carb: parseFloat(carb),
+            fat: parseFloat(fat),
+            fiber: parseFloat(fib) || 0,
+          };
+        });
+      }
+  
+      setData({ 
+        calories, 
+        protein, 
+        carbs, 
+        fats, 
+        fiber, 
+        water, 
+        activeCalories, 
+        foods,
+        alcohol: { grams: alcoholGrams, calories: alcoholKcal }
+      });
 
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
@@ -741,22 +756,22 @@ function StatsContent() {
                           </div>
                         <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                       </div>
-                        <div className="flex-shrink-0">
-                            <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
-                              <div 
-                                className="font-bold" 
-                                style={{ 
-                                  fontSize: "12px",
-                                  color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
-                                }}
-                              >
-                                {waterLiters > waterTarget ? `+${Math.abs(Number((waterLiters - waterTarget).toFixed(1)))}L` : `${Math.abs(Number((waterTarget - waterLiters).toFixed(1)))}L`}
-                              </div>
-                              <div className="text-tertiary-custom !not-italic !text-[12px]">
-                                {waterLiters > waterTarget ? "over" : "left"}
-                              </div>
-                            </ShadcnRadialProgress>
-                        </div>
+                          <div className="flex-shrink-0">
+                              <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
+                                <div 
+                                  className="font-bold" 
+                                  style={{ 
+                                    fontSize: "12px",
+                                    color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
+                                  }}
+                                >
+                                  {waterLiters > waterTarget ? `+${Math.abs(Number((waterLiters - waterTarget).toFixed(1)))}L` : `${Math.abs(Number((waterTarget - waterLiters).toFixed(1)))}L`}
+                                </div>
+                                <div style={{ fontSize: "10px", color: "#9FA5BC" }}>
+                                  {waterLiters > waterTarget ? "over" : "left"}
+                                </div>
+                              </ShadcnRadialProgress>
+                          </div>
                     </div>
                   </div>
   
@@ -779,22 +794,22 @@ function StatsContent() {
                               <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                             </div>
                           </div>
-                              <div className="flex-shrink-0">
-                                <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
-                                  <div 
-                                    className="font-bold" 
-                                    style={{ 
-                                      fontSize: "12px",
-                                      color: alcoholBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
-                                    }}
-                                  >
-                                    {data.alcohol.grams > 30 ? `+${data.alcohol.grams - 30}g` : `${Math.max(0, 30 - data.alcohol.grams)}g`}
-                                  </div>
-                                  <div className="text-tertiary-custom !not-italic !text-[12px]">
-                                    {data.alcohol.grams > 30 ? "over" : "left"}
-                                  </div>
-                                </ShadcnRadialProgress>
-                              </div>
+                                <div className="flex-shrink-0">
+                                  <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
+                                    <div 
+                                      className="font-bold" 
+                                      style={{ 
+                                        fontSize: "12px",
+                                        color: alcoholBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
+                                      }}
+                                    >
+                                      {data.alcohol.grams > 30 ? `+${data.alcohol.grams - 30}g` : `${Math.max(0, 30 - data.alcohol.grams)}g`}
+                                    </div>
+                                    <div style={{ fontSize: "10px", color: "#9FA5BC" }}>
+                                      {data.alcohol.grams > 30 ? "over" : "left"}
+                                    </div>
+                                  </ShadcnRadialProgress>
+                                </div>
                     </div>
                   </div>
 
