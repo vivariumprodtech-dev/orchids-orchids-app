@@ -569,10 +569,10 @@ function MacroCard({
                     )}
                     <span className="text-secondary-custom">{name}</span>
                   </div>
-                  <div className="mb-4">
-                    <span className="text-primary-custom">{Math.round(value)}</span>
-                    <span className="text-secondary-custom">/{target}g</span>
-                  </div>
+                    <div className="mb-2">
+                      <span className="text-primary-custom">{Math.round(value)}</span>
+                      <span className="text-secondary-custom">/{target}g</span>
+                    </div>
                   <StatusBadge text={badge.text} connotation={badge.connotation} />
                 </>
               )}
