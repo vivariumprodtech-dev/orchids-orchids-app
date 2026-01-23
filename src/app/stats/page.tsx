@@ -742,62 +742,64 @@ function StatsContent() {
               <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
             </div>
 
-              <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
-
-              <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                      <div className="mb-1 flex items-center gap-1">
-                        <BadgeIconSm semantic="Water" />
-                          <span className="text-secondary-custom">Water</span>
-                        </div>
-                        <div className="mb-4">
-                          <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                          <span className="text-secondary-custom">/2L</span>
-                        </div>
-                      <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
-                    </div>
-                        <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color="#73B0FF">
-                          {waterLiters >= waterTarget ? (
-                            <div className="text-primary-custom !text-xl">✓</div>
-                          ) : (
-                            <>
-                              <div className="text-primary-custom !text-[12px] !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
-                              <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
-                            </>
-                          )}
-                        </ShadcnRadialProgress>
-
-                  </div>
-                </div>
-
-                {data.alcohol && (
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                          <div className="mb-1 flex items-center gap-1">
-                            <BadgeIconSm semantic="Alcohol" />
-                            <span className="text-secondary-custom">Alcohol</span>
+                <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
+  
+                <div className="rounded-2xl bg-white p-[16px] shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                        <div className="mb-1 flex items-center gap-1">
+                          <BadgeIconSm semantic="Water" />
+                            <span className="text-secondary-custom">Water</span>
                           </div>
                           <div className="mb-4">
-                            <div className="flex items-center gap-1">
-                              <span className="text-primary-custom">{data.alcohol.grams}g</span>
-                              <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
+                            <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
+                            <span className="text-secondary-custom">/2L</span>
+                          </div>
+                        <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
+                      </div>
+                      <div className="flex-shrink-0">
+                          <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color="#73B0FF">
+                            {waterLiters >= waterTarget ? (
+                              <div className="text-primary-custom !text-xl">✓</div>
+                            ) : (
+                              <>
+                                <div className="text-primary-custom !text-[12px] !font-bold">{(waterTarget - waterLiters).toFixed(1)}L</div>
+                                <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
+                              </>
+                            )}
+                          </ShadcnRadialProgress>
+                      </div>
+                    </div>
+                  </div>
+  
+                  {data.alcohol && (
+                    <div className="rounded-2xl bg-white p-[16px] shadow-sm">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                            <div className="mb-1 flex items-center gap-1">
+                              <BadgeIconSm semantic="Alcohol" />
+                              <span className="text-secondary-custom">Alcohol</span>
+                            </div>
+                            <div className="mb-4">
+                              <div className="flex items-center gap-1">
+                                <span className="text-primary-custom">{data.alcohol.grams}g</span>
+                                <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-tertiary-custom">(Weight based)</span>
+                              <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-tertiary-custom">(Weight based)</span>
-                            <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
+                          <div className="flex-shrink-0">
+                            <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color="#CE6194">
+                              <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
+                              <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
+                            </ShadcnRadialProgress>
                           </div>
-                        </div>
-                        <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color="#CE6194">
-                          <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
-                          <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
-                        </ShadcnRadialProgress>
-
-
+                    </div>
                   </div>
-                </div>
+
               )}
           </div>
 
