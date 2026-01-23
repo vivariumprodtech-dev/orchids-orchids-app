@@ -805,10 +805,14 @@ function StatsContent() {
                   >
                     {dayNum}
                   </div>
-                  <div className="flex justify-center mt-1">
-                    {dayNum === 13 && <div className="h-1.5 w-1.5 rounded-full bg-[#E9566E]" />}
-                    {dayNum !== 13 && <div className="h-1.5 w-1.5" />}
-                  </div>
+                    <div className="flex justify-center mt-1">
+                      {showRedDot ? (
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#E9566E]" />
+                      ) : (
+                        <div className="h-1.5 w-1.5" />
+                      )}
+                    </div>
+
                 </div>
               );
             })}
