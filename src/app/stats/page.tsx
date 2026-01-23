@@ -503,9 +503,13 @@ function MacroCard({
       circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
       circleLabel = value > target ? "over" : "left";
     } else if (type === "alcohol") {
-      // handled separately in main content for now, but keeping for consistency
-      } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
-        badge = getMacroBadge(type, value, target, isToday);
+      badge = getAlcoholBadge(value * 7, target * 7); // Rough approx since target is gram-based here
+      const diff = target - value;
+      const displayVal = Math.round(Math.abs(diff));
+      circleText = value > target ? `+${displayVal}g` : `${displayVal}g`;
+      circleLabel = value > target ? "over" : "left";
+    } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
+      badge = getMacroBadge(type, value, target, isToday);
     }
 
     return (
@@ -528,10 +532,22 @@ function MacroCard({
               <span className="text-secondary-custom">{name}</span>
             </div>
             <div className="mb-4">
-              <span className="text-primary-custom">{Math.round(value)}</span>
-              <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
+              {type === "alcohol" ? (
+                <div className="flex items-center gap-1">
+                  <span className="text-primary-custom">{Math.round(value)}g</span>
+                  <span className="text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
+                </div>
+              ) : (
+                <>
+                  <span className="text-primary-custom">{type === "water" ? value.toFixed(1) : Math.round(value)}</span>
+                  <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
+                </>
+              )}
             </div>
-            <StatusBadge text={badge.text} connotation={badge.connotation} />
+            <div className="flex items-center gap-2">
+              {type === "alcohol" && <span className="text-tertiary-custom !not-italic">(Weight based)</span>}
+              <StatusBadge text={badge.text} connotation={badge.connotation} />
+            </div>
           </div>
           <div className={centered ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
             <ShadcnRadialProgress value={value} max={target} size={72} color={color}>
