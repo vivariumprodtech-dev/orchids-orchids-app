@@ -275,18 +275,20 @@ function MissingAlert() {
             color: "#C10127", 
             fontFamily: "var(--font-dm-sans)", 
             fontWeight: "600", 
-            fontSize: "14px",
+            fontSize: "12px",
             display: "flex",
             alignItems: "center",
             gap: "4px"
           }}
         >
-          <span>🚨</span> Something might be missing
+          🚨 Something might be missing
         </div>
         <div 
           style={{ 
             color: "#C10127", 
-            fontSize: "13px",
+            fontFamily: "var(--font-dm-sans)",
+            fontSize: "12px",
+            fontWeight: "400",
             lineHeight: "1.4"
           }}
         >
