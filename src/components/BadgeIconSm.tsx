@@ -28,17 +28,30 @@ interface BadgeIconSmProps {
   semantic: BadgeIconSemantic;
 }
 
+export const BadgeIconColors = {
+  Lunch: "#2BB0BB",
+  Goal: "#9FA5BC",
+  KcalActive: "#FF9D52",
+  Protein: "#FF9191",
+  Carbo: "#FFBC58",
+  Fat: "#9D9EFF",
+  Fiber: "#3FA97A",
+  ProcessFood: "#DB74ED",
+  Water: "#73B0FF",
+  Alcohol: "#CE6194",
+};
+
 const mapping = {
-  Lunch: { icon: Utensils, bg: "#2BB0BB" },
-  Goal: { icon: Flag, bg: "#9FA5BC" },
-  KcalActive: { icon: Footprints, bg: "#FF9D52" },
-  Protein: { icon: Beef, bg: "#FF9191" },
-  Carbo: { icon: Wheat, bg: "#FFBC58" },
-  Fat: { icon: Nut, bg: "#9D9EFF" },
-  Fiber: { icon: LeafyGreen, bg: "#3FA97A" },
-  ProcessFood: { icon: Hamburger, bg: "#DB74ED" },
-  Water: { icon: GlassWater, bg: "#73B0FF" },
-  Alcohol: { icon: Wine, bg: "#CE6194" },
+  Lunch: { icon: Utensils, bg: BadgeIconColors.Lunch },
+  Goal: { icon: Flag, bg: BadgeIconColors.Goal },
+  KcalActive: { icon: Footprints, bg: BadgeIconColors.KcalActive },
+  Protein: { icon: Beef, bg: BadgeIconColors.Protein },
+  Carbo: { icon: Wheat, bg: BadgeIconColors.Carbo },
+  Fat: { icon: Nut, bg: BadgeIconColors.Fat },
+  Fiber: { icon: LeafyGreen, bg: BadgeIconColors.Fiber },
+  ProcessFood: { icon: Hamburger, bg: BadgeIconColors.ProcessFood },
+  Water: { icon: GlassWater, bg: BadgeIconColors.Water },
+  Alcohol: { icon: Wine, bg: BadgeIconColors.Alcohol },
 };
 
 export function BadgeIconSm({ semantic }: BadgeIconSmProps) {
