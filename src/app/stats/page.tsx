@@ -757,79 +757,39 @@ function StatsContent() {
               <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
             </div>
 
-                <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
-  
-                <div className="rounded-2xl bg-white p-[16px] shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                        <div className="mb-1 flex items-center gap-1">
-                          <BadgeIconSm semantic="Water" />
-                            <span className="text-secondary-custom">Water</span>
-                          </div>
-                          <div className="mb-4">
-                            <span className="text-primary-custom">{waterLiters.toFixed(1)}</span>
-                            <span className="text-secondary-custom">/2L</span>
-                          </div>
-                        <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
-                      </div>
-                          <div className="flex-shrink-0">
-                              <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
-                                <div 
-                                  className="font-bold" 
-                                  style={{ 
-                                    fontSize: "12px",
-                                    color: waterBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
-                                  }}
-                                >
-                                  {waterLiters > waterTarget ? `+${Math.abs(Number((waterLiters - waterTarget).toFixed(1)))}L` : `${Math.abs(Number((waterTarget - waterLiters).toFixed(1)))}L`}
-                                </div>
-                                <div style={{ fontSize: "10px", color: "#9FA5BC" }}>
-                                  {waterLiters > waterTarget ? "over" : "left"}
-                                </div>
-                              </ShadcnRadialProgress>
-                          </div>
-                    </div>
-                  </div>
-  
-                  {data.alcohol && (
-                    <div className="rounded-2xl bg-white p-[16px] shadow-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                            <div className="mb-1 flex items-center gap-1">
-                              <BadgeIconSm semantic="Alcohol" />
-                              <span className="text-secondary-custom">Alcohol</span>
-                            </div>
-                            <div className="mb-4">
-                              <div className="flex items-center gap-1">
-                                <span className="text-primary-custom">{data.alcohol.grams}g</span>
-                                <span className="text-secondary-custom">→ <span className="text-primary-custom">{data.alcohol.calories}</span> Kcal</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-tertiary-custom">(Weight based)</span>
-                              <StatusBadge text={alcoholBadge.text} connotation={alcoholBadge.connotation} />
-                            </div>
-                          </div>
-                                <div className="flex-shrink-0">
-                                  <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
-                                    <div 
-                                      className="font-bold" 
-                                      style={{ 
-                                        fontSize: "12px",
-                                        color: alcoholBadge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44"
-                                      }}
-                                    >
-                                      {data.alcohol.grams > 30 ? `+${data.alcohol.grams - 30}g` : `${Math.max(0, 30 - data.alcohol.grams)}g`}
-                                    </div>
-                                    <div style={{ fontSize: "10px", color: "#9FA5BC" }}>
-                                      {data.alcohol.grams > 30 ? "over" : "left"}
-                                    </div>
-                                  </ShadcnRadialProgress>
-                                </div>
-                    </div>
-                  </div>
+              <MacroCard 
+                icon={<BadgeIconSm semantic="Water" />} 
+                name="Water" 
+                value={waterLiters} 
+                target={waterTarget} 
+                color={BadgeIconColors.Water} 
+                isToday={isToday} 
+                type="water" 
+                centered 
+              />
 
-              )}
+              <MacroCard 
+                icon={<BadgeIconSm semantic="ProcessFood" />} 
+                name="Process Food" 
+                value={0} 
+                target={100} 
+                color={BadgeIconColors.ProcessFood} 
+                isToday={isToday} 
+                type="processed" 
+                centered 
+              />
+    
+              <MacroCard 
+                icon={<BadgeIconSm semantic="Alcohol" />} 
+                name="Alcohol" 
+                value={data.alcohol?.grams || 0} 
+                target={30} 
+                color={BadgeIconColors.Alcohol} 
+                isToday={isToday} 
+                type="alcohol" 
+                centered 
+              />
+
           </div>
 
           {/* Section 2: Food log section */}
