@@ -547,79 +547,80 @@ function MacroCard({
   type?: "protein" | "carbs" | "fat" | "fiber" | "processed" | "water" | "alcohol";
   centered?: boolean;
 }) {
-  const left = Math.round(target - value);
-  let badge: { text: string; connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral" } = { text: "good", connotation: "good" };
-  let circleText = `${left}g`;
-  let circleLabel = "left";
-  let isCheckmark = false;
+    const left = Math.round(target - value);
+    let badge: { text: string; connotation: "good" | "warning" | "danger" | "on-track" | "great" | "neutral" } = { text: "good", connotation: "good" };
+    let circleText = `${left}g`;
+    let circleLabel = "left";
+    let isCheckmark = false;
 
-  if (type === "processed") {
-    badge = getProcessedFoodBadge(value, target);
-    circleText = `${Math.round((value / target) * 100)}%`;
-    circleLabel = "";
-  } else if (type === "water") {
-    badge = getWaterBadge(value, target);
-    const litersLeft = (target - value).toFixed(1);
-    circleText = value >= target ? "✓" : `${litersLeft}L`;
-    circleLabel = value >= target ? "" : "left";
-    isCheckmark = value >= target;
-  } else if (type === "alcohol") {
-    // handled separately in main content for now, but keeping for consistency
-    } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
-      badge = getMacroBadge(type, value, target, isToday);
-      if (value >= target * 0.97 && value <= target * 1.03) {
+    if (type === "processed") {
+      badge = getProcessedFoodBadge(value, target);
+      circleText = `${Math.round((value / target) * 100)}%`;
+      circleLabel = "";
+    } else if (type === "water") {
+      badge = getWaterBadge(value, target);
+      const litersLeft = (target - value).toFixed(1);
+      circleText = value >= target ? "✓" : `${litersLeft}L`;
+      circleLabel = value >= target ? "" : "left";
+      isCheckmark = value >= target;
+    } else if (type === "alcohol") {
+      // handled separately in main content for now, but keeping for consistency
+      } else if (type === "protein" || type === "carbs" || type === "fat" || type === "fiber") {
+        badge = getMacroBadge(type, value, target, isToday);
+        if (value >= target * 0.97 && value <= target * 1.03) {
 
-      circleText = "✓";
-      circleLabel = "";
-      isCheckmark = true;
-    } else if (value > target) {
-      circleText = `+${Math.round(value - target)}g`;
-      circleLabel = "";
+        circleText = "✓";
+        circleLabel = "";
+        isCheckmark = true;
+      } else if (value > target) {
+        circleText = `+${Math.round(value - target)}g`;
+        circleLabel = "";
+      }
     }
+
+    return (
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+          <div className="flex-1">
+            <div className="mb-1 flex items-center gap-1">
+              {iconBg ? (
+                <div
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                  style={{ background: iconBg }}
+                >
+                  {icon}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  {icon}
+                </div>
+              )}
+              <span className="text-secondary-custom">{name}</span>
+            </div>
+            <div className="mb-4">
+              <span className="text-primary-custom">{Math.round(value)}</span>
+              <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
+            </div>
+            <StatusBadge text={badge.text} connotation={badge.connotation} />
+          </div>
+            <ShadcnRadialProgress value={value} max={target} size={75} color={color}>
+              <div
+                className="font-bold"
+                style={{ 
+                  fontSize: isCheckmark ? 28 : 12, 
+                  color: badge.connotation === "danger" ? "#C10127" : "#333" 
+                }}
+              >
+                {circleText}
+              </div>
+              {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
+            </ShadcnRadialProgress>
+
+        </div>
+      </div>
+    );
   }
 
-  return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-        <div className="flex-1">
-          <div className="mb-1 flex items-center gap-1">
-            {iconBg ? (
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                style={{ background: iconBg }}
-              >
-                {icon}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center">
-                {icon}
-              </div>
-            )}
-            <span className="text-secondary-custom">{name}</span>
-          </div>
-          <div className="mb-4">
-            <span className="text-primary-custom">{Math.round(value)}</span>
-            <span className="text-secondary-custom">/{target}{type === "water" ? "L" : type === "processed" ? "%" : "g"}</span>
-          </div>
-          <StatusBadge text={badge.text} connotation={badge.connotation} />
-        </div>
-          <ShadcnRadialProgress value={value} max={target} size={65} color={color}>
-            <div
-              className="font-bold"
-              style={{ 
-                fontSize: isCheckmark ? 28 : 14, 
-                color: badge.connotation === "danger" ? "#C10127" : "#333" 
-              }}
-            >
-              {circleText}
-            </div>
-            {circleLabel && <div className="text-tertiary-custom !not-italic !text-[10px]">{circleLabel}</div>}
-          </ShadcnRadialProgress>
-
-      </div>
-    </div>
-  );
-}
 
 function StatsContent() {
   const searchParams = useSearchParams();
