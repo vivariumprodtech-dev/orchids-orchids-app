@@ -274,7 +274,6 @@ function MissingAlert() {
         padding: "12px",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
         gap: "12px",
         marginBottom: "16px"
       }}
@@ -305,22 +304,6 @@ function MissingAlert() {
           Tell me in the chat if there are missing meals to adjust this day.
         </div>
       </div>
-      <button
-        onClick={() => window.parent.postMessage({ type: "OPEN_EXTERNAL_URL", data: { url: "https://t.me/your_bot" } }, "*")}
-        style={{
-          background: "white",
-          borderRadius: "100px",
-          padding: "6px 12px",
-          color: "#3B4361",
-          fontSize: "13px",
-          fontWeight: "600",
-          border: "none",
-          cursor: "pointer",
-          whiteSpace: "nowrap"
-        }}
-      >
-        Go to chat
-      </button>
     </div>
   );
 }
