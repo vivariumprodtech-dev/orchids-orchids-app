@@ -730,13 +730,13 @@ function StatsContent() {
               </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color="#FF6B9D" isToday={isToday} type="protein" />
-              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color="#FFB84D" isToday={isToday} type="carbs" />
-              <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color="#9C6FFF" isToday={isToday} type="fat" />
-              <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color="#4CAF50" isToday={isToday} type="fiber" />
+              <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
+              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
+              <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
+              <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
             </div>
 
-                <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color="#DB74ED" isToday={isToday} type="processed" centered />
+                <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process Food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
   
                 <div className="rounded-2xl bg-white p-[16px] shadow-sm">
                   <div className="flex items-center justify-between">
@@ -752,7 +752,7 @@ function StatsContent() {
                         <StatusBadge text={waterBadge.text} connotation={waterBadge.connotation} />
                       </div>
                       <div className="flex-shrink-0">
-                          <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color="#73B0FF">
+                          <ShadcnRadialProgress value={waterLiters} max={waterTarget} size={72} color={BadgeIconColors.Water}>
                             {waterLiters >= waterTarget ? (
                               <div className="text-primary-custom !text-xl">✓</div>
                             ) : (
@@ -786,7 +786,7 @@ function StatsContent() {
                             </div>
                           </div>
                           <div className="flex-shrink-0">
-                            <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color="#CE6194">
+                            <ShadcnRadialProgress value={data.alcohol.grams} max={30} size={72} color={BadgeIconColors.Alcohol}>
                               <div className="text-primary-custom !text-[12px] !font-bold">{Math.max(0, 30 - data.alcohol.grams)}g</div>
                               <div className="text-tertiary-custom !not-italic !text-[12px]">left</div>
                             </ShadcnRadialProgress>
