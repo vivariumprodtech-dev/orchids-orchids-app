@@ -778,9 +778,9 @@ function StatsContent() {
                         </div>
                         <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                     </div>
-                <ShadcnRadialProgress value={data.calories} max={totalTarget} size={140} color={calCircleColor}>
+                <ShadcnRadialProgress value={data.calories} max={totalTarget} size={133} color={calCircleColor} innerRadius="78.9%">
                   <div 
-                    className="text-center !text-[20px]"
+                    className="text-center !text-[20px] font-bold"
                     style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}
                   >
                     {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
