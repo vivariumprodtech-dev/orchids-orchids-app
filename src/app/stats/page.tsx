@@ -927,15 +927,15 @@ function StatsContent() {
                   Nessun cibo loggato
                 </div>
               ) : (
-                (showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
-                  <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-secondary-custom">{food.name}</span>
-                      <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
-                        {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </div>
-                    <div className="mb-3 flex items-center gap-1.5">
+                  (showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
+                    <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
+                      <div className="mb-2 flex items-center justify-between">
+                        <span className="text-secondary-custom">{food.name}</span>
+                        <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
+                          {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      <div className="mb-2 flex items-center gap-1.5">
                       <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
                       <span className="text-primary-custom">{food.calories}</span>
                       <span className="text-secondary-custom">Kcal</span>
