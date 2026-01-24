@@ -890,13 +890,13 @@ function StatsContent() {
                 data.meals.map((meal) =>
                   meal.foods.map((food, foodIndex) => (
                     <div key={`${meal.meal}-${foodIndex}`} className="rounded-2xl bg-white p-4 shadow-sm">
-                      <div className="mb-3 flex items-center justify-between">
+                      <div className="mb-2 flex items-center justify-between">
                         <span className="text-secondary-custom">{food.name}</span>
                         <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
                           {meal.meal}
                         </span>
                       </div>
-                      <div className="mb-3 flex items-center gap-1.5">
+                      <div className="mb-2 flex items-center gap-1.5">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
                         <span className="text-primary-custom">{food.calories}</span>
                         <span className="text-secondary-custom">Kcal</span>
