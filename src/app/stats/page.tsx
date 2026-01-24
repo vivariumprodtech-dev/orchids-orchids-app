@@ -956,41 +956,57 @@ function StatsContent() {
             </h2>
             <div className="space-y-3">
               {!isToday && data.meals && data.meals.length > 0 ? (
-                data.meals.map((meal) =>
-                  meal.foods.map((food, foodIndex) => (
-                    <div key={`${meal.meal}-${foodIndex}`} className="rounded-2xl bg-white p-4 shadow-sm">
-                      <div className="mb-2 flex items-center justify-between">
-                        <span className="text-secondary-custom">{food.name}</span>
-                        <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
-                          {meal.meal}
-                        </span>
+                data.meals.map((meal) => (
+                  <div key={meal.meal} className="space-y-2 relative">
+                    <MealMomentCard 
+                      meal={meal} 
+                      isOpen={!!openMeals[meal.meal]} 
+                      onToggle={() => toggleMeal(meal.meal)} 
+                    />
+                    {openMeals[meal.meal] && (
+                      <div className="pl-6 space-y-2 relative">
+                        {/* Vertical line: starts from the moment card and finishes at the end of the last food entry */}
+                        <div 
+                          className="absolute left-[2px] top-[-8px] bottom-[20px] w-[2px] bg-[#CBCEDB]" 
+                          style={{ zIndex: 0 }}
+                        />
+                        {meal.foods.map((food, foodIndex) => (
+                          <div key={`${meal.meal}-${foodIndex}`} className="rounded-2xl bg-white p-4 shadow-sm relative z-10">
+                            <div className="mb-2 flex items-center justify-between">
+                              <span className="text-secondary-custom">{food.name}</span>
+                              <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
+                                10:00
+                              </span>
+                            </div>
+                            <div className="mb-2 flex items-center gap-1.5">
+                              <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                              <span className="text-primary-custom font-bold">{food.calories}</span>
+                              <span className="text-secondary-custom font-bold">Kcal</span>
+                            </div>
+                            <div className="flex flex-wrap gap-x-4 gap-y-2">
+                              <div className="flex items-center gap-1.5 text-tertiary-custom">
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
+                                <span>Protein {food.pro}g</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-tertiary-custom">
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
+                                <span>Fiber {food.fiber}g</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-tertiary-custom">
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
+                                <span>Carbo {food.carb}g</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-tertiary-custom">
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
+                                <span>Fat {food.fat}g</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="mb-2 flex items-center gap-1.5">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                        <span className="text-primary-custom">{food.calories}</span>
-                        <span className="text-secondary-custom">Kcal</span>
-                      </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-2">
-                        <div className="flex items-center gap-1.5 text-tertiary-custom">
-                          <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
-                          <span>Protein {food.pro}g</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-tertiary-custom">
-                          <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
-                          <span>Fiber {food.fiber}g</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-tertiary-custom">
-                          <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
-                          <span>Carbo {food.carb}g</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-tertiary-custom">
-                          <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
-                          <span>Fat {food.fat}g</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )
+                    )}
+                  </div>
+                ))
               ) : data.foods.length === 0 ? (
                 <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">
                   Nessun cibo loggato
