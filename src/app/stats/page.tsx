@@ -658,25 +658,31 @@ function MealMomentCard({
 function StatsContent() {
   const searchParams = useSearchParams();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
-      const [data, setData] = useState<StatsData>({
-        calories: 0,
-        protein: 0,
-        carbs: 0,
-        fats: 0,
-        fiber: 0,
-        water: 0,
-        activeCalories: 0,
-        foods: [],
-        alcohol: { grams: 0, calories: 0 },
-      });
-      const showAllFoods = false;
-  
-  
-    useEffect(() => {
-      if (selectedDay === 13) {
-        setData(DAY_13_DATA);
-        return;
-      }
+  const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
+
+  const toggleMeal = (mealName: string) => {
+    setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
+  };
+
+  const [data, setData] = useState<StatsData>({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fats: 0,
+    fiber: 0,
+    water: 0,
+    activeCalories: 0,
+    foods: [],
+    alcohol: { grams: 0, calories: 0 },
+  });
+  const showAllFoods = false;
+
+  useEffect(() => {
+    setOpenMeals({}); // Reset open meals when day changes
+    if (selectedDay === 13) {
+      setData(DAY_13_DATA);
+      return;
+    }
       if (selectedDay === 14) {
         setData(DAY_14_DATA);
         return;
