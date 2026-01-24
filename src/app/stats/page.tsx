@@ -873,14 +873,18 @@ function StatsContent() {
                 const isPast = dayNum < 17;
                 let showRedDot = false;
                 if (isPast && !isDisabled) {
-                  const dayData = dayNum === 13 ? DAY_13_DATA : 
+                  const dayData = dayNum === 12 ? DAY_12_DATA :
+                                 dayNum === 13 ? DAY_13_DATA : 
                                  dayNum === 14 ? DAY_14_DATA : 
                                  dayNum === 15 ? DAY_15_DATA : 
+                                 dayNum === 16 ? DAY_16_DATA :
                                  (isSelected ? data : null);
-                  const consumed = dayData ? dayData.calories : 0;
-                  const target = BMR + (dayData ? dayData.activeCalories : 0);
-                  if (consumed < target * 0.5) {
-                    showRedDot = true;
+                  if (dayData) {
+                    const target = BMR + dayData.activeCalories;
+                    const badge = getCalorieBadge(dayData.calories, target, false);
+                    if (badge.showAlert) {
+                      showRedDot = true;
+                    }
                   }
                 }
 
