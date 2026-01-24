@@ -185,6 +185,85 @@ const DAY_15_DATA: StatsData = {
   ],
 };
 
+const DAY_16_DATA: StatsData = {
+  calories: 1850,
+  protein: 110,
+  carbs: 160,
+  fats: 65,
+  fiber: 25,
+  water: 2200,
+  activeCalories: 250,
+  foods: [],
+  meals: [
+    {
+      meal: "Colazione",
+      foods: [
+        { name: "Omelette 3 uova", grams: 150, calories: 240, pro: 18, carb: 2, fat: 15, fiber: 0 },
+        { name: "Pane di segale", grams: 50, calories: 120, pro: 4, carb: 22, fat: 1, fiber: 4 },
+      ],
+      totalCalories: 360,
+    },
+    {
+      meal: "Pranzo",
+      foods: [
+        { name: "Bowl di quinoa e ceci", grams: 350, calories: 480, pro: 20, carb: 65, fat: 12, fiber: 12 },
+        { name: "Spremuta d'arancia", grams: 200, calories: 90, pro: 1, carb: 20, fat: 0, fiber: 0 },
+      ],
+      totalCalories: 570,
+    },
+    {
+      meal: "Spuntino",
+      foods: [
+        { name: "Mandorle", grams: 30, calories: 175, pro: 6, carb: 6, fat: 15, fiber: 3 },
+      ],
+      totalCalories: 175,
+    },
+    {
+      meal: "Cena",
+      foods: [
+        { name: "Bistecca di manzo", grams: 200, calories: 450, pro: 50, carb: 0, fat: 22, fiber: 0 },
+        { name: "Insalata mista", grams: 150, calories: 45, pro: 2, carb: 5, fat: 2, fiber: 4 },
+        { name: "Patate arrosto", grams: 150, calories: 250, pro: 3, carb: 40, fat: 8, fiber: 2 },
+      ],
+      totalCalories: 745,
+    },
+  ],
+};
+
+const DAY_12_DATA: StatsData = {
+  calories: 1950,
+  protein: 85,
+  carbs: 220,
+  fats: 75,
+  fiber: 20,
+  water: 1800,
+  activeCalories: 120,
+  foods: [],
+  meals: [
+    {
+      meal: "Colazione",
+      foods: [
+        { name: "Pancake proteici", grams: 120, calories: 310, pro: 25, carb: 35, fat: 8, fiber: 4 },
+      ],
+      totalCalories: 310,
+    },
+    {
+      meal: "Pranzo",
+      foods: [
+        { name: "Spaghetti alle vongole", grams: 300, calories: 520, pro: 22, carb: 75, fat: 15, fiber: 3 },
+      ],
+      totalCalories: 520,
+    },
+    {
+      meal: "Cena",
+      foods: [
+        { name: "Sushi misto", grams: 400, calories: 650, pro: 30, carb: 90, fat: 15, fiber: 2 },
+      ],
+      totalCalories: 650,
+    },
+  ],
+};
+
 const INITIAL_FOODS_DISPLAY = 5;
 
 function StatusBadge({ 
