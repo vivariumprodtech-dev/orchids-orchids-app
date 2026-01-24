@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import BadgeIconSm, { BadgeIconColors } from "@/components/BadgeIconSm";
+import BadgeIconSm, { BadgeIconColors, BadgeIconSemantic } from "@/components/BadgeIconSm";
 import {
   PolarAngleAxis,
   RadialBar,
@@ -12,6 +12,7 @@ import {
   ChartConfig,
   ChartContainer,
 } from "@/components/ui/chart";
+import { ChevronDown, ChevronUp, MoveRight } from "lucide-react";
 
 interface FoodEntry {
   name: string;
