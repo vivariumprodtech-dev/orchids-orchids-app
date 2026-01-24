@@ -756,12 +756,16 @@ function StatsContent() {
   });
   const showAllFoods = false;
 
-  useEffect(() => {
-    setOpenMeals({}); // Reset open meals when day changes
-    if (selectedDay === 13) {
-      setData(DAY_13_DATA);
-      return;
-    }
+    useEffect(() => {
+      setOpenMeals({}); // Reset open meals when day changes
+      if (selectedDay === 12) {
+        setData(DAY_12_DATA);
+        return;
+      }
+      if (selectedDay === 13) {
+        setData(DAY_13_DATA);
+        return;
+      }
       if (selectedDay === 14) {
         setData(DAY_14_DATA);
         return;
@@ -770,6 +774,11 @@ function StatsContent() {
         setData(DAY_15_DATA);
         return;
       }
+      if (selectedDay === 16) {
+        setData(DAY_16_DATA);
+        return;
+      }
+
   
       const calories = parseInt(searchParams.get("calories") || "0");
       const protein = parseFloat(searchParams.get("protein") || "0");
