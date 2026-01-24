@@ -1,49 +1,57 @@
 import React from "react";
 import { 
-  Utensils, 
-  Flag, 
-  Footprints, 
-  Beef, 
-  Wheat, 
-  Nut, 
-  LeafyGreen, 
-  Hamburger, 
-  GlassWater, 
-  Wine 
-} from "lucide-react";
-
-export type BadgeIconSemantic = 
-  | "Lunch" 
-  | "Goal" 
-  | "KcalActive" 
-  | "Protein" 
-  | "Carbo" 
-  | "Fat" 
-  | "Fiber" 
-  | "ProcessFood" 
-  | "Water" 
-  | "Alcohol";
-
-interface BadgeIconSmProps {
-  semantic: BadgeIconSemantic;
-}
-
-export const BadgeIconColors = {
-  Lunch: "#2BB0BB",
-  Goal: "#9FA5BC",
-  KcalActive: "#FF9D52",
-  Protein: "#FF9191",
-  Carbo: "#FFBC58",
-  Fat: "#9D9EFF",
-  Fiber: "#3FA97A",
-  ProcessFood: "#DB74ED",
-  Water: "#73B0FF",
-  Alcohol: "#CE6194",
-};
-
-const mapping = {
-  Lunch: { icon: Utensils, bg: BadgeIconColors.Lunch },
-  Goal: { icon: Flag, bg: BadgeIconColors.Goal },
+    Utensils, 
+    Flag, 
+    Footprints, 
+    Beef, 
+    Wheat, 
+    Nut, 
+    LeafyGreen, 
+    Hamburger, 
+    GlassWater, 
+    Wine,
+    Croissant,
+    Cookie,
+    Salad
+  } from "lucide-react";
+  
+  export type BadgeIconSemantic = 
+    | "Lunch" 
+    | "Breakfast"
+    | "Afternoon"
+    | "Dinner"
+    | "Goal" 
+    | "KcalActive" 
+    | "Protein" 
+    | "Carbo" 
+    | "Fat" 
+    | "Fiber" 
+    | "ProcessFood" 
+    | "Water" 
+    | "Alcohol";
+  
+  export const BadgeIconColors = {
+    Lunch: "#2BB0BB",
+    Breakfast: "#2BB0BB",
+    Afternoon: "#2BB0BB",
+    Dinner: "#2BB0BB",
+    Goal: "#9FA5BC",
+    KcalActive: "#FF9D52",
+    Protein: "#FF9191",
+    Carbo: "#FFBC58",
+    Fat: "#9D9EFF",
+    Fiber: "#3FA97A",
+    ProcessFood: "#DB74ED",
+    Water: "#73B0FF",
+    Alcohol: "#CE6194",
+  };
+  
+  const mapping = {
+    Lunch: { icon: Utensils, bg: BadgeIconColors.Lunch },
+    Breakfast: { icon: Croissant, bg: BadgeIconColors.Breakfast },
+    Afternoon: { icon: Cookie, bg: BadgeIconColors.Afternoon },
+    Dinner: { icon: Salad, bg: BadgeIconColors.Dinner },
+    Goal: { icon: Flag, bg: BadgeIconColors.Goal },
   KcalActive: { icon: Footprints, bg: BadgeIconColors.KcalActive },
   Protein: { icon: Beef, bg: BadgeIconColors.Protein },
   Carbo: { icon: Wheat, bg: BadgeIconColors.Carbo },
