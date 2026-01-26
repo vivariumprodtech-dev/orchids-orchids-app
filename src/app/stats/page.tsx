@@ -972,7 +972,7 @@ function StatsContent() {
               </div>
 
             <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={waterTarget} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
-            <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+            <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
             <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
           </div>
 
