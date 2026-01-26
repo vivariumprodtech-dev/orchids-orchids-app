@@ -475,15 +475,15 @@ function MacroCard({
     onToggle: () => void;
   }) {
     const mealNameDisplayMap: Record<string, string> = {
-      "breakfast": "Colazione",
-      "lunch": "Pranzo",
-      "dinner": "Cena",
-      "pre_breakfast": "Pre-colazione",
-      "morning": "Spuntino Mattina",
-      "afternoon": "Spuntino Pomeriggio",
-      "night": "Spuntino Notturno",
-      "snack": "Spuntino",
-      "other": "Altro"
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "pre_breakfast": "Pre-breakfast",
+      "morning": "Morning Snack",
+      "afternoon": "Afternoon Snack",
+      "night": "Night Snack",
+      "snack": "Snack",
+      "other": "Other"
     };
 
     const mealNameIconMap: Record<string, BadgeIconSemantic> = {
