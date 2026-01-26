@@ -819,25 +819,25 @@ function StatsContent() {
     }
   }, [searchParams, selectedDate, userId]);
 
-  const isToday = selectedDate === new Date().toISOString().split('T')[0];
-  const displayDate = isToday 
-    ? "Today's Balance" 
-    : new Date(selectedDate || "").toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' });
-
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return d;
-  });
-
-    const BMR = data.bmr || data.targets?.calories || 1600;
-    const totalTarget = BMR + data.activeCalories;
-    const caloriesLeft = totalTarget - data.calories;
-    const isOver = data.calories > totalTarget;
-    const surplus = data.calories - totalTarget;
-    const waterLiters = data.water / 1000;
-    const waterTarget = data.targets?.water || 2.0;
-    const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
+    const isToday = selectedDate === new Date().toISOString().split('T')[0];
+    const displayDate = isToday 
+      ? "Today's Balance" 
+      : new Date(selectedDate || "").toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' });
+  
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return d;
+    });
+  
+      const BMR = Math.round(data.bmr || data.targets?.calories || 1600);
+      const totalTarget = Math.round(BMR + data.activeCalories);
+      const caloriesLeft = Math.round(totalTarget - data.calories);
+      const isOver = data.calories > totalTarget;
+      const surplus = Math.round(data.calories - totalTarget);
+      const waterLiters = data.water / 1000;
+      const waterTarget = data.targets?.water || 2.0;
+      const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
     return (
       <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
