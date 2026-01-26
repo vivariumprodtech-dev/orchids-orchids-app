@@ -765,21 +765,22 @@ function StatsContent() {
                   const finalCalories = foodTotals.calories > 0 ? foodTotals.calories : (log.calories || 0);
                   const finalAlcoholGrams = foodTotals.alcohol > 0 ? foodTotals.alcohol : (log.alcohol || 0);
 
-                  setData({
-                    water: log.water || 0,
-                    calories: Math.round(finalCalories),
-                    protein: Math.round(foodTotals.protein || log.protein || 0),
-                    carbs: Math.round(foodTotals.carbs || log.carbs || 0),
-                    fats: Math.round(foodTotals.fats || log.fats || 0),
-                    fiber: Math.round(foodTotals.fiber || log.fiber || 0),
-                    foods: foods,
-                    meals: meals.length > 0 ? meals : undefined,
-                    activeCalories: Math.round(log.active_calories || 0),
-                    bmr: log.bmr || undefined,
-                    alcohol: { 
-                      grams: Math.round(finalAlcoholGrams), 
-                      calories: Math.round(finalAlcoholGrams * 7)
-                    },
+                    setData({
+                      water: log.water || 0,
+                      calories: Math.round(finalCalories),
+                      protein: Math.round(foodTotals.protein || log.protein || 0),
+                      carbs: Math.round(foodTotals.carbs || log.carbs || 0),
+                      fats: Math.round(foodTotals.fats || log.fats || 0),
+                      fiber: Math.round(foodTotals.fiber || log.fiber || 0),
+                      foods: foods,
+                      meals: meals.length > 0 ? meals : undefined,
+                      activeCalories: Math.round(log.active_calories || 0),
+                      bmr: log.bmr || undefined,
+                      processedPercentage: processedPercentage,
+                      alcohol: { 
+                        grams: Math.round(finalAlcoholGrams), 
+                        calories: Math.round(finalAlcoholGrams * 7)
+                      },
                     targets: {
                       calories: log.target_calories || 1600,
                       protein: log.target_protein || 96,
