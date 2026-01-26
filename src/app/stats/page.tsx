@@ -580,41 +580,41 @@ function StatsContent() {
             activeCalories: 200 + Math.floor(r(7) * 300),
             foods: [],
             meals: [
-              {
-                meal: "Colazione",
-                totalCalories: 450,
-                foods: [
-                  { name: "Skyr Bianco", grams: 150, calories: 95, pro: 16, carb: 6, fat: 0, fiber: 0 },
-                  { name: "Mandorle", grams: 30, calories: 180, pro: 6, carb: 6, fat: 15, fiber: 3 },
-                  { name: "Pane Integrale", grams: 50, calories: 175, pro: 6, carb: 35, fat: 1, fiber: 4 },
-                ]
-              },
-              {
-                meal: "Pranzo",
-                totalCalories: 650,
-                foods: [
-                  { name: "Pasta al Pomodoro", grams: 100, calories: 350, pro: 12, carb: 70, fat: 2, fiber: 3 },
-                  { name: "Insalata Mista", grams: 200, calories: 50, pro: 2, carb: 5, fat: 0, fiber: 4 },
-                  { name: "Petto di Pollo", grams: 150, calories: 250, pro: 45, carb: 0, fat: 5, fiber: 0 },
-                ]
-              },
-              {
-                meal: "Spuntino",
-                totalCalories: 200,
-                foods: [
-                  { name: "Mela", grams: 200, calories: 104, pro: 1, carb: 28, fat: 0, fiber: 5 },
-                  { name: "Yogurt Greco", grams: 150, calories: 96, pro: 15, carb: 6, fat: 0, fiber: 0 },
-                ]
-              },
-              {
-                meal: "Cena",
-                totalCalories: 500,
-                foods: [
-                  { name: "Salmone", grams: 150, calories: 310, pro: 30, carb: 0, fat: 20, fiber: 0 },
-                  { name: "Verdure Grigliate", grams: 200, calories: 80, pro: 4, carb: 12, fat: 2, fiber: 6 },
-                  { name: "Pane Integrale", grams: 30, calories: 110, pro: 4, carb: 22, fat: 1, fiber: 3 },
-                ]
-              }
+                {
+                  meal: "Colazione",
+                  totalCalories: 450,
+                  foods: [
+                    { name: "Skyr Bianco", grams: 150, calories: 95, pro: 16, carb: 6, fat: 0, fiber: 0, time: "08:30" },
+                    { name: "Mandorle", grams: 30, calories: 180, pro: 6, carb: 6, fat: 15, fiber: 3, time: "08:35" },
+                    { name: "Pane Integrale", grams: 50, calories: 175, pro: 6, carb: 35, fat: 1, fiber: 4, time: "08:40" },
+                  ]
+                },
+                {
+                  meal: "Pranzo",
+                  totalCalories: 650,
+                  foods: [
+                    { name: "Pasta al Pomodoro", grams: 100, calories: 350, pro: 12, carb: 70, fat: 2, fiber: 3, time: "13:15" },
+                    { name: "Insalata Mista", grams: 200, calories: 50, pro: 2, carb: 5, fat: 0, fiber: 4, time: "13:20" },
+                    { name: "Petto di Pollo", grams: 150, calories: 250, pro: 45, carb: 0, fat: 5, fiber: 0, time: "13:25" },
+                  ]
+                },
+                {
+                  meal: "Spuntino",
+                  totalCalories: 200,
+                  foods: [
+                    { name: "Mela", grams: 200, calories: 104, pro: 1, carb: 28, fat: 0, fiber: 5, time: "16:45" },
+                    { name: "Yogurt Greco", grams: 150, calories: 96, pro: 15, carb: 6, fat: 0, fiber: 0, time: "17:00" },
+                  ]
+                },
+                {
+                  meal: "Cena",
+                  totalCalories: 500,
+                  foods: [
+                    { name: "Salmone", grams: 150, calories: 310, pro: 30, carb: 0, fat: 20, fiber: 0, time: "20:10" },
+                    { name: "Verdure Grigliate", grams: 200, calories: 80, pro: 4, carb: 12, fat: 2, fiber: 6, time: "20:15" },
+                    { name: "Pane Integrale", grams: 30, calories: 110, pro: 4, carb: 22, fat: 1, fiber: 3, time: "20:20" },
+                  ]
+                }
             ],
             alcohol: { grams: r(8) > 0.7 ? 15 : 0, calories: r(8) > 0.7 ? 105 : 0 },
           };
