@@ -67,6 +67,8 @@ export default function UploadPage() {
             fiber: row.fiber ? parseFloat(row.fiber) : 0,
             water: row.water ? parseInt(row.water) : 0,
             active_calories: row.active_calories ? parseFloat(row.active_calories) : 0,
+            bmr: row.bmr ? parseFloat(row.bmr) : null,
+            alcohol: row.alcohol ? parseFloat(row.alcohol) : 0,
           }, { onConflict: 'user_id,date' });
 
           if (error) throw error;
@@ -252,7 +254,7 @@ export default function UploadPage() {
                 <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white p-4">
                   <code className="whitespace-nowrap text-xs font-mono text-teal-800">
                     {type === "logs"
-                      ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories"
+                      ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories,bmr,alcohol"
                       : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber"}
                   </code>
                 </div>
@@ -260,12 +262,14 @@ export default function UploadPage() {
                   <div className="space-y-2">
                     <p><strong className="text-gray-700">user_id:</strong> Il ChatID di Telegram (es: 6217569048)</p>
                     <p><strong className="text-gray-700">date:</strong> Formato YYYY-MM-DD (es: 2026-01-26)</p>
-                    <p><strong className="text-gray-700">water:</strong> ml bevuti (target_water è in Litri)</p>
+                    <p><strong className="text-gray-700">bmr:</strong> Kcal metabolismo basale (facoltativo)</p>
+                    <p><strong className="text-gray-700">water:</strong> ml di acqua assunta</p>
                   </div>
                   <div className="space-y-2">
+                    <p><strong className="text-gray-700">alcohol:</strong> Grammi di alcool assunti</p>
                     <p><strong className="text-gray-700">meal:</strong> Colazione, Pranzo, Cena, Spuntino</p>
                     <p><strong className="text-gray-700">calories:</strong> Kcal totali o del singolo alimento</p>
-                    <p><strong className="text-gray-700">Importante:</strong> Usa la virgola come separatore e non includere virgole nei nomi.</p>
+                    <p><strong className="text-gray-700">Importante:</strong> Usa la virgola come separatore.</p>
                   </div>
                 </div>
               </div>
