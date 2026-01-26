@@ -910,33 +910,32 @@ function StatsContent() {
                                 {food.time}
                               </div>
                             )}
-                            <div className="mb-2 flex items-center justify-between pr-12">
-                              <span className="text-primary-custom font-bold">{food.name}</span>
-                              <span className="text-[10px] text-gray-400">{food.grams}g</span>
-                            </div>
-                            <div className="mb-2 flex items-center gap-1.5">
-                              <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                              <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
-                              <span className="text-secondary-custom font-bold">Kcal</span>
-                            </div>
-                            <div className="flex flex-wrap gap-x-3 gap-y-1">
-                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
-                                <div className="h-1.5 w-1.5 rounded-full bg-[#FF4D4D]" />
-                                <i>Protein {Math.round(food.pro)}g</i>
+                              <div className="mb-2 flex items-center justify-between pr-12">
+                                <span className="text-primary-custom font-bold">{food.name}</span>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
-                                <div className="h-1.5 w-1.5 rounded-full bg-[#4CD964]" />
-                                <i>Fiber {Math.round(food.fiber)}g</i>
+                              <div className="mb-2 flex items-center gap-1.5">
+                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                                <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
+                                <span className="text-secondary-custom font-bold">Kcal</span>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
-                                <div className="h-1.5 w-1.5 rounded-full bg-[#FFCC00]" />
-                                <i>Carbs {Math.round(food.carb)}g</i>
+                              <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                                  <i>Protein {Math.round(food.pro)}g</i>
+                                </div>
+                                <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                                  <i>Fiber {Math.round(food.fiber)}g</i>
+                                </div>
+                                <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                                  <i>Carbo {Math.round(food.carb)}g</i>
+                                </div>
+                                <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                                  <i>Fat {Math.round(food.fat)}g</i>
+                                </div>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
-                                <div className="h-1.5 w-1.5 rounded-full bg-[#AF52DE]" />
-                                <i>Fat {Math.round(food.fat)}g</i>
-                              </div>
-                            </div>
                           </div>
                         ))}
                       </div>
