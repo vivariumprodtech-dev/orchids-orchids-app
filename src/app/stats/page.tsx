@@ -539,6 +539,39 @@ function StatsContent() {
     setOpenMeals({});
     
     const fetchData = async () => {
+      if (userId === "ugo_demo" && selectedDate) {
+        // Generate deterministic pseudo-random data based on the date
+        const dateSeed = selectedDate.split("-").reduce((acc, part) => acc + parseInt(part), 0);
+        const pseudoRandom = (seed: number) => {
+          const x = Math.sin(seed) * 10000;
+          return x - Math.floor(x);
+        };
+
+        const r = (offset: number) => pseudoRandom(dateSeed + offset);
+
+        const ugoData: StatsData = {
+          calories: 1800 + Math.floor(r(1) * 400),
+          protein: 100 + Math.floor(r(2) * 20),
+          carbs: 180 + Math.floor(r(3) * 40),
+          fats: 60 + Math.floor(r(4) * 15),
+          fiber: 25 + Math.floor(r(5) * 10),
+          water: 1800 + Math.floor(r(6) * 1000),
+          activeCalories: 200 + Math.floor(r(7) * 300),
+          foods: [
+            { name: "Pasta al Pomodoro", grams: 100, calories: 350, pro: 12, carb: 70, fat: 2, fiber: 3 },
+            { name: "Petto di Pollo", grams: 150, calories: 250, pro: 45, carb: 0, fat: 5, fiber: 0 },
+            { name: "Insalata Mista", grams: 200, calories: 50, pro: 2, carb: 5, fat: 0, fiber: 4 },
+            { name: "Skyr Bianco", grams: 150, calories: 95, pro: 16, carb: 6, fat: 0, fiber: 0 },
+            { name: "Mandorle", grams: 30, calories: 180, pro: 6, carb: 6, fat: 15, fiber: 3 },
+          ],
+          alcohol: { grams: r(8) > 0.7 ? 15 : 0, calories: r(8) > 0.7 ? 105 : 0 },
+        };
+        
+        // Recalculate totals based on foods for consistency (optional, but ugoData above is already "full")
+        setData(ugoData);
+        return;
+      }
+
       if (!userId || !selectedDate) {
         loadFromParams();
         return;
