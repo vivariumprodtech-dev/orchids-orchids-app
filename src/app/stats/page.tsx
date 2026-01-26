@@ -357,13 +357,14 @@ function MacroCard({
       circleText = value > target ? `+${displayVal}%` : `${displayVal}%`;
       circleLabel = value > target ? "over" : "left";
       helpText = "(Base limit 50% of total)";
-    } else if (type === "water") {
-      badge = getWaterBadge(value, target);
-      const diff = target - value;
-      const displayVal = Math.abs(Number(diff.toFixed(1)));
-      circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
-      circleLabel = value > target ? "over" : "left";
-      helpText = "(Count in liters)";
+      } else if (type === "water") {
+        badge = getWaterBadge(value, target);
+        const diff = target - value;
+        const displayVal = Math.round(Math.abs(diff));
+        circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
+        circleLabel = value > target ? "over" : "left";
+        helpText = "(Count in liters)";
+
     } else if (type === "alcohol") {
       badge = getAlcoholBadge(value * 7, target * 7);
       const diff = target - value;
