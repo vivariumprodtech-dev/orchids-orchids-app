@@ -101,17 +101,26 @@ export default function UploadPage() {
             logId = newLog.id;
           }
 
+            const normalizeMeal = (meal: string) => {
+              const m = meal.toLowerCase().trim();
+              if (m === "colazione") return "breakfast";
+              if (m === "pranzo") return "lunch";
+              if (m === "cena") return "dinner";
+              if (m === "spuntino" || m === "snack") return "snack";
+              return m;
+            };
+
             const { error } = await supabase.from("food_entries").insert({
               log_id: logId,
               name: row.name,
-              meal: row.meal || "Spuntino",
-              grams: row.grams ? parseInt(row.grams) : 0,
-              calories: row.calories ? parseFloat(row.calories) : 0,
-              protein: row.protein ? parseFloat(row.protein) : 0,
-              carbs: row.carbs ? parseFloat(row.carbs) : 0,
-              fats: row.fats ? parseFloat(row.fats) : 0,
-              fiber: row.fiber ? parseFloat(row.fiber) : 0,
-              alcohol: row.alcohol ? parseFloat(row.alcohol) : 0,
+              meal: row.meal ? normalizeMeal(row.meal) : "snack",
+              grams: row.grams ? Math.round(parseFloat(row.grams)) : 0,
+              calories: row.calories ? Math.round(parseFloat(row.calories)) : 0,
+              protein: row.protein ? Math.round(parseFloat(row.protein)) : 0,
+              carbs: row.carbs ? Math.round(parseFloat(row.carbs)) : 0,
+              fats: row.fats ? Math.round(parseFloat(row.fats)) : 0,
+              fiber: row.fiber ? Math.round(parseFloat(row.fiber)) : 0,
+              alcohol: row.alcohol ? Math.round(parseFloat(row.alcohol)) : 0,
             });
 
 
