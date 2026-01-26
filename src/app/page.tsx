@@ -94,8 +94,15 @@ export default function Home() {
         </Link>
 
         <Link
-          href="/stats"
+          href="/upload"
           className="rounded-full border-2 border-teal-400 bg-white px-8 py-3 text-center font-semibold text-teal-500 transition-all hover:bg-teal-50"
+        >
+          📤 Upload Dati CSV
+        </Link>
+
+        <Link
+          href="/stats"
+          className="rounded-full border-2 border-gray-200 bg-white px-8 py-3 text-center font-semibold text-gray-500 transition-all hover:bg-gray-50"
         >
           📱 Mini App (vuota)
         </Link>
