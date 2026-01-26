@@ -476,7 +476,12 @@ function MealMomentCard({
     "Colazione": "Breakfast",
     "Pranzo": "Lunch",
     "Spuntino": "Afternoon",
-    "Cena": "Dinner"
+    "Cena": "Dinner",
+    "Pre-colazione": "Breakfast",
+    "Spuntino Mattina": "Morning",
+    "Spuntino Pomeriggio": "Afternoon",
+    "Spuntino Notturno": "Night",
+    "Altro": "Lunch"
   };
 
   const semantic = mealNameMap[meal.meal] || "Lunch";
