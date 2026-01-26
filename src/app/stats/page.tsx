@@ -23,6 +23,7 @@ interface FoodEntry {
   carb: number;
   fat: number;
   fiber: number;
+  alcohol: number;
   meal?: string;
   time?: string;
 }
