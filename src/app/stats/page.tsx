@@ -1073,7 +1073,7 @@ function StatsContent() {
 
 export default function StatsPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Caricamento...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
       <StatsContent />
     </Suspense>
   );
