@@ -945,39 +945,44 @@ function StatsContent() {
               ))
             ) : data.foods.length === 0 ? (
               <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">Nessun cibo loggato</div>
-            ) : (
-              [...data.foods].reverse().map((food, i) => (
-                <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-primary-custom font-bold">{food.name}</span>
-                    <span className="text-[10px] text-gray-400">{food.grams}g</span>
+              ) : (
+                [...data.foods].reverse().map((food, i) => (
+                  <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
+                    {food.time && (
+                      <div className="absolute top-3 right-3 rounded-lg bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-400">
+                        {food.time}
+                      </div>
+                    )}
+                    <div className="mb-2 flex items-center justify-between pr-12">
+                      <span className="text-primary-custom font-bold">{food.name}</span>
+                      <span className="text-[10px] text-gray-400">{food.grams}g</span>
+                    </div>
+                    <div className="mb-2 flex items-center gap-1.5">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                      <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
+                      <span className="text-secondary-custom font-bold">Kcal</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1">
+                      <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#FF4D4D]" />
+                        <i>Protein {Math.round(food.pro)}g</i>
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#4CD964]" />
+                        <i>Fiber {Math.round(food.fiber)}g</i>
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#FFCC00]" />
+                        <i>Carbs {Math.round(food.carb)}g</i>
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#AF52DE]" />
+                        <i>Fat {Math.round(food.fat)}g</i>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mb-2 flex items-center gap-1.5">
-                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                    <span className="text-primary-custom font-bold">{food.calories}</span>
-                    <span className="text-secondary-custom font-bold">Kcal</span>
-                  </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1">
-                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
-                      <BadgeIconSm semantic="Protein" />
-                      <span>{Math.round(food.pro)}g</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
-                      <BadgeIconSm semantic="Fiber" />
-                      <span>{Math.round(food.fiber)}g</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
-                      <BadgeIconSm semantic="Carbo" />
-                      <span>{Math.round(food.carb)}g</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
-                      <BadgeIconSm semantic="Fat" />
-                      <span>{Math.round(food.fat)}g</span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
           </div>
         </div>
       </div>
