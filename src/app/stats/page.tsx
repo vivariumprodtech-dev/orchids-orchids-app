@@ -735,10 +735,10 @@ function MealMomentCard({
   );
 }
 
-function StatsContent() {
+  function StatsContent() {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
   const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
 
   const toggleMeal = (mealName: string) => {
@@ -758,133 +758,131 @@ function StatsContent() {
   });
   const showAllFoods = false;
 
-    useEffect(() => {
-      setOpenMeals({}); // Reset open meals when day changes
-      if (selectedDay === 12) {
-        setData(DAY_12_DATA);
-        return;
-      }
-      if (selectedDay === 13) {
-        setData(DAY_13_DATA);
-        return;
-      }
-      if (selectedDay === 14) {
-        setData(DAY_14_DATA);
-        return;
-      }
-      if (selectedDay === 15) {
-        setData(DAY_15_DATA);
-        return;
-      }
-      if (selectedDay === 16) {
-        setData(DAY_16_DATA);
+  useEffect(() => {
+    setOpenMeals({});
+    
+    const fetchData = async () => {
+      if (!userId || !selectedDate) {
+        loadFromParams();
         return;
       }
 
-        // If Today, try fetching from Supabase first if userId is present
-        if (selectedDay === null && userId) {
-          const fetchTodayData = async () => {
-            try {
-              const today = new Date().toISOString().split('T')[0];
-              const { data: log, error } = await supabase
-                .from('daily_logs')
-                .select('*, food_entries(*), activity_entries(*)')
-                .eq('user_id', userId) // userId is string, Supabase handles bigint conversion
-                .eq('date', today)
-                .maybeSingle();
+      try {
+        const { data: log, error } = await supabase
+          .from('daily_logs')
+          .select('*, food_entries(*)')
+          .eq('user_id', userId)
+          .eq('date', selectedDate)
+          .maybeSingle();
 
-              if (error) {
-                console.error("Error fetching today's data:", error);
-                loadFromParams();
-                return;
-              }
-
-              if (log) {
-                setData({
-                  water: log.water || 0,
-                  calories: log.calories || 0,
-                  protein: log.protein || 0,
-                  carbs: log.carbs || 0,
-                  fats: log.fats || 0,
-                  fiber: log.fiber || 0,
-                  foods: log.food_entries?.map((f: any) => ({
-                    name: f.name,
-                    grams: f.grams,
-                    calories: f.calories,
-                    pro: f.protein,
-                    carb: f.carbs,
-                    fat: f.fats,
-                    fiber: f.fiber
-                  })) || [],
-                  activeCalories: log.active_calories || 0,
-                  alcohol: { grams: 0, calories: 0 },
-                });
-                return;
-              }
-            } catch (err) {
-              console.error("Unexpected error fetching data:", err);
-            }
-            // Fallback to URL params if no DB data or unexpected error
-            loadFromParams();
-          };
-          fetchTodayData();
-        } else {
+        if (error) {
+          console.error("Error fetching data:", error);
           loadFromParams();
+          return;
         }
 
-      function loadFromParams() {
-        const calories = parseInt(searchParams.get("calories") || "0");
-        const protein = parseFloat(searchParams.get("protein") || "0");
-        const carbs = parseFloat(searchParams.get("carbs") || "0");
-        const fats = parseFloat(searchParams.get("fats") || "0");
-        const fiber = parseFloat(searchParams.get("fiber") || "0");
-        const water = parseInt(searchParams.get("water") || "0");
-        const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
-        const alcoholGrams = parseInt(searchParams.get("alcohol_grams") || "0");
-        const alcoholKcal = parseInt(searchParams.get("alcohol_kcal") || "0");
-    
-        const foodsParam = searchParams.get("foods");
-        let foods: FoodEntry[] = [];
-        if (foodsParam) {
-          foods = foodsParam.split("|").map((f) => {
-            const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
-            return {
-              name,
-              grams: parseInt(grams),
-              calories: parseInt(cals),
-              pro: parseFloat(pro),
-              carb: parseFloat(carb),
-              fat: parseFloat(fat),
-              fiber: parseFloat(fib) || 0,
-            };
+        if (log) {
+          setData({
+            water: log.water || 0,
+            calories: log.calories || 0,
+            protein: log.protein || 0,
+            carbs: log.carbs || 0,
+            fats: log.fats || 0,
+            fiber: log.fiber || 0,
+            foods: log.food_entries?.map((f: any) => ({
+              name: f.name,
+              grams: f.grams,
+              calories: f.calories,
+              pro: f.protein,
+              carb: f.carbs,
+              fat: f.fats,
+              fiber: f.fiber
+            })) || [],
+            activeCalories: log.active_calories || 0,
+            alcohol: { grams: 0, calories: 0 },
           });
+          return;
+        } else {
+          // If no data in DB for this day, reset or load from params if today
+          if (selectedDate === new Date().toISOString().split('T')[0]) {
+            loadFromParams();
+          } else {
+            setData({
+              calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
+              water: 0, activeCalories: 0, foods: [],
+              alcohol: { grams: 0, calories: 0 }
+            });
+          }
         }
-    
-        setData({ 
-          calories, 
-          protein, 
-          carbs, 
-          fats, 
-          fiber, 
-          water, 
-          activeCalories, 
-          foods,
-          alcohol: { grams: alcoholGrams, calories: alcoholKcal }
+      } catch (err) {
+        console.error("Unexpected error fetching data:", err);
+        loadFromParams();
+      }
+    };
+
+    function loadFromParams() {
+      const calories = parseInt(searchParams.get("calories") || "0");
+      const protein = parseFloat(searchParams.get("protein") || "0");
+      const carbs = parseFloat(searchParams.get("carbs") || "0");
+      const fats = parseFloat(searchParams.get("fats") || "0");
+      const fiber = parseFloat(searchParams.get("fiber") || "0");
+      const water = parseInt(searchParams.get("water") || "0");
+      const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
+      const alcoholGrams = parseInt(searchParams.get("alcohol_grams") || "0");
+      const alcoholKcal = parseInt(searchParams.get("alcohol_kcal") || "0");
+  
+      const foodsParam = searchParams.get("foods");
+      let foods: FoodEntry[] = [];
+      if (foodsParam) {
+        foods = foodsParam.split("|").map((f) => {
+          const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
+          return {
+            name,
+            grams: parseInt(grams),
+            calories: parseInt(cals),
+            pro: parseFloat(pro),
+            carb: parseFloat(carb),
+            fat: parseFloat(fat),
+            fiber: parseFloat(fib) || 0,
+          };
         });
       }
+  
+      setData({ 
+        calories, 
+        protein, 
+        carbs, 
+        fats, 
+        fiber, 
+        water, 
+        activeCalories, 
+        foods,
+        alcohol: { grams: alcoholGrams, calories: alcoholKcal }
+      });
+    }
+
+    fetchData();
 
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
-  }, [searchParams, selectedDay, userId]);
+  }, [searchParams, selectedDate, userId]);
 
-  const isToday = selectedDay === null;
+  const isToday = selectedDate === new Date().toISOString().split('T')[0];
   const displayDate = isToday 
     ? "Today's Balance" 
-    : `${selectedDay} January 2026`;
+    : new Date(selectedDate || "").toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Generate last 7 days
+  const last7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
 
   const BMR = 1600;
+
     const totalTarget = BMR + data.activeCalories;
     const caloriesLeft = totalTarget - data.calories;
     const isOver = data.calories > totalTarget;
