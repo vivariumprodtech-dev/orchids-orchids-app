@@ -47,224 +47,6 @@ interface StatsData {
   };
 }
 
-const DAY_13_DATA: StatsData = {
-  calories: 2020,
-  protein: 72,
-  carbs: 195,
-  fats: 88,
-  fiber: 18,
-  water: 1200,
-  activeCalories: 0,
-  foods: [],
-  alcohol: {
-    grams: 10,
-    calories: 70,
-  },
-  meals: [
-    {
-      meal: "Colazione",
-      foods: [
-        { name: "Cornetto alla crema", grams: 80, calories: 290, pro: 5, carb: 38, fat: 14, fiber: 1 },
-        { name: "Cappuccino con zucchero", grams: 200, calories: 120, pro: 4, carb: 15, fat: 5, fiber: 0 },
-      ],
-      totalCalories: 410,
-    },
-    {
-      meal: "Pranzo",
-      foods: [
-        { name: "Pasta alla carbonara", grams: 280, calories: 580, pro: 22, carb: 65, fat: 26, fiber: 3 },
-        { name: "Pane bianco", grams: 50, calories: 130, pro: 4, carb: 25, fat: 1, fiber: 1 },
-      ],
-      totalCalories: 710,
-    },
-    {
-      meal: "Spuntino",
-      foods: [
-        { name: "Tiramisù", grams: 120, calories: 350, pro: 6, carb: 35, fat: 20, fiber: 0 },
-      ],
-      totalCalories: 350,
-    },
-    {
-      meal: "Cena",
-      foods: [
-        { name: "Pizza margherita", grams: 300, calories: 480, pro: 35, carb: 57, fat: 27, fiber: 13 },
-        { name: "Vino rosso", grams: 125, calories: 70, pro: 0, carb: 0, fat: 0, fiber: 0 },
-      ],
-      totalCalories: 550,
-    },
-  ],
-};
-
-const DAY_14_DATA: StatsData = {
-  calories: 1480,
-  protein: 95,
-  carbs: 145,
-  fats: 55,
-  fiber: 22,
-  water: 2000,
-  activeCalories: 180,
-  foods: [],
-  meals: [
-    {
-      meal: "Colazione",
-      foods: [
-        { name: "Yogurt greco 0%", grams: 170, calories: 95, pro: 17, carb: 6, fat: 0, fiber: 0 },
-        { name: "Muesli integrale", grams: 40, calories: 150, pro: 4, carb: 28, fat: 3, fiber: 4 },
-        { name: "Mirtilli freschi", grams: 80, calories: 45, pro: 1, carb: 10, fat: 0, fiber: 2 },
-      ],
-      totalCalories: 290,
-    },
-    {
-      meal: "Pranzo",
-      foods: [
-        { name: "Insalata di pollo", grams: 250, calories: 320, pro: 35, carb: 12, fat: 15, fiber: 5 },
-        { name: "Pane integrale", grams: 40, calories: 95, pro: 4, carb: 18, fat: 1, fiber: 3 },
-      ],
-      totalCalories: 415,
-    },
-    {
-      meal: "Spuntino",
-      foods: [
-        { name: "Mela", grams: 180, calories: 95, pro: 0, carb: 25, fat: 0, fiber: 4 },
-        { name: "Mandorle", grams: 20, calories: 115, pro: 4, carb: 4, fat: 10, fiber: 2 },
-      ],
-      totalCalories: 210,
-    },
-    {
-      meal: "Cena",
-      foods: [
-        { name: "Salmone al forno", grams: 150, calories: 280, pro: 30, carb: 0, fat: 18, fiber: 0 },
-        { name: "Verdure grigliate", grams: 200, calories: 85, pro: 3, carb: 15, fat: 2, fiber: 6 },
-        { name: "Riso basmati", grams: 80, calories: 200, pro: 4, carb: 45, fat: 1, fiber: 1 },
-      ],
-      totalCalories: 565,
-    },
-  ],
-};
-
-const DAY_15_DATA: StatsData = {
-  calories: 1720,
-  protein: 78,
-  carbs: 185,
-  fats: 72,
-  fiber: 16,
-  water: 1600,
-  activeCalories: 50,
-  foods: [],
-  meals: [
-    {
-      meal: "Colazione",
-      foods: [
-        { name: "Pane tostato", grams: 60, calories: 155, pro: 5, carb: 30, fat: 2, fiber: 2 },
-        { name: "Burro di arachidi", grams: 30, calories: 180, pro: 7, carb: 6, fat: 15, fiber: 2 },
-        { name: "Banana", grams: 120, calories: 105, pro: 1, carb: 27, fat: 0, fiber: 3 },
-      ],
-      totalCalories: 440,
-    },
-    {
-      meal: "Pranzo",
-      foods: [
-        { name: "Panino con prosciutto", grams: 180, calories: 380, pro: 22, carb: 40, fat: 15, fiber: 2 },
-        { name: "Patatine fritte", grams: 100, calories: 310, pro: 3, carb: 40, fat: 15, fiber: 3 },
-      ],
-      totalCalories: 690,
-    },
-    {
-      meal: "Spuntino",
-      foods: [
-        { name: "Barretta proteica", grams: 50, calories: 190, pro: 15, carb: 20, fat: 7, fiber: 2 },
-      ],
-      totalCalories: 190,
-    },
-    {
-      meal: "Cena",
-      foods: [
-        { name: "Risotto ai funghi", grams: 300, calories: 400, pro: 10, carb: 62, fat: 12, fiber: 4 },
-      ],
-      totalCalories: 400,
-    },
-  ],
-};
-
-const DAY_16_DATA: StatsData = {
-  calories: 1850,
-  protein: 110,
-  carbs: 160,
-  fats: 65,
-  fiber: 25,
-  water: 2200,
-  activeCalories: 250,
-  foods: [],
-  meals: [
-    {
-      meal: "Colazione",
-      foods: [
-        { name: "Omelette 3 uova", grams: 150, calories: 240, pro: 18, carb: 2, fat: 15, fiber: 0 },
-        { name: "Pane di segale", grams: 50, calories: 120, pro: 4, carb: 22, fat: 1, fiber: 4 },
-      ],
-      totalCalories: 360,
-    },
-    {
-      meal: "Pranzo",
-      foods: [
-        { name: "Bowl di quinoa e ceci", grams: 350, calories: 480, pro: 20, carb: 65, fat: 12, fiber: 12 },
-        { name: "Spremuta d'arancia", grams: 200, calories: 90, pro: 1, carb: 20, fat: 0, fiber: 0 },
-      ],
-      totalCalories: 570,
-    },
-    {
-      meal: "Spuntino",
-      foods: [
-        { name: "Mandorle", grams: 30, calories: 175, pro: 6, carb: 6, fat: 15, fiber: 3 },
-      ],
-      totalCalories: 175,
-    },
-    {
-      meal: "Cena",
-      foods: [
-        { name: "Bistecca di manzo", grams: 200, calories: 450, pro: 50, carb: 0, fat: 22, fiber: 0 },
-        { name: "Insalata mista", grams: 150, calories: 45, pro: 2, carb: 5, fat: 2, fiber: 4 },
-        { name: "Patate arrosto", grams: 150, calories: 250, pro: 3, carb: 40, fat: 8, fiber: 2 },
-      ],
-      totalCalories: 745,
-    },
-  ],
-};
-
-const DAY_12_DATA: StatsData = {
-  calories: 1950,
-  protein: 85,
-  carbs: 220,
-  fats: 75,
-  fiber: 20,
-  water: 1800,
-  activeCalories: 120,
-  foods: [],
-  meals: [
-    {
-      meal: "Colazione",
-      foods: [
-        { name: "Pancake proteici", grams: 120, calories: 310, pro: 25, carb: 35, fat: 8, fiber: 4 },
-      ],
-      totalCalories: 310,
-    },
-    {
-      meal: "Pranzo",
-      foods: [
-        { name: "Spaghetti alle vongole", grams: 300, calories: 520, pro: 22, carb: 75, fat: 15, fiber: 3 },
-      ],
-      totalCalories: 520,
-    },
-    {
-      meal: "Cena",
-      foods: [
-        { name: "Sushi misto", grams: 400, calories: 650, pro: 30, carb: 90, fat: 15, fiber: 2 },
-      ],
-      totalCalories: 650,
-    },
-  ],
-};
-
 const INITIAL_FOODS_DISPLAY = 5;
 
 function StatusBadge({ 
@@ -455,7 +237,6 @@ function ShadcnRadialProgress({
 }
 
 function getCalorieBadge(consumed: number, target: number, isToday: boolean) {
-
   if (target === 0) return { text: "No target", connotation: "neutral" as const };
   
   const tolerance = target * 0.03;
@@ -478,7 +259,6 @@ function getMacroBadge(type: "protein" | "carbs" | "fat" | "fiber", consumed: nu
   if (target === 0) return { text: "No target", connotation: "neutral" as const };
 
   if (isToday && consumed < target) {
-    // Check "Over" rules even on current day if it's already over
     const overThresholds = {
       protein: 1.5,
       fiber: 1.5,
@@ -491,7 +271,6 @@ function getMacroBadge(type: "protein" | "carbs" | "fat" | "fiber", consumed: nu
     return { text: "on track", connotation: "on-track" as const };
   }
 
-  // Past day or Over target logic
   const rules = {
     protein: { over: 1.5, low: 0.03, near: 0.03 },
     fiber: { over: 1.5, low: 0.06, near: 0.06 },
@@ -672,7 +451,6 @@ function MacroCard({
     );
   }
 
-
 function MealMomentCard({
   meal,
   isOpen,
@@ -735,7 +513,7 @@ function MealMomentCard({
   );
 }
 
-  function StatsContent() {
+function StatsContent() {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
@@ -756,7 +534,6 @@ function MealMomentCard({
     foods: [],
     alcohol: { grams: 0, calories: 0 },
   });
-  const showAllFoods = false;
 
   useEffect(() => {
     setOpenMeals({});
@@ -803,7 +580,6 @@ function MealMomentCard({
           });
           return;
         } else {
-          // If no data in DB for this day, reset or load from params if today
           if (selectedDate === new Date().toISOString().split('T')[0]) {
             loadFromParams();
           } else {
@@ -874,7 +650,6 @@ function MealMomentCard({
     ? "Today's Balance" 
     : new Date(selectedDate || "").toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' });
 
-  // Generate last 7 days
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));
@@ -882,331 +657,151 @@ function MealMomentCard({
   });
 
   const BMR = 1600;
-
-    const totalTarget = BMR + data.activeCalories;
-    const caloriesLeft = totalTarget - data.calories;
-    const isOver = data.calories > totalTarget;
-    const surplus = data.calories - totalTarget;
-
-    const waterLiters = data.water / 1000;
-    const waterTarget = 2.0;
-
-    const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
-
-    const calCircleColor = BadgeIconColors.Lunch;
+  const totalTarget = BMR + data.activeCalories;
+  const caloriesLeft = totalTarget - data.calories;
+  const isOver = data.calories > totalTarget;
+  const surplus = data.calories - totalTarget;
+  const waterLiters = data.water / 1000;
+  const waterTarget = 2.0;
+  const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
   return (
     <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
-        <div className="mb-5 flex items-center justify-between">
-          <div className="text-3xl font-bold"
-            style={{
-              background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Giada.
+      <div className="mb-5 flex items-center justify-between">
+        <div className="text-3xl font-bold"
+          style={{
+            background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          Giada.
+        </div>
+        <div className="text-primary-custom">
+          {displayDate}
+        </div>
+      </div>
+
+      <div className="mb-5 flex justify-between gap-2">
+        {last7Days.map((date, i) => {
+          const dateStr = date.toISOString().split('T')[0];
+          const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+          const isSelected = selectedDate === dateStr;
+          const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+          const dayNum = date.getDate();
+          
+          let bgColor = "#FFFFFF";
+          if (isSelected) bgColor = "#9EDDE2";
+          else if (isTodayDay) bgColor = "#E2F7F9";
+
+          let textColor = "#5A658D";
+          if (isSelected) textColor = "#262C44";
+          else if (isTodayDay) textColor = "#088D98";
+
+          return (
+            <div
+              key={i}
+              onClick={() => setSelectedDate(dateStr)}
+              className="flex-1 rounded-full py-2 text-center transition-all"
+              style={{ 
+                backgroundColor: bgColor,
+                cursor: "pointer",
+                fontFamily: '"DM Sans", sans-serif'
+              }}
+            >
+              <div style={{ fontSize: "14px", fontWeight: 700, color: textColor }}>{dayName}</div>
+              <div style={{ fontSize: "14px", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "4px" }}>{dayNum}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="space-y-8">
+        {calorieBadge.showAlert && <MissingAlert />}
+        <div className="space-y-3">
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 space-y-2.5">
+                <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
+                <div className="flex items-center gap-1 text-secondary-custom">
+                  <BadgeIconSm semantic="Lunch" />
+                  <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
+                </div>
+                <div className="flex items-center gap-1 text-secondary-custom">
+                  <BadgeIconSm semantic="Goal" />
+                  <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
+                </div>
+                <div className="flex items-center gap-1 text-secondary-custom">
+                  <BadgeIconSm semantic="KcalActive" />
+                  <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                </div>
+                <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+              </div>
+              <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                <div className="text-center !text-[20px] font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
+                  {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                </div>
+                <div className="text-secondary-custom !text-[12px]">{isOver ? "over" : "left"}</div>
+              </ShadcnRadialProgress>
+            </div>
           </div>
-          <div className="text-primary-custom">
-            {displayDate}
+
+          <div className="grid grid-cols-2 gap-3">
+            <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
+            <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
+            <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
+            <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
           </div>
+
+          <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={waterTarget} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
+          <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+          <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
         </div>
 
-          <div className="mb-5 flex justify-between gap-2">
-            {last7Days.map((date, i) => {
-              const dateStr = date.toISOString().split('T')[0];
-              const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-              const isSelected = selectedDate === dateStr;
-              const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-              const dayNum = date.getDate();
-
-              // Dot rule: ONLY red, ONLY past days, ONLY if missing alert
-              const isPast = date < new Date(new Date().setHours(0,0,0,0));
-              let showRedDot = false;
-              if (isPast) {
-                const target = BMR + 0; // fallback target check
-                const badge = getCalorieBadge(0, target, false); // This is a bit tricky without pre-fetching all dots
-                // For now, let's just show dot if calories are 0 for a past day
-                // In a real app we might fetch these statuses in a separate query
-              }
-
-              // Background colors
-              let bgColor = "#FFFFFF";
-              if (isSelected) {
-                bgColor = "#9EDDE2";
-              } else if (isTodayDay) {
-                bgColor = "#E2F7F9";
-              }
-
-              // Font colors
-              let textColor = "#5A658D";
-              if (isSelected) {
-                textColor = "#262C44";
-              } else if (isTodayDay) {
-                textColor = "#088D98";
-              }
-
-              return (
-                <div
-                  key={i}
-                  onClick={() => setSelectedDate(dateStr)}
-                  className="flex-1 rounded-full py-2 text-center transition-all"
-                  style={{ 
-                    backgroundColor: bgColor,
-                    cursor: "pointer",
-                    fontFamily: '"DM Sans", sans-serif'
-                  }}
-                >
-                  <div 
-                    style={{ 
-                      fontSize: "14px", 
-                      fontWeight: 700, 
-                      color: textColor,
-                      fontStyle: "normal"
-                    }}
-                  >
-                    {dayName}
-                  </div>
-                  <div 
-                    style={{ 
-                      fontSize: "14px", 
-                      fontWeight: (isTodayDay || isSelected) ? 700 : 400, 
-                      color: textColor,
-                      fontStyle: "normal",
-                      marginTop: "4px"
-                    }}
-                  >
-                    {dayNum}
-                  </div>
-                    <div className="flex justify-center mt-1">
-                      {showRedDot ? (
-                        <div className="h-1.5 w-1.5 rounded-full bg-[#E9566E]" />
-                      ) : (
-                        <div className="h-1.5 w-1.5" />
-                      )}
-                    </div>
-
-                </div>
-              );
-            })}
-          </div>
-
-                  <div 
-                    style={{ 
-                      fontSize: "14px", 
-                      fontWeight: (isTodayDay || isSelected) ? 700 : 400, 
-                      color: textColor,
-                      fontStyle: "normal",
-                      marginTop: "4px"
-                    }}
-                  >
-                    {dayNum}
-                  </div>
-                    <div className="flex justify-center mt-1">
-                      {showRedDot ? (
-                        <div className="h-1.5 w-1.5 rounded-full bg-[#E9566E]" />
-                      ) : (
-                        <div className="h-1.5 w-1.5" />
-                      )}
-                    </div>
-
-                </div>
-              );
-            })}
-          </div>
-
-        <div className="space-y-8">
-          {calorieBadge.showAlert && <MissingAlert />}
-          {/* Section 1: kcal card, macro cards, process food, water and alcohol */}
+        <div>
+          <h2 className="mb-4 text-primary-custom">Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
           <div className="space-y-3">
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
-                <div className="flex items-center justify-between">
-                    <div className="flex-1 space-y-2.5">
-                        <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
-                        <div className="flex items-center gap-1 text-secondary-custom">
-                          <BadgeIconSm semantic="Lunch" />
-                          <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
-                        </div>
-                        <div className="flex items-center gap-1 text-secondary-custom">
-                          <BadgeIconSm semantic="Goal" />
-                          <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal <span className="text-tertiary-custom">(BMR - deficit)</span></span>
-                        </div>
-                        <div className="flex items-center gap-1 text-secondary-custom">
-                          <BadgeIconSm semantic="KcalActive" />
-                          <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal{data.activeCalories > 200 && <span> 🔥</span>}</span>
-                        </div>
-                        <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+            {data.foods.length === 0 ? (
+              <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">Nessun cibo loggato</div>
+            ) : (
+              data.foods.map((food, i) => (
+                <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-secondary-custom">{food.name}</span>
+                    <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">10:00</span>
+                  </div>
+                  <div className="mb-2 flex items-center gap-1.5">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                    <span className="text-primary-custom font-bold">{food.calories}</span>
+                    <span className="text-secondary-custom font-bold">Kcal</span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    <div className="flex items-center gap-1.5 text-tertiary-custom">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
+                      <span>Protein {food.pro}g</span>
                     </div>
-                <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={calCircleColor} innerRadius="77%">
-                  <div 
-                    className="text-center !text-[20px] font-bold"
-                    style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}
-                  >
-                    {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                    <div className="flex items-center gap-1.5 text-tertiary-custom">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
+                      <span>Fiber {food.fiber}g</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-tertiary-custom">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
+                      <span>Carbo {food.carb}g</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-tertiary-custom">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
+                      <span>Fat {food.fat}g</span>
+                    </div>
                   </div>
-                  <div className="text-secondary-custom !text-[12px]">
-                    {isOver ? "over" : "left"}
-                  </div>
-                </ShadcnRadialProgress>
-
                 </div>
-              </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
-              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
-              <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
-              <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
-            </div>
-
-              <MacroCard 
-                icon={<BadgeIconSm semantic="Water" />} 
-                name="Water intake" 
-                value={waterLiters} 
-                target={waterTarget} 
-                color={BadgeIconColors.Water} 
-                isToday={isToday} 
-                type="water" 
-                centered 
-              />
-
-              <MacroCard 
-                icon={<BadgeIconSm semantic="ProcessFood" />} 
-                name="Process food" 
-                value={0} 
-                target={100} 
-                color={BadgeIconColors.ProcessFood} 
-                isToday={isToday} 
-                type="processed" 
-                centered 
-              />
-    
-              <MacroCard 
-                icon={<BadgeIconSm semantic="Alcohol" />} 
-                name="Alcohol intake" 
-                value={data.alcohol?.grams || 0} 
-                target={30} 
-                color={BadgeIconColors.Alcohol} 
-                isToday={isToday} 
-                type="alcohol" 
-                centered 
-              />
-
-          </div>
-
-            {/* Section 2: Food log section */}
-            <div>
-              <h2 className="mb-4 text-primary-custom">
-                Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total
-              </h2>
-              <div className="space-y-3">
-                {!isToday && (data.meals || data.foods.length > 0) ? (
-                  (data.meals || [{
-                    meal: "Pasto",
-                    foods: data.foods,
-                    totalCalories: data.foods.reduce((sum, f) => sum + f.calories, 0)
-                  }]).map((meal) => (
-                    <div key={meal.meal} className="space-y-2 relative">
-                      <MealMomentCard 
-                        meal={meal} 
-                        isOpen={!!openMeals[meal.meal]} 
-                        onToggle={() => toggleMeal(meal.meal)} 
-                      />
-                      {openMeals[meal.meal] && (
-                        <div className="pl-4 space-y-2 relative">
-                          {/* Vertical line: dotted (rounded style), finishes at the end of the last food entry */}
-                          <div 
-                            className="absolute left-[2px] top-[-8px] bottom-0 w-[2px]" 
-                            style={{ 
-                              backgroundImage: 'radial-gradient(circle, #CBCEDB 1px, transparent 1px)',
-                              backgroundSize: '100% 6px',
-                              backgroundRepeat: 'repeat-y',
-                              zIndex: 0 
-                            }}
-                          />
-                          {meal.foods.map((food, foodIndex) => (
-                            <div key={`${meal.meal}-${foodIndex}`} className="rounded-2xl bg-white p-4 shadow-sm relative z-10">
-                              <div className="mb-2 flex items-center justify-between">
-                                <span className="text-secondary-custom">{food.name}</span>
-                                <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
-                                  10:00
-                                </span>
-                              </div>
-                              <div className="mb-2 flex items-center gap-1.5">
-                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                                <span className="text-primary-custom font-bold">{food.calories}</span>
-                                <span className="text-secondary-custom font-bold">Kcal</span>
-                              </div>
-                              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                                <div className="flex items-center gap-1.5 text-tertiary-custom">
-                                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
-                                  <span>Protein {food.pro}g</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-tertiary-custom">
-                                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
-                                  <span>Fiber {food.fiber}g</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-tertiary-custom">
-                                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
-                                  <span>Carbo {food.carb}g</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-tertiary-custom">
-                                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
-                                  <span>Fat {food.fat}g</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))
-                ) : data.foods.length === 0 ? (
-
-                <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">
-                  Nessun cibo loggato
-                </div>
-              ) : (
-                  (showAllFoods ? data.foods : data.foods.slice(0, INITIAL_FOODS_DISPLAY)).map((food, i) => (
-                    <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
-                      <div className="mb-2 flex items-center justify-between">
-                        <span className="text-secondary-custom">{food.name}</span>
-                        <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">
-                          {new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
-                        </span>
-                      </div>
-                      <div className="mb-2 flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                      <span className="text-primary-custom">{food.calories}</span>
-                      <span className="text-secondary-custom">Kcal</span>
-                    </div>
-                    <div className="flex flex-wrap gap-x-4 gap-y-2">
-                      <div className="flex items-center gap-1.5 text-tertiary-custom">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
-                        <span>Protein {food.pro || 0}g</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-tertiary-custom">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
-                        <span>Fiber {food.fiber || 0}g</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-tertiary-custom">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
-                        <span>Carbo {food.carb || 0}g</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-tertiary-custom">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
-                        <span>Fat {food.fat || 0}g</span>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+              ))
+            )}
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 }
 
 export default function StatsPage() {
