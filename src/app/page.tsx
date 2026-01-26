@@ -74,6 +74,12 @@ export default function Home() {
               >
                 👤 Camila
               </button>
+              <button
+                onClick={() => setChatId("ugo_demo")}
+                className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-600 border border-amber-100 hover:bg-amber-100 transition-colors"
+              >
+                👤 Ugo (demo)
+              </button>
             </div>
           </div>
         </div>
