@@ -502,42 +502,49 @@ function MacroCard({
     const displayName = mealNameDisplayMap[meal.meal] || meal.meal;
 
   
-  const totals = meal.foods.reduce((acc, food) => ({
-    pro: acc.pro + food.pro,
-    fiber: acc.fiber + food.fiber,
-    carb: acc.carb + food.carb,
-    fat: acc.fat + food.fat
-  }), { pro: 0, fiber: 0, carb: 0, fat: 0 });
+    const totals = meal.foods.reduce((acc, food) => ({
+      pro: acc.pro + food.pro,
+      fiber: acc.fiber + food.fiber,
+      carb: acc.carb + food.carb,
+      fat: acc.fat + food.fat,
+      alcohol: acc.alcohol + (food.alcohol || 0)
+    }), { pro: 0, fiber: 0, carb: 0, fat: 0, alcohol: 0 });
 
-  return (
-    <div className="relative rounded-2xl bg-white p-4 shadow-sm cursor-pointer" onClick={onToggle}>
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <BadgeIconSm semantic={semantic} />
-            <span className="text-primary-custom font-bold">{displayName}</span>
-            <MoveRight size={16} className="text-secondary-custom" />
-            <span className="text-primary-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-secondary-custom">Kcal</span></span>
+    return (
+      <div className="relative rounded-2xl bg-white p-4 shadow-sm cursor-pointer" onClick={onToggle}>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <BadgeIconSm semantic={semantic} />
+              <span className="text-primary-custom font-bold">{displayName}</span>
+              <MoveRight size={16} className="text-secondary-custom" />
+              <span className="text-primary-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-secondary-custom">Kcal</span></span>
+            </div>
+            <div className="flex flex-wrap gap-x-4">
+              <div className="flex items-center gap-1 text-tertiary-custom">
+                <BadgeIconSm semantic="Protein" />
+                <span>{Math.round(totals.pro)}g</span>
+              </div>
+              <div className="flex items-center gap-1 text-tertiary-custom">
+                <BadgeIconSm semantic="Fiber" />
+                <span>{Math.round(totals.fiber)}g</span>
+              </div>
+              <div className="flex items-center gap-1 text-tertiary-custom">
+                <BadgeIconSm semantic="Carbo" />
+                <span>{Math.round(totals.carb)}g</span>
+              </div>
+              <div className="flex items-center gap-1 text-tertiary-custom">
+                <BadgeIconSm semantic="Fat" />
+                <span>{Math.round(totals.fat)}g</span>
+              </div>
+              {totals.alcohol > 0 && (
+                <div className="flex items-center gap-1 text-tertiary-custom">
+                  <BadgeIconSm semantic="Alcohol" />
+                  <span>{Math.round(totals.alcohol)}g</span>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-4">
-            <div className="flex items-center gap-1 text-tertiary-custom">
-              <BadgeIconSm semantic="Protein" />
-              <span>{Math.round(totals.pro)}g</span>
-            </div>
-            <div className="flex items-center gap-1 text-tertiary-custom">
-              <BadgeIconSm semantic="Fiber" />
-              <span>{Math.round(totals.fiber)}g</span>
-            </div>
-            <div className="flex items-center gap-1 text-tertiary-custom">
-              <BadgeIconSm semantic="Carbo" />
-              <span>{Math.round(totals.carb)}g</span>
-            </div>
-            <div className="flex items-center gap-1 text-tertiary-custom">
-              <BadgeIconSm semantic="Fat" />
-              <span>{Math.round(totals.fat)}g</span>
-            </div>
-          </div>
-        </div>
         <div className="text-secondary-custom">
           {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
         </div>
