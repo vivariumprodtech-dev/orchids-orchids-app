@@ -827,7 +827,40 @@ function StatsContent() {
         <div>
           <h2 className="mb-4 text-primary-custom">Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
           <div className="space-y-3">
-            {data.foods.length === 0 ? (
+            {data.meals && data.meals.length > 0 ? (
+              data.meals.map((meal, mealIdx) => (
+                <div key={mealIdx} className="space-y-2">
+                  <MealMomentCard 
+                    meal={meal} 
+                    isOpen={!!openMeals[meal.meal]} 
+                    onToggle={() => toggleMeal(meal.meal)} 
+                  />
+                  {openMeals[meal.meal] && (
+                    <div className="ml-4 space-y-3 border-l-2 border-teal-100 pl-4 py-2">
+                      {meal.foods.map((food, i) => (
+                        <div key={i} className="rounded-2xl bg-white/50 p-4 shadow-sm border border-white/40">
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="text-secondary-custom font-medium">{food.name}</span>
+                            <span className="text-[10px] text-gray-400">{food.grams}g</span>
+                          </div>
+                          <div className="mb-2 flex items-center gap-1.5">
+                            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                            <span className="text-primary-custom font-bold">{food.calories}</span>
+                            <span className="text-secondary-custom font-bold">Kcal</span>
+                          </div>
+                          <div className="flex flex-wrap gap-x-4 gap-y-1">
+                            <div className="text-[11px] text-tertiary-custom">P: {food.pro}g</div>
+                            <div className="text-[11px] text-tertiary-custom">C: {food.carb}g</div>
+                            <div className="text-[11px] text-tertiary-custom">F: {food.fat}g</div>
+                            <div className="text-[11px] text-tertiary-custom">Fi: {food.fiber}g</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : data.foods.length === 0 ? (
               <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">Nessun cibo loggato</div>
             ) : (
               data.foods.map((food, i) => (
