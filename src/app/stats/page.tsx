@@ -1025,7 +1025,7 @@ function StatsContent() {
                 </div>
               ))
             ) : data.foods.length === 0 ? (
-              <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">Nessun cibo loggato</div>
+              <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">No food logged</div>
               ) : (
                 [...data.foods].reverse().map((food, i) => (
                   <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
