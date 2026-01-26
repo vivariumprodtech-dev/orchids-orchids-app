@@ -463,28 +463,42 @@ function MacroCard({
     );
   }
 
-function MealMomentCard({
-  meal,
-  isOpen,
-  onToggle
-}: {
-  meal: MealEntry;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  const mealNameMap: Record<string, BadgeIconSemantic> = {
-    "Colazione": "Breakfast",
-    "Pranzo": "Lunch",
-    "Spuntino": "Afternoon",
-    "Cena": "Dinner",
-    "Pre-colazione": "Breakfast",
-    "Spuntino Mattina": "Morning",
-    "Spuntino Pomeriggio": "Afternoon",
-    "Spuntino Notturno": "Night",
-    "Altro": "Lunch"
-  };
+  function MealMomentCard({
+    meal,
+    isOpen,
+    onToggle
+  }: {
+    meal: MealEntry;
+    isOpen: boolean;
+    onToggle: () => void;
+  }) {
+    const mealNameDisplayMap: Record<string, string> = {
+      "breakfast": "Colazione",
+      "lunch": "Pranzo",
+      "dinner": "Cena",
+      "pre_breakfast": "Pre-colazione",
+      "morning": "Spuntino Mattina",
+      "afternoon": "Spuntino Pomeriggio",
+      "night": "Spuntino Notturno",
+      "snack": "Spuntino",
+      "other": "Altro"
+    };
 
-  const semantic = mealNameMap[meal.meal] || "Lunch";
+    const mealNameIconMap: Record<string, BadgeIconSemantic> = {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "pre_breakfast": "Breakfast",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "night": "Night",
+      "snack": "Afternoon",
+      "other": "Lunch"
+    };
+
+    const semantic = mealNameIconMap[meal.meal] || "Lunch";
+    const displayName = mealNameDisplayMap[meal.meal] || meal.meal;
+
   
   const totals = meal.foods.reduce((acc, food) => ({
     pro: acc.pro + food.pro,
