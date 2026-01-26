@@ -635,120 +635,124 @@ function StatsContent() {
         return;
       }
 
-        try {
-          const { data: log, error } = await supabase
-            .from('daily_logs')
-            .select('*, food_entries(*)')
-            .eq('user_id', userId)
-            .eq('date', selectedDate)
-            .maybeSingle();
+          try {
+            const { data: log, error } = await supabase
+              .from('daily_logs')
+              .select('*, food_entries(*)')
+              .eq('user_id', userId)
+              .eq('date', selectedDate)
+              .order('created_at', { foreignTable: 'food_entries', ascending: true })
+              .maybeSingle();
 
-          if (error) {
-            console.error("Error fetching data:", error);
-            loadFromParams();
-            return;
-          }
+            if (error) {
+              console.error("Error fetching data:", error);
+              loadFromParams();
+              return;
+            }
 
-              if (log) {
-                const foods = log.food_entries?.map((f: any) => ({
-                  name: f.name,
-                  grams: f.grams,
-                  calories: f.calories,
-                  pro: f.protein,
-                  carb: f.carbs,
-                  fat: f.fats,
-                  fiber: f.fiber,
-                  meal: f.meal,
-                  alcohol: f.alcohol || 0,
-                  time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
-                })) || [];
+                if (log) {
+                  const rawFoods = log.food_entries || [];
+                  const foods = rawFoods.map((f: any) => ({
+                    name: f.name,
+                    grams: f.grams,
+                    calories: f.calories,
+                    pro: f.protein,
+                    carb: f.carbs,
+                    fat: f.fats,
+                    fiber: f.fiber,
+                    meal: f.meal,
+                    alcohol: f.alcohol || 0,
+                    time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
+                  })) || [];
 
-              // Calculate totals from foods
-              const foodTotals = foods.reduce((acc: any, f: any) => ({
-                calories: acc.calories + (f.calories || 0),
-                protein: acc.protein + (f.pro || 0),
-                carbs: acc.carbs + (f.carb || 0),
-                fats: acc.fats + (f.fat || 0),
-                fiber: acc.fiber + (f.fiber || 0),
-                alcohol: acc.alcohol + (f.alcohol || 0)
-              }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0 });
+                // Calculate totals from foods
+                const foodTotals = foods.reduce((acc: any, f: any) => ({
+                  calories: acc.calories + (f.calories || 0),
+                  protein: acc.protein + (f.pro || 0),
+                  carbs: acc.carbs + (f.carb || 0),
+                  fats: acc.fats + (f.fat || 0),
+                  fiber: acc.fiber + (f.fiber || 0),
+                  alcohol: acc.alcohol + (f.alcohol || 0)
+                }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0 });
 
-              // Group by meal with sequence-based snack categorization
-              const mealsMap: Record<string, MealEntry> = {};
-              let hasHadBreakfast = false;
-              let hasHadLunch = false;
-              let hasHadDinner = false;
+                // Group by meal with sequence-based snack categorization
+                const mealsMap: Record<string, MealEntry> = {};
+                let hasHadBreakfast = false;
+                let hasHadLunch = false;
+                let hasHadDinner = false;
 
-              foods.forEach((f: any) => {
-                let mealName = f.meal || "Spuntino";
+                foods.forEach((f: any) => {
+                  let mealName = f.meal || "Spuntino";
+                  
+                  if (mealName === "Colazione") hasHadBreakfast = true;
+                  else if (mealName === "Pranzo") hasHadLunch = true;
+                  else if (mealName === "Cena") hasHadDinner = true;
+                  else if (mealName === "Spuntino" || mealName === "snack") {
+                    if (!hasHadBreakfast) mealName = "Pre-colazione";
+                    else if (!hasHadLunch) mealName = "Spuntino Mattina";
+                    else if (!hasHadDinner) mealName = "Spuntino Pomeriggio";
+                    else mealName = "Spuntino Notturno";
+                  }
+
+                  if (!mealsMap[mealName]) {
+                    mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
+                  }
+                  mealsMap[mealName].foods.push({ ...f, meal: mealName });
+                  mealsMap[mealName].totalCalories += f.calories;
+                });
                 
-                if (mealName === "Colazione") hasHadBreakfast = true;
-                else if (mealName === "Pranzo") hasHadLunch = true;
-                else if (mealName === "Cena") hasHadDinner = true;
-                else if (mealName === "Spuntino") {
-                  if (!hasHadBreakfast) mealName = "Pre-colazione";
-                  else if (!hasHadLunch) mealName = "Spuntino Mattina";
-                  else if (!hasHadDinner) mealName = "Spuntino Pomeriggio";
-                  else mealName = "Spuntino Notturno";
-                }
+                // Order meals
+                const mealOrder = [
+                  "Pre-colazione", 
+                  "Colazione", 
+                  "Spuntino Mattina", 
+                  "Pranzo", 
+                  "Spuntino Pomeriggio", 
+                  "Cena", 
+                  "Spuntino Notturno", 
+                  "Altro"
+                ];
 
-                if (!mealsMap[mealName]) {
-                  mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
-                }
-                mealsMap[mealName].foods.push({ ...f, meal: mealName });
-                mealsMap[mealName].totalCalories += f.calories;
-              });
-              
-              // Order meals
-              const mealOrder = [
-                "Pre-colazione", 
-                "Colazione", 
-                "Spuntino Mattina", 
-                "Pranzo", 
-                "Spuntino Pomeriggio", 
-                "Cena", 
-                "Spuntino Notturno", 
-                "Altro"
-              ];
+              const meals = Object.keys(mealsMap)
+                .sort((a, b) => {
+                  const indexA = mealOrder.indexOf(a);
+                  const indexB = mealOrder.indexOf(b);
+                  if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+                  if (indexA === -1) return 1;
+                  if (indexB === -1) return -1;
+                  return indexA - indexB;
+                })
+                .map(name => mealsMap[name]);
 
-            const meals = Object.keys(mealsMap)
-              .sort((a, b) => {
-                const indexA = mealOrder.indexOf(a);
-                const indexB = mealOrder.indexOf(b);
-                if (indexA === -1 && indexB === -1) return a.localeCompare(b);
-                if (indexA === -1) return 1;
-                if (indexB === -1) return -1;
-                return indexA - indexB;
-              })
-              .map(name => mealsMap[name]);
+                  const finalCalories = foodTotals.calories > 0 ? foodTotals.calories : (log.calories || 0);
+                  const finalAlcoholGrams = foodTotals.alcohol > 0 ? foodTotals.alcohol : (log.alcohol || 0);
 
-                setData({
-                  water: log.water || 0,
-                  calories: foodTotals.calories || log.calories || 0,
-                  protein: foodTotals.protein || log.protein || 0,
-                  carbs: foodTotals.carbs || log.carbs || 0,
-                  fats: foodTotals.fats || log.fats || 0,
-                  fiber: foodTotals.fiber || log.fiber || 0,
-                  foods: foods,
-                  meals: meals.length > 0 ? meals : undefined,
-                  activeCalories: log.active_calories || 0,
-                  bmr: log.bmr || undefined,
-                  alcohol: { 
-                    grams: foodTotals.alcohol || log.alcohol || 0, 
-                    calories: (foodTotals.alcohol || log.alcohol || 0) * 7 
-                  },
-                  targets: {
-
-                calories: log.target_calories || 1600,
-                protein: log.target_protein || 96,
-                carbs: log.target_carbs || 160,
-                fats: log.target_fats || 64,
-                fiber: log.target_fiber || 30,
-                water: log.target_water || 2,
-                deficit: log.target_deficit || 0
-              }
-            });
-            return;
+                  setData({
+                    water: log.water || 0,
+                    calories: Math.round(finalCalories),
+                    protein: Math.round(foodTotals.protein || log.protein || 0),
+                    carbs: Math.round(foodTotals.carbs || log.carbs || 0),
+                    fats: Math.round(foodTotals.fats || log.fats || 0),
+                    fiber: Math.round(foodTotals.fiber || log.fiber || 0),
+                    foods: foods,
+                    meals: meals.length > 0 ? meals : undefined,
+                    activeCalories: Math.round(log.active_calories || 0),
+                    bmr: log.bmr || undefined,
+                    alcohol: { 
+                      grams: Math.round(finalAlcoholGrams), 
+                      calories: Math.round(finalAlcoholGrams * 7)
+                    },
+                    targets: {
+                      calories: log.target_calories || 1600,
+                      protein: log.target_protein || 96,
+                      carbs: log.target_carbs || 160,
+                      fats: log.target_fats || 64,
+                      fiber: log.target_fiber || 30,
+                      water: log.target_water || 2,
+                      deficit: log.target_deficit || 0
+                    }
+                  });
+              return;
           } else {
             if (selectedDate === new Date().toISOString().split('T')[0]) {
               loadFromParams();
