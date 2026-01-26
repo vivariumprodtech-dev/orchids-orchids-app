@@ -42,10 +42,11 @@ interface StatsData {
   fats: number;
   fiber: number;
   water: number;
-  activeCalories: number;
-  bmr?: number;
-  foods: FoodEntry[];
-  meals?: MealEntry[];
+    activeCalories: number;
+    bmr?: number;
+    processedPercentage?: number;
+    foods: FoodEntry[];
+    meals?: MealEntry[];
   alcohol?: {
     grams: number;
     calories: number;
