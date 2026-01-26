@@ -680,18 +680,22 @@ function StatsContent() {
               })
               .map(name => mealsMap[name]);
 
-            setData({
-              water: log.water || 0,
-              calories: log.calories || 0,
-              protein: log.protein || 0,
-              carbs: log.carbs || 0,
-              fats: log.fats || 0,
-              fiber: log.fiber || 0,
-              foods: foods,
-              meals: meals.length > 0 ? meals : undefined,
-              activeCalories: log.active_calories || 0,
-              alcohol: { grams: 0, calories: 0 },
-              targets: {
+              setData({
+                water: log.water || 0,
+                calories: log.calories || 0,
+                protein: log.protein || 0,
+                carbs: log.carbs || 0,
+                fats: log.fats || 0,
+                fiber: log.fiber || 0,
+                foods: foods,
+                meals: meals.length > 0 ? meals : undefined,
+                activeCalories: log.active_calories || 0,
+                bmr: log.bmr || undefined,
+                alcohol: { 
+                  grams: log.alcohol || 0, 
+                  calories: (log.alcohol || 0) * 7 
+                },
+                targets: {
                 calories: log.target_calories || 1600,
                 protein: log.target_protein || 96,
                 carbs: log.target_carbs || 160,
