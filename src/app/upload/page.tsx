@@ -46,13 +46,13 @@ export default function UploadPage() {
         throw new Error("Il file CSV sembra vuoto o malformato.");
       }
 
-      if (type === "logs") {
-        for (const row of data) {
-          if (!row.user_id || !row.date) continue;
-          
-          const { error } = await supabase.from("daily_logs").upsert({
-            user_id: parseInt(row.user_id),
-            date: row.date,
+        if (type === "logs") {
+          for (const row of data) {
+            if (!row.user_id || !row.date) continue;
+            
+            const { error } = await supabase.from("daily_logs").upsert({
+              user_id: row.user_id,
+              date: row.date,
             target_calories: row.target_calories ? parseInt(row.target_calories) : null,
             target_protein: row.target_protein ? parseFloat(row.target_protein) : null,
             target_carbs: row.target_carbs ? parseFloat(row.target_carbs) : null,
