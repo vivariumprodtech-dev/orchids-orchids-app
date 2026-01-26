@@ -827,7 +827,7 @@ function StatsContent() {
         <div>
           <h2 className="mb-4 text-primary-custom">Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
           <div className="space-y-3">
-            {data.meals && data.meals.length > 0 ? (
+            {data.meals && data.meals.length > 0 && !isToday ? (
               data.meals.map((meal, mealIdx) => (
                 <div key={mealIdx} className="space-y-2">
                   <MealMomentCard 
