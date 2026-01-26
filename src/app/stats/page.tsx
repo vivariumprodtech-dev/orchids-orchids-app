@@ -674,30 +674,36 @@ function StatsContent() {
               return;
             }
 
-                if (log) {
-                  const rawFoods = log.food_entries || [];
-                  const foods = rawFoods.map((f: any) => ({
-                    name: f.name,
-                    grams: f.grams,
-                    calories: f.calories,
-                    pro: f.protein,
-                    carb: f.carbs,
-                    fat: f.fats,
-                    fiber: f.fiber,
-                    meal: f.meal,
-                    alcohol: f.alcohol || 0,
-                    time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
-                  })) || [];
+                  if (log) {
+                    const rawFoods = log.food_entries || [];
+                    const foods = rawFoods.map((f: any) => ({
+                      name: f.name,
+                      grams: f.grams,
+                      calories: f.calories,
+                      pro: f.protein,
+                      carb: f.carbs,
+                      fat: f.fats,
+                      fiber: f.fiber,
+                      meal: f.meal,
+                      alcohol: f.alcohol || 0,
+                      is_processed: f.is_processed || false,
+                      time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
+                    })) || [];
 
-                // Calculate totals from foods
-                const foodTotals = foods.reduce((acc: any, f: any) => ({
-                  calories: acc.calories + (f.calories || 0),
-                  protein: acc.protein + (f.pro || 0),
-                  carbs: acc.carbs + (f.carb || 0),
-                  fats: acc.fats + (f.fat || 0),
-                  fiber: acc.fiber + (f.fiber || 0),
-                  alcohol: acc.alcohol + (f.alcohol || 0)
-                }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0 });
+                  // Calculate totals from foods
+                  const foodTotals = foods.reduce((acc: any, f: any) => ({
+                    calories: acc.calories + (f.calories || 0),
+                    protein: acc.protein + (f.pro || 0),
+                    carbs: acc.carbs + (f.carb || 0),
+                    fats: acc.fats + (f.fat || 0),
+                    fiber: acc.fiber + (f.fiber || 0),
+                    alcohol: acc.alcohol + (f.alcohol || 0),
+                    processedCalories: acc.processedCalories + (f.is_processed ? f.calories : 0)
+                  }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0, processedCalories: 0 });
+
+                  const processedPercentage = foodTotals.calories > 0 
+                    ? (foodTotals.processedCalories / foodTotals.calories) * 100 
+                    : 0;
 
                 // Group by meal with sequence-based snack categorization
                 const mealsMap: Record<string, MealEntry> = {};
