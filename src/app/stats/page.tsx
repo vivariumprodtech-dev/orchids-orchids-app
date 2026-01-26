@@ -501,7 +501,7 @@ function MealMomentCard({
             <BadgeIconSm semantic={semantic} />
             <span className="text-primary-custom font-bold">{meal.meal}</span>
             <MoveRight size={16} className="text-secondary-custom" />
-            <span className="text-primary-custom font-bold">{meal.totalCalories} <span className="font-normal text-secondary-custom">Kcal</span></span>
+            <span className="text-primary-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-secondary-custom">Kcal</span></span>
           </div>
           <div className="flex flex-wrap gap-x-4">
             <div className="flex items-center gap-1 text-tertiary-custom">
