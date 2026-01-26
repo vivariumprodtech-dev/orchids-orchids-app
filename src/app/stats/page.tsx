@@ -40,6 +40,7 @@ interface StatsData {
   fiber: number;
   water: number;
   activeCalories: number;
+  bmr?: number;
   foods: FoodEntry[];
   meals?: MealEntry[];
   alcohol?: {
