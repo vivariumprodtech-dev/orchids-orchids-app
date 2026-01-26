@@ -30,21 +30,21 @@ import {
     | "Water" 
     | "Alcohol";
   
-  export const BadgeIconColors = {
-    Lunch: "#2BB0BB",
-    Breakfast: "#2BB0BB",
-    Afternoon: "#2BB0BB",
-    Dinner: "#2BB0BB",
-    Goal: "#9FA5BC",
-    KcalActive: "#FF9D52",
-    Protein: "#FF9191",
-    Carbo: "#FFBC58",
-    Fat: "#9D9EFF",
-    Fiber: "#3FA97A",
-    ProcessFood: "#DB74ED",
-    Water: "#73B0FF",
-    Alcohol: "#CE6194",
-  };
+    export const BadgeIconColors = {
+      Lunch: "#2BB0BB",
+      Breakfast: "#2BB0BB",
+      Afternoon: "#2BB0BB",
+      Dinner: "#2BB0BB",
+      Goal: "#9FA5BC",
+      KcalActive: "#FF9D52",
+      Protein: "#FF8A8A",
+      Carbo: "#FFB74D",
+      Fat: "#95A4FC",
+      Fiber: "#4CAF50",
+      ProcessFood: "#DB74ED",
+      Water: "#73B0FF",
+      Alcohol: "#CE6194",
+    };
   
   const mapping = {
     Lunch: { icon: Utensils, bg: BadgeIconColors.Lunch },
