@@ -23,6 +23,7 @@ interface FoodEntry {
   carb: number;
   fat: number;
   fiber: number;
+  meal?: string;
 }
 
 interface MealEntry {
@@ -44,6 +45,15 @@ interface StatsData {
   alcohol?: {
     grams: number;
     calories: number;
+  };
+  targets?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+    fiber: number;
+    water: number;
+    deficit: number;
   };
 }
 
