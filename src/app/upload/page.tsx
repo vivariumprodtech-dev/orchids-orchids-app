@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Upload, FileText, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, FileText, CheckCircle2, AlertCircle, Loader2, Info } from "lucide-react";
 import Link from "next/link";
 
 export default function UploadPage() {
@@ -11,7 +11,6 @@ export default function UploadPage() {
   const [type, setType] = useState<"logs" | "foods">("logs");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
-  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -21,6 +20,8 @@ export default function UploadPage() {
 
   const parseCSV = (text: string) => {
     const lines = text.split("\n").filter(line => line.trim() !== "");
+    if (lines.length < 2) return [];
+    
     const headers = lines[0].split(",").map(h => h.trim());
     return lines.slice(1).map(line => {
       const values = line.split(",").map(v => v.trim());
@@ -41,8 +42,14 @@ export default function UploadPage() {
       const text = await file.text();
       const data = parseCSV(text);
 
+      if (data.length === 0) {
+        throw new Error("Il file CSV sembra vuoto o malformato.");
+      }
+
       if (type === "logs") {
         for (const row of data) {
+          if (!row.user_id || !row.date) continue;
+          
           const { error } = await supabase.from("daily_logs").upsert({
             user_id: parseInt(row.user_id),
             date: row.date,
@@ -66,18 +73,19 @@ export default function UploadPage() {
         }
       } else {
         for (const row of data) {
-          // Get log_id first
+          if (!row.user_id || !row.date || !row.name) continue;
+
+          // Get or create log_id
           const { data: logData, error: logError } = await supabase
             .from("daily_logs")
             .select("id")
             .eq("user_id", parseInt(row.user_id))
             .eq("date", row.date)
-            .single();
+            .maybeSingle();
 
           let logId = logData?.id;
 
-          if (logError || !logId) {
-            // Create minimal log if not exists
+          if (!logId) {
             const { data: newLog, error: createError } = await supabase
               .from("daily_logs")
               .insert({
@@ -94,146 +102,174 @@ export default function UploadPage() {
           const { error } = await supabase.from("food_entries").insert({
             log_id: logId,
             name: row.name,
-            meal: row.meal,
-            grams: parseInt(row.grams),
-            calories: parseFloat(row.calories),
-            protein: parseFloat(row.protein),
-            carbs: parseFloat(row.carbs),
-            fats: parseFloat(row.fats),
-            fiber: parseFloat(row.fiber),
+            meal: row.meal || "Spuntino",
+            grams: row.grams ? parseInt(row.grams) : 0,
+            calories: row.calories ? parseFloat(row.calories) : 0,
+            protein: row.protein ? parseFloat(row.protein) : 0,
+            carbs: row.carbs ? parseFloat(row.carbs) : 0,
+            fats: row.fats ? parseFloat(row.fats) : 0,
+            fiber: row.fiber ? parseFloat(row.fiber) : 0,
           });
 
           if (error) throw error;
         }
       }
 
-      setMessage({ text: "Caricamento completato con successo!", type: "success" });
+      setMessage({ text: `Successo! ${data.length} righe elaborate.`, type: "success" });
       setFile(null);
     } catch (err: any) {
       console.error(err);
-      setMessage({ text: `Errore durante il caricamento: ${err.message}`, type: "error" });
+      setMessage({ text: `Errore: ${err.message}`, type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gray-50 p-4 md:p-8">
-      <div className="w-full max-w-2xl">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white p-4 md:p-8">
+      <div className="w-full max-w-3xl">
         <Link
           href="/"
-          className="mb-6 flex items-center gap-2 text-gray-500 transition-colors hover:text-gray-800"
+          className="mb-8 flex items-center gap-2 text-gray-400 transition-colors hover:text-teal-600"
         >
           <ArrowLeft size={20} />
-          <span>Torna alla Home</span>
+          <span className="font-medium">Torna alla Dashboard</span>
         </Link>
 
-        <div className="rounded-2xl bg-white p-6 shadow-xl shadow-gray-200/50">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Upload Dati CSV</h1>
-            <p className="mt-2 text-gray-500">
-              Carica i file CSV per aggiornare i log giornalieri o il dettaglio dei pasti.
+        <div className="overflow-hidden rounded-3xl bg-white shadow-2xl shadow-gray-200/50 border border-gray-100">
+          <div className="bg-teal-500 p-8 text-white">
+            <h1 className="text-3xl font-bold">Importazione Dati CSV</h1>
+            <p className="mt-2 text-teal-50 opacity-90">
+              Aggiorna massivamente i profili di Alex, Camila o altri utenti.
             </p>
           </div>
 
-          <div className="mb-8 grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setType("logs")}
-              className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all ${
-                type === "logs"
-                  ? "border-teal-400 bg-teal-50 text-teal-700"
-                  : "border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200"
-              }`}
-            >
-              <FileText size={24} />
-              <span className="font-bold">Log Giornalieri</span>
-            </button>
-            <button
-              onClick={() => setType("foods")}
-              className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all ${
-                type === "foods"
-                  ? "border-purple-400 bg-purple-50 text-purple-700"
-                  : "border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200"
-              }`}
-            >
-              <Upload size={24} />
-              <span className="font-bold">Food Log</span>
-            </button>
-          </div>
-
-          <div className="space-y-6">
-            <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-8 text-center">
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleFileChange}
-                className="hidden"
-                id="csv-upload"
-              />
-              <label
-                htmlFor="csv-upload"
-                className="flex cursor-pointer flex-col items-center gap-2"
-              >
-                <div className="rounded-full bg-white p-3 shadow-sm">
-                  <Upload className="text-gray-400" />
-                </div>
-                {file ? (
-                  <span className="font-medium text-gray-900">{file.name}</span>
-                ) : (
-                  <>
-                    <span className="font-medium text-gray-600">Clicca per caricare il file CSV</span>
-                    <span className="text-xs text-gray-400">Solo file .csv supportati</span>
-                  </>
-                )}
-              </label>
-            </div>
-
-            {message && (
-              <div
-                className={`flex items-center gap-3 rounded-xl p-4 ${
-                  message.type === "success"
-                    ? "bg-green-50 text-green-700"
-                    : "bg-red-50 text-red-700"
+          <div className="p-8">
+            <div className="mb-8 flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={() => setType("logs")}
+                className={`flex flex-1 items-center justify-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                  type === "logs"
+                    ? "border-teal-500 bg-teal-50 text-teal-700 shadow-sm"
+                    : "border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200"
                 }`}
               >
-                {message.type === "success" ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                <span className="text-sm font-medium">{message.text}</span>
-              </div>
-            )}
-
-            <button
-              onClick={handleUpload}
-              disabled={!file || loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 py-4 font-bold text-white transition-all hover:bg-black disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  <span>Elaborazione in corso...</span>
-                </>
-              ) : (
-                <span>Invia Dati</span>
-              )}
-            </button>
-          </div>
-
-          <div className="mt-12 rounded-xl bg-blue-50 p-6">
-            <h3 className="mb-4 flex items-center gap-2 font-bold text-blue-900">
-              <FileText size={18} />
-              Struttura del file CSV ({type === "logs" ? "logs.csv" : "foods.csv"})
-            </h3>
-            <div className="overflow-x-auto">
-              <code className="block whitespace-nowrap rounded-lg bg-white p-3 text-xs text-blue-800 shadow-sm">
-                {type === "logs"
-                  ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories"
-                  : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber"}
-              </code>
+                <FileText size={20} />
+                <div className="text-left">
+                  <p className="font-bold leading-tight">Obiettivi e Totali</p>
+                  <p className="text-xs opacity-70">Daily targets, active kcal...</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setType("foods")}
+                className={`flex flex-1 items-center justify-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                  type === "foods"
+                    ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm"
+                    : "border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200"
+                }`}
+              >
+                <Upload size={20} />
+                <div className="text-left">
+                  <p className="font-bold leading-tight">Dettaglio Pasti</p>
+                  <p className="text-xs opacity-70">Singoli alimenti e grammature</p>
+                </div>
+              </button>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-blue-700">
-              {type === "logs"
-                ? "Il campo 'user_id' deve essere il ChatID di Telegram. 'target_water' in Litri, 'water' in ml."
-                : "Assicurati di caricare prima il file dei log giornalieri o che il giorno esista già."}
-            </p>
+
+            <div className="space-y-6">
+              <div 
+                className={`group relative rounded-2xl border-2 border-dashed p-10 text-center transition-all ${
+                  file ? "border-teal-400 bg-teal-50/30" : "border-gray-200 bg-gray-50 hover:border-teal-300"
+                }`}
+              >
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                  id="csv-upload"
+                />
+                <div className="flex flex-col items-center gap-3">
+                  <div className={`rounded-full p-4 shadow-sm transition-transform group-hover:scale-110 ${file ? "bg-teal-500 text-white" : "bg-white text-gray-400"}`}>
+                    <Upload size={28} />
+                  </div>
+                  {file ? (
+                    <div>
+                      <span className="block font-bold text-gray-900">{file.name}</span>
+                      <span className="text-xs text-teal-600">File pronto per l'invio</span>
+                    </div>
+                  ) : (
+                    <div>
+                      <span className="block font-bold text-gray-700">Trascina qui il file CSV</span>
+                      <span className="text-xs text-gray-400">O clicca per sfogliare i tuoi file</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {message && (
+                <div
+                  className={`flex items-start gap-3 rounded-2xl p-4 animate-in fade-in slide-in-from-top-2 ${
+                    message.type === "success"
+                      ? "bg-green-50 text-green-700 border border-green-100"
+                      : "bg-red-50 text-red-700 border border-red-100"
+                  }`}
+                >
+                  {message.type === "success" ? <CheckCircle2 className="mt-0.5" size={18} /> : <AlertCircle className="mt-0.5" size={18} />}
+                  <span className="text-sm font-semibold">{message.text}</span>
+                </div>
+              )}
+
+              <button
+                onClick={handleUpload}
+                disabled={!file || loading}
+                className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gray-900 py-5 font-bold text-white transition-all hover:bg-black disabled:opacity-50"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    <span>Elaborazione...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Carica Dati Ora</span>
+                    <ArrowLeft size={18} className="rotate-180 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </button>
+            </div>
+
+            <div className="mt-12 space-y-4">
+              <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800">
+                <Info size={20} className="text-teal-500" />
+                Guida al Formato CSV
+              </h3>
+              
+              <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6">
+                <p className="mb-4 text-sm font-medium text-gray-600">
+                  Struttura delle colonne per <span className="text-teal-600 font-bold">{type === "logs" ? "Obiettivi e Totali" : "Dettaglio Pasti"}</span>:
+                </p>
+                <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white p-4">
+                  <code className="whitespace-nowrap text-xs font-mono text-teal-800">
+                    {type === "logs"
+                      ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories"
+                      : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber"}
+                  </code>
+                </div>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-500">
+                  <div className="space-y-2">
+                    <p><strong className="text-gray-700">user_id:</strong> Il ChatID di Telegram (es: 6217569048)</p>
+                    <p><strong className="text-gray-700">date:</strong> Formato YYYY-MM-DD (es: 2026-01-26)</p>
+                    <p><strong className="text-gray-700">water:</strong> ml bevuti (target_water è in Litri)</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p><strong className="text-gray-700">meal:</strong> Colazione, Pranzo, Cena, Spuntino</p>
+                    <p><strong className="text-gray-700">calories:</strong> Kcal totali o del singolo alimento</p>
+                    <p><strong className="text-gray-700">Importante:</strong> Usa la virgola come separatore e non includere virgole nei nomi.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
