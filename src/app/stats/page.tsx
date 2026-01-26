@@ -24,6 +24,7 @@ interface FoodEntry {
   fat: number;
   fiber: number;
   alcohol: number;
+  is_processed?: boolean;
   meal?: string;
   time?: string;
 }
