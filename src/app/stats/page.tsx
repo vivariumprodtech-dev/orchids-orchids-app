@@ -13,6 +13,7 @@ import {
   ChartContainer,
 } from "@/components/ui/chart";
 import { ChevronDown, ChevronUp, MoveRight } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface FoodEntry {
   name: string;
@@ -736,6 +737,7 @@ function MealMomentCard({
 
 function StatsContent() {
   const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
 
@@ -779,51 +781,93 @@ function StatsContent() {
         return;
       }
 
-  
-      const calories = parseInt(searchParams.get("calories") || "0");
-      const protein = parseFloat(searchParams.get("protein") || "0");
-      const carbs = parseFloat(searchParams.get("carbs") || "0");
-      const fats = parseFloat(searchParams.get("fats") || "0");
-      const fiber = parseFloat(searchParams.get("fiber") || "0");
-      const water = parseInt(searchParams.get("water") || "0");
-      const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
-      const alcoholGrams = parseInt(searchParams.get("alcohol_grams") || "0");
-      const alcoholKcal = parseInt(searchParams.get("alcohol_kcal") || "0");
-  
-      const foodsParam = searchParams.get("foods");
-      let foods: FoodEntry[] = [];
-      if (foodsParam) {
-        foods = foodsParam.split("|").map((f) => {
-          const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
-          return {
-            name,
-            grams: parseInt(grams),
-            calories: parseInt(cals),
-            pro: parseFloat(pro),
-            carb: parseFloat(carb),
-            fat: parseFloat(fat),
-            fiber: parseFloat(fib) || 0,
-          };
+      // If Today, try fetching from Supabase first if userId is present
+      if (selectedDay === null && userId) {
+        const fetchTodayData = async () => {
+          const today = new Date().toISOString().split('T')[0];
+          const { data: log } = await supabase
+            .from('daily_logs')
+            .select('*, food_entries(*), activity_entries(*)')
+            .eq('user_id', parseInt(userId))
+            .eq('date', today)
+            .single();
+
+          if (log) {
+            setData({
+              water: log.water || 0,
+              calories: log.calories || 0,
+              protein: log.protein || 0,
+              carbs: log.carbs || 0,
+              fats: log.fats || 0,
+              fiber: log.fiber || 0,
+              foods: log.food_entries?.map((f: any) => ({
+                name: f.name,
+                grams: f.grams,
+                calories: f.calories,
+                pro: f.protein,
+                carb: f.carbs,
+                fat: f.fats,
+                fiber: f.fiber
+              })) || [],
+              activeCalories: log.active_calories || 0,
+              alcohol: { grams: 0, calories: 0 },
+            });
+            return;
+          }
+          // Fallback to URL params if no DB data
+          loadFromParams();
+        };
+        fetchTodayData();
+      } else {
+        loadFromParams();
+      }
+
+      function loadFromParams() {
+        const calories = parseInt(searchParams.get("calories") || "0");
+        const protein = parseFloat(searchParams.get("protein") || "0");
+        const carbs = parseFloat(searchParams.get("carbs") || "0");
+        const fats = parseFloat(searchParams.get("fats") || "0");
+        const fiber = parseFloat(searchParams.get("fiber") || "0");
+        const water = parseInt(searchParams.get("water") || "0");
+        const activeCalories = parseInt(searchParams.get("activeCalories") || "0");
+        const alcoholGrams = parseInt(searchParams.get("alcohol_grams") || "0");
+        const alcoholKcal = parseInt(searchParams.get("alcohol_kcal") || "0");
+    
+        const foodsParam = searchParams.get("foods");
+        let foods: FoodEntry[] = [];
+        if (foodsParam) {
+          foods = foodsParam.split("|").map((f) => {
+            const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
+            return {
+              name,
+              grams: parseInt(grams),
+              calories: parseInt(cals),
+              pro: parseFloat(pro),
+              carb: parseFloat(carb),
+              fat: parseFloat(fat),
+              fiber: parseFloat(fib) || 0,
+            };
+          });
+        }
+    
+        setData({ 
+          calories, 
+          protein, 
+          carbs, 
+          fats, 
+          fiber, 
+          water, 
+          activeCalories, 
+          foods,
+          alcohol: { grams: alcoholGrams, calories: alcoholKcal }
         });
       }
-  
-      setData({ 
-        calories, 
-        protein, 
-        carbs, 
-        fats, 
-        fiber, 
-        water, 
-        activeCalories, 
-        foods,
-        alcohol: { grams: alcoholGrams, calories: alcoholKcal }
-      });
 
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
-  }, [searchParams, selectedDay]);
+  }, [searchParams, selectedDay, userId]);
 
   const isToday = selectedDay === null;
   const displayDate = isToday 
