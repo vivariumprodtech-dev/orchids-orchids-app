@@ -533,17 +533,26 @@ function StatsContent() {
     setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
   };
 
-  const [data, setData] = useState<StatsData>({
-    calories: 0,
-    protein: 0,
-    carbs: 0,
-    fats: 0,
-    fiber: 0,
-    water: 0,
-    activeCalories: 0,
-    foods: [],
-    alcohol: { grams: 0, calories: 0 },
-  });
+    const [data, setData] = useState<StatsData>({
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+      fiber: 0,
+      water: 0,
+      activeCalories: 0,
+      foods: [],
+      alcohol: { grams: 0, calories: 0 },
+      targets: {
+        calories: 1600,
+        protein: 96,
+        carbs: 160,
+        fats: 64,
+        fiber: 30,
+        water: 2,
+        deficit: 0
+      }
+    });
 
   useEffect(() => {
     setOpenMeals({});
