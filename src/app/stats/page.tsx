@@ -781,46 +781,56 @@ function StatsContent() {
         return;
       }
 
-      // If Today, try fetching from Supabase first if userId is present
-      if (selectedDay === null && userId) {
-        const fetchTodayData = async () => {
-          const today = new Date().toISOString().split('T')[0];
-          const { data: log } = await supabase
-            .from('daily_logs')
-            .select('*, food_entries(*), activity_entries(*)')
-            .eq('user_id', parseInt(userId))
-            .eq('date', today)
-            .single();
+        // If Today, try fetching from Supabase first if userId is present
+        if (selectedDay === null && userId) {
+          const fetchTodayData = async () => {
+            try {
+              const today = new Date().toISOString().split('T')[0];
+              const { data: log, error } = await supabase
+                .from('daily_logs')
+                .select('*, food_entries(*), activity_entries(*)')
+                .eq('user_id', userId) // userId is string, Supabase handles bigint conversion
+                .eq('date', today)
+                .maybeSingle();
 
-          if (log) {
-            setData({
-              water: log.water || 0,
-              calories: log.calories || 0,
-              protein: log.protein || 0,
-              carbs: log.carbs || 0,
-              fats: log.fats || 0,
-              fiber: log.fiber || 0,
-              foods: log.food_entries?.map((f: any) => ({
-                name: f.name,
-                grams: f.grams,
-                calories: f.calories,
-                pro: f.protein,
-                carb: f.carbs,
-                fat: f.fats,
-                fiber: f.fiber
-              })) || [],
-              activeCalories: log.active_calories || 0,
-              alcohol: { grams: 0, calories: 0 },
-            });
-            return;
-          }
-          // Fallback to URL params if no DB data
+              if (error) {
+                console.error("Error fetching today's data:", error);
+                loadFromParams();
+                return;
+              }
+
+              if (log) {
+                setData({
+                  water: log.water || 0,
+                  calories: log.calories || 0,
+                  protein: log.protein || 0,
+                  carbs: log.carbs || 0,
+                  fats: log.fats || 0,
+                  fiber: log.fiber || 0,
+                  foods: log.food_entries?.map((f: any) => ({
+                    name: f.name,
+                    grams: f.grams,
+                    calories: f.calories,
+                    pro: f.protein,
+                    carb: f.carbs,
+                    fat: f.fats,
+                    fiber: f.fiber
+                  })) || [],
+                  activeCalories: log.active_calories || 0,
+                  alcohol: { grams: 0, calories: 0 },
+                });
+                return;
+              }
+            } catch (err) {
+              console.error("Unexpected error fetching data:", err);
+            }
+            // Fallback to URL params if no DB data or unexpected error
+            loadFromParams();
+          };
+          fetchTodayData();
+        } else {
           loadFromParams();
-        };
-        fetchTodayData();
-      } else {
-        loadFromParams();
-      }
+        }
 
       function loadFromParams() {
         const calories = parseInt(searchParams.get("calories") || "0");
