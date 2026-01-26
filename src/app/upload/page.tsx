@@ -81,7 +81,7 @@ export default function UploadPage() {
           const { data: logData, error: logError } = await supabase
             .from("daily_logs")
             .select("id")
-            .eq("user_id", parseInt(row.user_id))
+            .eq("user_id", row.user_id)
             .eq("date", row.date)
             .maybeSingle();
 
@@ -91,7 +91,7 @@ export default function UploadPage() {
             const { data: newLog, error: createError } = await supabase
               .from("daily_logs")
               .insert({
-                user_id: parseInt(row.user_id),
+                user_id: row.user_id,
                 date: row.date,
               })
               .select("id")
