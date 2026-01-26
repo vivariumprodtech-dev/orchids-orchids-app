@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initUser, resetUser, resetActiveCalories, FOODS, ACTIVITIES, type UserData } from '@/lib/user-store';
+import { loadUserFromSupabase, syncUserToSupabase, resetUser, resetActiveCalories, FOODS, ACTIVITIES, type UserData } from '@/lib/user-store';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const WEBAPP_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || 'http://localhost:3001';
@@ -70,7 +70,7 @@ function logFood(userData: UserData, foodName: string, grams: number) {
   return { calories, protein, carbs, fats, fiber };
 }
 
-function buildStatsUrl(userData: UserData): string {
+function buildStatsUrl(userData: UserData, userId: number): string {
   const foodsStr = userData.foods.map(f =>
     `${f.name}:${f.grams}:${f.calories}:${f.protein || 0}:${f.carbs || 0}:${f.fats || 0}:${f.fiber || 0}`
   ).join('|');
@@ -79,7 +79,7 @@ function buildStatsUrl(userData: UserData): string {
     `${a.name}:${a.kcal}`
   ).join('|');
 
-  return `${WEBAPP_URL}/stats?calories=${userData.calories}&protein=${userData.protein}&carbs=${userData.carbs}&fats=${userData.fats}&fiber=${userData.fiber}&water=${userData.water}&activeCalories=${userData.activeCalories}&foods=${encodeURIComponent(foodsStr)}&activities=${encodeURIComponent(activitiesStr)}&_v=${Date.now()}`;
+  return `${WEBAPP_URL}/stats?userId=${userId}&calories=${userData.calories}&protein=${userData.protein}&carbs=${userData.carbs}&fats=${userData.fats}&fiber=${userData.fiber}&water=${userData.water}&activeCalories=${userData.activeCalories}&foods=${encodeURIComponent(foodsStr)}&activities=${encodeURIComponent(activitiesStr)}&_v=${Date.now()}`;
 }
 
 export async function POST(request: NextRequest) {
@@ -92,29 +92,31 @@ export async function POST(request: NextRequest) {
       const userId = message.from.id;
       const text = message.text || '';
       const firstName = message.from.first_name || 'User';
-      const userData = initUser(userId);
+      
+      // Load from Supabase
+      const userData = await loadUserFromSupabase(userId, firstName);
 
       if (text === '/start') {
         await sendMessage(
           chatId,
-          `Ciao ${firstName}! 👋\n\nBenvenuto nel tuo assistente nutrizionale.\n\nUsa i bottoni della tastiera qui sotto per loggare acqua, cibi e vedere le statistiche.`,
+          `Ciao ${firstName}! 👋\n\nBenvenuto nel tuo assistente nutrizionale.\n\nI tuoi dati verranno salvati in modo persistente.\n\nUsa i bottoni della tastiera qui sotto per loggare acqua, cibi e vedere le statistiche.`,
           { reply_markup: mainKeyboard }
         );
         return NextResponse.json({ ok: true });
       }
 
       if (text === '/reset') {
-          resetUser(userId);
+          await resetUser(userId);
           await sendMessage(
             chatId,
-            `🔄 *Giornata azzerata!*\n\nTutti i dati di oggi sono stati resettati.\n\nPuoi ricominciare a loggare.`,
+            `🔄 *Giornata azzerata!*\n\nTutti i dati di oggi sono stati resettati su Supabase.\n\nPuoi ricominciare a loggare.`,
             { reply_markup: mainKeyboard }
           );
           return NextResponse.json({ ok: true });
         }
 
         if (text === '/reset-active') {
-          resetActiveCalories(userId);
+          await resetActiveCalories(userId);
           await sendMessage(
             chatId,
             `🔄 *Calorie attive azzerate!*\n\nLe calorie attive e le attività sono state resettate a 0.\n\nI dati nutrizionali sono stati mantenuti.`,
@@ -131,6 +133,7 @@ export async function POST(request: NextRequest) {
           }
           userData.water += ml;
           userData.awaitingWater = false;
+          await syncUserToSupabase(userId);
           await sendMessage(
             chatId,
             `💧 *Acqua aggiunta!*\n\nQuantità: ${ml}ml\n📊 Totale oggi: ${userData.water}ml (${(userData.water / 1000).toFixed(1)}L)`,
@@ -148,6 +151,7 @@ export async function POST(request: NextRequest) {
         userData.activeCalories += kcal;
         userData.activities.push({ name: 'Attività personalizzata', kcal });
         userData.awaitingActivity = false;
+        await syncUserToSupabase(userId);
         await sendMessage(
           chatId,
           `✅ *Attività loggata!*\n\n🏃 Attività personalizzata\nCalorie bruciate: ${kcal} kcal\n\n📊 *Totale calorie attive oggi:* ${userData.activeCalories} kcal`,
@@ -165,6 +169,7 @@ export async function POST(request: NextRequest) {
         const foodName = userData.awaitingQuantity;
         const food = FOODS[foodName];
         const { calories } = logFood(userData, foodName, grams);
+        await syncUserToSupabase(userId);
         await sendMessage(
           chatId,
           `✅ *Cibo loggato!*\n\n${food.emoji} ${foodName}\nQuantità: ${grams}g\nCalorie: ${calories} kcal\n\n📊 *Totale oggi:*\n🔥 ${userData.calories} kcal\n🥩 Proteine: ${userData.protein}g\n🍞 Carbs: ${userData.carbs}g\n🥑 Grassi: ${userData.fats}g\n🌾 Fibre: ${userData.fiber}g`,
@@ -174,6 +179,7 @@ export async function POST(request: NextRequest) {
       }
 
 if (text === '💧 Acqua') {
+          userData.awaitingWater = true; // State is only in memory for current session
           await sendMessage(
             chatId,
             `💧 *Aggiungi Acqua*\n\nQuanta acqua vuoi loggare?`,
@@ -253,7 +259,7 @@ if (text === '💧 Acqua') {
         }
 
 if (text === '📊 Statistiche') {
-          const statsUrl = buildStatsUrl(userData);
+          const statsUrl = buildStatsUrl(userData, userId);
           const BMR = 1600;
           const totalTarget = BMR + userData.activeCalories;
           const bilancio = userData.calories - totalTarget;
@@ -299,7 +305,9 @@ if (update.callback_query) {
         const chatId = query.message.chat.id;
         const messageId = query.message.message_id;
         const userId = query.from.id;
-        const userData = initUser(userId);
+        
+        // Load from Supabase
+        const userData = await loadUserFromSupabase(userId);
 
         if (data.startsWith('food_')) {
           const foodName = data.replace('food_', '');
@@ -357,6 +365,7 @@ if (data.startsWith('activity_')) {
 
           userData.activeCalories += activity.kcal;
           userData.activities.push({ name: activity.name, kcal: activity.kcal });
+          await syncUserToSupabase(userId);
 
           await answerCallbackQuery(query.id, `✅ ${activity.kcal} kcal loggate!`);
           await editMessageText(
@@ -379,6 +388,7 @@ if (data.startsWith('activity_')) {
 
           const ml = parseInt(waterValue);
           userData.water += ml;
+          await syncUserToSupabase(userId);
           await answerCallbackQuery(query.id, `✅ ${ml}ml aggiunti!`);
           await editMessageText(
             chatId,
@@ -400,6 +410,7 @@ if (data.startsWith('activity_')) {
         }
 
         const { calories } = logFood(userData, foodName, grams);
+        await syncUserToSupabase(userId);
         await answerCallbackQuery(query.id, `✅ ${grams}g loggati!`);
         await editMessageText(
           chatId,
