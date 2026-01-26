@@ -644,33 +644,68 @@ function StatsContent() {
             return;
           }
 
-            if (log) {
-              const foods = log.food_entries?.map((f: any) => ({
-                name: f.name,
-                grams: f.grams,
-                calories: f.calories,
-                pro: f.protein,
-                carb: f.carbs,
-                fat: f.fats,
-                fiber: f.fiber,
-                meal: f.meal,
-                time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
-              })) || [];
+              if (log) {
+                const foods = log.food_entries?.map((f: any) => ({
+                  name: f.name,
+                  grams: f.grams,
+                  calories: f.calories,
+                  pro: f.protein,
+                  carb: f.carbs,
+                  fat: f.fats,
+                  fiber: f.fiber,
+                  meal: f.meal,
+                  alcohol: f.alcohol || 0,
+                  time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
+                })) || [];
 
-            // Group by meal
-            const mealsMap: Record<string, MealEntry> = {};
-            foods.forEach((f: any) => {
-              const mealName = f.meal || "Altro";
-              if (!mealsMap[mealName]) {
-                const order = ["Colazione", "Pranzo", "Spuntino", "Cena", "Altro"];
-                mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
-              }
-              mealsMap[mealName].foods.push(f);
-              mealsMap[mealName].totalCalories += f.calories;
-            });
-            
-            // Order meals
-            const mealOrder = ["Colazione", "Pranzo", "Spuntino", "Cena"];
+              // Calculate totals from foods
+              const foodTotals = foods.reduce((acc: any, f: any) => ({
+                calories: acc.calories + (f.calories || 0),
+                protein: acc.protein + (f.pro || 0),
+                carbs: acc.carbs + (f.carb || 0),
+                fats: acc.fats + (f.fat || 0),
+                fiber: acc.fiber + (f.fiber || 0),
+                alcohol: acc.alcohol + (f.alcohol || 0)
+              }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0 });
+
+              // Group by meal with sequence-based snack categorization
+              const mealsMap: Record<string, MealEntry> = {};
+              let hasHadBreakfast = false;
+              let hasHadLunch = false;
+              let hasHadDinner = false;
+
+              foods.forEach((f: any) => {
+                let mealName = f.meal || "Spuntino";
+                
+                if (mealName === "Colazione") hasHadBreakfast = true;
+                else if (mealName === "Pranzo") hasHadLunch = true;
+                else if (mealName === "Cena") hasHadDinner = true;
+                else if (mealName === "Spuntino") {
+                  if (!hasHadBreakfast) mealName = "Pre-colazione";
+                  else if (!hasHadLunch) mealName = "Spuntino Mattina";
+                  else if (!hasHadDinner) mealName = "Spuntino Pomeriggio";
+                  else mealName = "Spuntino Notturno";
+                }
+
+                if (!mealsMap[mealName]) {
+                  mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
+                }
+                mealsMap[mealName].foods.push({ ...f, meal: mealName });
+                mealsMap[mealName].totalCalories += f.calories;
+              });
+              
+              // Order meals
+              const mealOrder = [
+                "Pre-colazione", 
+                "Colazione", 
+                "Spuntino Mattina", 
+                "Pranzo", 
+                "Spuntino Pomeriggio", 
+                "Cena", 
+                "Spuntino Notturno", 
+                "Altro"
+              ];
+
             const meals = Object.keys(mealsMap)
               .sort((a, b) => {
                 const indexA = mealOrder.indexOf(a);
