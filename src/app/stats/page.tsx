@@ -396,45 +396,45 @@ function MacroCard({
                         </>
                       ) : (
                         <>
-                          <span className="text-primary-custom">
-                            {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
-                          </span>
-                          <span className="text-secondary-custom">
-                            /{target}{type === "water" ? "" : type === "processed" ? "%" : "g"} {name}
-                          </span>
-                        </>
+                            <span className="text-primary-custom">
+                              {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
+                            </span>
+                            <span className="text-secondary-custom">
+                              /{Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} {name}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-tertiary-custom">{helpText}</span>
+                      <StatusBadge text={badge.text} connotation={badge.connotation} />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-1 flex items-center gap-1">
+                      {iconBg ? (
+                        <div
+                          className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                          style={{ background: iconBg }}
+                        >
+                          {icon}
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center">
+                          {icon}
+                        </div>
                       )}
+                      <span className="text-secondary-custom">{name}</span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-tertiary-custom">{helpText}</span>
+                      <div className="mb-2">
+                        <span className="text-primary-custom">{Math.round(value)}</span>
+                        <span className="text-secondary-custom">/{Math.round(target)}g</span>
+                      </div>
                     <StatusBadge text={badge.text} connotation={badge.connotation} />
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="mb-1 flex items-center gap-1">
-                    {iconBg ? (
-                      <div
-                        className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                        style={{ background: iconBg }}
-                      >
-                        {icon}
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center">
-                        {icon}
-                      </div>
-                    )}
-                    <span className="text-secondary-custom">{name}</span>
-                  </div>
-                    <div className="mb-2">
-                      <span className="text-primary-custom">{Math.round(value)}</span>
-                      <span className="text-secondary-custom">/{target}g</span>
-                    </div>
-                  <StatusBadge text={badge.text} connotation={badge.connotation} />
-                </>
-              )}
+                  </>
+                )}
           </div>
           {(type === "water" || (!isSpecial && !centered)) && (
             <div className={centered || type === "water" ? "flex-shrink-0" : "absolute top-[16px] right-[16px]"}>
