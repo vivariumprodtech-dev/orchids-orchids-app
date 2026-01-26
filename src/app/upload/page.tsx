@@ -265,26 +265,26 @@ export default function UploadPage() {
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white p-4">
                   <code className="whitespace-nowrap text-xs font-mono text-teal-800">
-                      {type === "logs"
-                        ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories,bmr,alcohol"
-                        : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber,alcohol"}
+                        {type === "logs"
+                          ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories,bmr,alcohol"
+                          : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber,alcohol,is_processed"}
 
-                  </code>
-                </div>
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-500">
-                  <div className="space-y-2">
-                    <p><strong className="text-gray-700">user_id:</strong> Il ChatID di Telegram (es: 6217569048)</p>
-                    <p><strong className="text-gray-700">date:</strong> Formato YYYY-MM-DD (es: 2026-01-26)</p>
-                    <p><strong className="text-gray-700">bmr:</strong> Kcal metabolismo basale (facoltativo)</p>
-                    <p><strong className="text-gray-700">water:</strong> ml di acqua assunta</p>
+                    </code>
                   </div>
-                  <div className="space-y-2">
-                    <p><strong className="text-gray-700">alcohol:</strong> Grammi di alcool assunti</p>
-                    <p><strong className="text-gray-700">meal:</strong> Colazione, Pranzo, Cena, Spuntino</p>
-                    <p><strong className="text-gray-700">calories:</strong> Kcal totali o del singolo alimento</p>
-                    <p><strong className="text-gray-700">Importante:</strong> Usa la virgola come separatore.</p>
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-500">
+                    <div className="space-y-2">
+                      <p><strong className="text-gray-700">user_id:</strong> Il ChatID di Telegram (es: 6217569048)</p>
+                      <p><strong className="text-gray-700">date:</strong> Formato YYYY-MM-DD (es: 2026-01-26)</p>
+                      <p><strong className="text-gray-700">is_processed:</strong> "Sì" o "No" (solo per Dettaglio Pasti)</p>
+                      <p><strong className="text-gray-700">alcohol:</strong> Grammi di alcool (in entrambi i CSV)</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p><strong className="text-gray-700">meal:</strong> Colazione, Pranzo, Cena, Spuntino</p>
+                      <p><strong className="text-gray-700">calories:</strong> Kcal totali o del singolo alimento</p>
+                      <p><strong className="text-gray-700">Importante:</strong> Usa la virgola come separatore.</p>
+                      <p><strong className="text-gray-700">Note:</strong> I nomi delle colonne devono essere esatti.</p>
+                    </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>
