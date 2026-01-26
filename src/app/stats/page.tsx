@@ -644,17 +644,18 @@ function StatsContent() {
             return;
           }
 
-          if (log) {
-            const foods = log.food_entries?.map((f: any) => ({
-              name: f.name,
-              grams: f.grams,
-              calories: f.calories,
-              pro: f.protein,
-              carb: f.carbs,
-              fat: f.fats,
-              fiber: f.fiber,
-              meal: f.meal
-            })) || [];
+            if (log) {
+              const foods = log.food_entries?.map((f: any) => ({
+                name: f.name,
+                grams: f.grams,
+                calories: f.calories,
+                pro: f.protein,
+                carb: f.carbs,
+                fat: f.fats,
+                fiber: f.fiber,
+                meal: f.meal,
+                time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
+              })) || [];
 
             // Group by meal
             const mealsMap: Record<string, MealEntry> = {};
