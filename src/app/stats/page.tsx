@@ -778,108 +778,108 @@ function StatsContent() {
     return d;
   });
 
-  const BMR = 1600;
-  const totalTarget = BMR + data.activeCalories;
-  const caloriesLeft = totalTarget - data.calories;
-  const isOver = data.calories > totalTarget;
-  const surplus = data.calories - totalTarget;
-  const waterLiters = data.water / 1000;
-  const waterTarget = 2.0;
-  const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
+    const BMR = data.targets?.calories || 1600;
+    const totalTarget = BMR + data.activeCalories;
+    const caloriesLeft = totalTarget - data.calories;
+    const isOver = data.calories > totalTarget;
+    const surplus = data.calories - totalTarget;
+    const waterLiters = data.water / 1000;
+    const waterTarget = data.targets?.water || 2.0;
+    const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
-  return (
-    <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
-      <div className="mb-5 flex items-center justify-between">
-        <div className="text-3xl font-bold"
-          style={{
-            background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          Giada.
+    return (
+      <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
+        <div className="mb-5 flex items-center justify-between">
+          <div className="text-3xl font-bold"
+            style={{
+              background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            Giada.
+          </div>
+          <div className="text-primary-custom">
+            {displayDate}
+          </div>
         </div>
-        <div className="text-primary-custom">
-          {displayDate}
-        </div>
-      </div>
 
-      <div className="mb-5 flex justify-between gap-2">
-        {last7Days.map((date, i) => {
-          const dateStr = date.toISOString().split('T')[0];
-          const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-          const isSelected = selectedDate === dateStr;
-          const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-          const dayNum = date.getDate();
-          
-          let bgColor = "#FFFFFF";
-          if (isSelected) bgColor = "#9EDDE2";
-          else if (isTodayDay) bgColor = "#E2F7F9";
+        <div className="mb-5 flex justify-between gap-2">
+          {last7Days.map((date, i) => {
+            const dateStr = date.toISOString().split('T')[0];
+            const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+            const isSelected = selectedDate === dateStr;
+            const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+            const dayNum = date.getDate();
+            
+            let bgColor = "#FFFFFF";
+            if (isSelected) bgColor = "#9EDDE2";
+            else if (isTodayDay) bgColor = "#E2F7F9";
 
-          let textColor = "#5A658D";
-          if (isSelected) textColor = "#262C44";
-          else if (isTodayDay) textColor = "#088D98";
+            let textColor = "#5A658D";
+            if (isSelected) textColor = "#262C44";
+            else if (isTodayDay) textColor = "#088D98";
 
-          return (
-            <div
-              key={i}
-              onClick={() => setSelectedDate(dateStr)}
-              className="flex-1 rounded-full py-2 text-center transition-all"
-              style={{ 
-                backgroundColor: bgColor,
-                cursor: "pointer",
-                fontFamily: '"DM Sans", sans-serif'
-              }}
-            >
-              <div style={{ fontSize: "14px", fontWeight: 700, color: textColor }}>{dayName}</div>
-              <div style={{ fontSize: "14px", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "4px" }}>{dayNum}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="space-y-8">
-        {calorieBadge.showAlert && <MissingAlert />}
-        <div className="space-y-3">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex-1 space-y-2.5">
-                <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
-                <div className="flex items-center gap-1 text-secondary-custom">
-                  <BadgeIconSm semantic="Lunch" />
-                  <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
-                </div>
-                <div className="flex items-center gap-1 text-secondary-custom">
-                  <BadgeIconSm semantic="Goal" />
-                  <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
-                </div>
-                <div className="flex items-center gap-1 text-secondary-custom">
-                  <BadgeIconSm semantic="KcalActive" />
-                  <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
-                </div>
-                <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+            return (
+              <div
+                key={i}
+                onClick={() => setSelectedDate(dateStr)}
+                className="flex-1 rounded-full py-2 text-center transition-all"
+                style={{ 
+                  backgroundColor: bgColor,
+                  cursor: "pointer",
+                  fontFamily: '"DM Sans", sans-serif'
+                }}
+              >
+                <div style={{ fontSize: "14px", fontWeight: 700, color: textColor }}>{dayName}</div>
+                <div style={{ fontSize: "14px", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "4px" }}>{dayNum}</div>
               </div>
-              <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
-                <div className="text-center !text-[20px] font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
-                  {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                </div>
-                <div className="text-secondary-custom !text-[12px]">{isOver ? "over" : "left"}</div>
-              </ShadcnRadialProgress>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
-            <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
-            <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
-            <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
-          </div>
-
-          <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={waterTarget} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
-          <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
-          <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
+            );
+          })}
         </div>
+
+        <div className="space-y-8">
+          {calorieBadge.showAlert && <MissingAlert />}
+          <div className="space-y-3">
+            <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 space-y-2.5">
+                  <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
+                  <div className="flex items-center gap-1 text-secondary-custom">
+                    <BadgeIconSm semantic="Lunch" />
+                    <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
+                  </div>
+                  <div className="flex items-center gap-1 text-secondary-custom">
+                    <BadgeIconSm semantic="Goal" />
+                    <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-secondary-custom">
+                    <BadgeIconSm semantic="KcalActive" />
+                    <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                  </div>
+                  <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+                </div>
+                <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                  <div className="text-center !text-[20px] font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
+                    {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                  </div>
+                  <div className="text-secondary-custom !text-[12px]">{isOver ? "over" : "left"}</div>
+                </ShadcnRadialProgress>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={data.targets?.protein || 96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
+              <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbs" value={data.carbs} target={data.targets?.carbs || 160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
+              <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={data.targets?.fats || 64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
+              <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
+            </div>
+
+            <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={waterTarget} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
+            <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={0} target={100} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+            <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
+          </div>
 
         <div>
           <h2 className="mb-4 text-primary-custom">Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
