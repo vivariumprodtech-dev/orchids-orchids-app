@@ -696,35 +696,43 @@ function StatsContent() {
                 let hasHadDinner = false;
 
                 foods.forEach((f: any) => {
-                  let mealName = f.meal || "Spuntino";
+                  let m = (f.meal || "snack").toLowerCase().trim();
                   
-                  if (mealName === "Colazione") hasHadBreakfast = true;
-                  else if (mealName === "Pranzo") hasHadLunch = true;
-                  else if (mealName === "Cena") hasHadDinner = true;
-                  else if (mealName === "Spuntino" || mealName === "snack") {
-                    if (!hasHadBreakfast) mealName = "Pre-colazione";
-                    else if (!hasHadLunch) mealName = "Spuntino Mattina";
-                    else if (!hasHadDinner) mealName = "Spuntino Pomeriggio";
-                    else mealName = "Spuntino Notturno";
+                  // Normalize if still in Italian from DB
+                  if (m === "colazione") m = "breakfast";
+                  else if (m === "pranzo") m = "lunch";
+                  else if (m === "cena") m = "dinner";
+                  else if (m === "spuntino") m = "snack";
+
+                  let finalMealKey = m;
+                  
+                  if (m === "breakfast") hasHadBreakfast = true;
+                  else if (m === "lunch") hasHadLunch = true;
+                  else if (m === "dinner") hasHadDinner = true;
+                  else if (m === "snack") {
+                    if (!hasHadBreakfast) finalMealKey = "pre_breakfast";
+                    else if (!hasHadLunch) finalMealKey = "morning";
+                    else if (!hasHadDinner) finalMealKey = "afternoon";
+                    else finalMealKey = "night";
                   }
 
-                  if (!mealsMap[mealName]) {
-                    mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
+                  if (!mealsMap[finalMealKey]) {
+                    mealsMap[finalMealKey] = { meal: finalMealKey, foods: [], totalCalories: 0 };
                   }
-                  mealsMap[mealName].foods.push({ ...f, meal: mealName });
-                  mealsMap[mealName].totalCalories += f.calories;
+                  mealsMap[finalMealKey].foods.push({ ...f, meal: finalMealKey });
+                  mealsMap[finalMealKey].totalCalories += f.calories;
                 });
                 
                 // Order meals
                 const mealOrder = [
-                  "Pre-colazione", 
-                  "Colazione", 
-                  "Spuntino Mattina", 
-                  "Pranzo", 
-                  "Spuntino Pomeriggio", 
-                  "Cena", 
-                  "Spuntino Notturno", 
-                  "Altro"
+                  "pre_breakfast", 
+                  "breakfast", 
+                  "morning", 
+                  "lunch", 
+                  "afternoon", 
+                  "dinner", 
+                  "night", 
+                  "other"
                 ];
 
               const meals = Object.keys(mealsMap)
