@@ -24,6 +24,7 @@ interface FoodEntry {
   fat: number;
   fiber: number;
   meal?: string;
+  time?: string;
 }
 
 interface MealEntry {
