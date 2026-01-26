@@ -619,53 +619,91 @@ function StatsContent() {
         return;
       }
 
-      try {
-        const { data: log, error } = await supabase
-          .from('daily_logs')
-          .select('*, food_entries(*)')
-          .eq('user_id', userId)
-          .eq('date', selectedDate)
-          .maybeSingle();
+        try {
+          const { data: log, error } = await supabase
+            .from('daily_logs')
+            .select('*, food_entries(*)')
+            .eq('user_id', userId)
+            .eq('date', selectedDate)
+            .maybeSingle();
 
-        if (error) {
-          console.error("Error fetching data:", error);
-          loadFromParams();
-          return;
-        }
+          if (error) {
+            console.error("Error fetching data:", error);
+            loadFromParams();
+            return;
+          }
 
-        if (log) {
-          setData({
-            water: log.water || 0,
-            calories: log.calories || 0,
-            protein: log.protein || 0,
-            carbs: log.carbs || 0,
-            fats: log.fats || 0,
-            fiber: log.fiber || 0,
-            foods: log.food_entries?.map((f: any) => ({
+          if (log) {
+            const foods = log.food_entries?.map((f: any) => ({
               name: f.name,
               grams: f.grams,
               calories: f.calories,
               pro: f.protein,
               carb: f.carbs,
               fat: f.fats,
-              fiber: f.fiber
-            })) || [],
-            activeCalories: log.active_calories || 0,
-            alcohol: { grams: 0, calories: 0 },
-          });
-          return;
-        } else {
-          if (selectedDate === new Date().toISOString().split('T')[0]) {
-            loadFromParams();
-          } else {
-            setData({
-              calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
-              water: 0, activeCalories: 0, foods: [],
-              alcohol: { grams: 0, calories: 0 }
+              fiber: f.fiber,
+              meal: f.meal
+            })) || [];
+
+            // Group by meal
+            const mealsMap: Record<string, MealEntry> = {};
+            foods.forEach((f: any) => {
+              const mealName = f.meal || "Altro";
+              if (!mealsMap[mealName]) {
+                const order = ["Colazione", "Pranzo", "Spuntino", "Cena", "Altro"];
+                mealsMap[mealName] = { meal: mealName, foods: [], totalCalories: 0 };
+              }
+              mealsMap[mealName].foods.push(f);
+              mealsMap[mealName].totalCalories += f.calories;
             });
+            
+            // Order meals
+            const mealOrder = ["Colazione", "Pranzo", "Spuntino", "Cena"];
+            const meals = Object.keys(mealsMap)
+              .sort((a, b) => {
+                const indexA = mealOrder.indexOf(a);
+                const indexB = mealOrder.indexOf(b);
+                if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+              })
+              .map(name => mealsMap[name]);
+
+            setData({
+              water: log.water || 0,
+              calories: log.calories || 0,
+              protein: log.protein || 0,
+              carbs: log.carbs || 0,
+              fats: log.fats || 0,
+              fiber: log.fiber || 0,
+              foods: foods,
+              meals: meals.length > 0 ? meals : undefined,
+              activeCalories: log.active_calories || 0,
+              alcohol: { grams: 0, calories: 0 },
+              targets: {
+                calories: log.target_calories || 1600,
+                protein: log.target_protein || 96,
+                carbs: log.target_carbs || 160,
+                fats: log.target_fats || 64,
+                fiber: log.target_fiber || 30,
+                water: log.target_water || 2,
+                deficit: log.target_deficit || 0
+              }
+            });
+            return;
+          } else {
+            if (selectedDate === new Date().toISOString().split('T')[0]) {
+              loadFromParams();
+            } else {
+              setData({
+                calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
+                water: 0, activeCalories: 0, foods: [],
+                alcohol: { grams: 0, calories: 0 }
+              });
+            }
           }
-        }
-      } catch (err) {
+        } catch (err) {
         console.error("Unexpected error fetching data:", err);
         loadFromParams();
       }
