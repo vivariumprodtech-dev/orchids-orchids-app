@@ -1,3 +1,5 @@
+import { supabaseAdmin } from './supabase';
+
 export interface UserData {
   water: number;
   calories: number;
@@ -54,7 +56,108 @@ export function getUser(userId: number): UserData | undefined {
   return fakeDB[userId];
 }
 
-export function resetUser(userId: number): UserData {
+export async function loadUserFromSupabase(userId: number, firstName?: string): Promise<UserData> {
+  const today = new Date().toISOString().split('T')[0];
+
+  // Ensure user exists
+  if (firstName) {
+    await supabaseAdmin
+      .from('users')
+      .upsert({ telegram_id: userId, first_name: firstName }, { onConflict: 'telegram_id' });
+  }
+
+  // Get daily log
+  const { data: log } = await supabaseAdmin
+    .from('daily_logs')
+    .select('*, food_entries(*), activity_entries(*)')
+    .eq('user_id', userId)
+    .eq('date', today)
+    .single();
+
+  if (log) {
+    fakeDB[userId] = {
+      water: log.water || 0,
+      calories: log.calories || 0,
+      protein: log.protein || 0,
+      carbs: log.carbs || 0,
+      fats: log.fats || 0,
+      fiber: log.fiber || 0,
+      foods: log.food_entries || [],
+      activeCalories: log.active_calories || 0,
+      activities: log.activity_entries || [],
+      awaitingQuantity: null,
+      awaitingActivity: false,
+      awaitingWater: false,
+    };
+  } else {
+    initUser(userId);
+  }
+
+  return fakeDB[userId];
+}
+
+export async function syncUserToSupabase(userId: number) {
+  const userData = fakeDB[userId];
+  if (!userData) return;
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // Upsert daily log
+  const { data: log, error: logError } = await supabaseAdmin
+    .from('daily_logs')
+    .upsert({
+      user_id: userId,
+      date: today,
+      water: userData.water,
+      calories: userData.calories,
+      protein: userData.protein,
+      carbs: userData.carbs,
+      fats: userData.fats,
+      fiber: userData.fiber,
+      active_calories: userData.activeCalories,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id, date' })
+    .select()
+    .single();
+
+  if (logError || !log) {
+    console.error('Error syncing log:', logError);
+    return;
+  }
+
+  // Sync foods
+  // Delete existing and re-insert to keep it simple for now
+  await supabaseAdmin.from('food_entries').delete().eq('log_id', log.id);
+  if (userData.foods.length > 0) {
+    await supabaseAdmin.from('food_entries').insert(
+      userData.foods.map(f => ({ ...f, log_id: log.id }))
+    );
+  }
+
+  // Sync activities
+  await supabaseAdmin.from('activity_entries').delete().eq('log_id', log.id);
+  if (userData.activities.length > 0) {
+    await supabaseAdmin.from('activity_entries').insert(
+      userData.activities.map(a => ({ ...a, log_id: log.id }))
+    );
+  }
+}
+
+export async function resetUser(userId: number): Promise<UserData> {
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Clear from DB
+  const { data: log } = await supabaseAdmin
+    .from('daily_logs')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('date', today)
+    .single();
+
+  if (log) {
+    await supabaseAdmin.from('daily_logs').delete().eq('id', log.id);
+  }
+
   fakeDB[userId] = {
     water: 0,
     calories: 0,
@@ -72,12 +175,14 @@ export function resetUser(userId: number): UserData {
   return fakeDB[userId];
 }
 
-export function resetActiveCalories(userId: number): UserData {
-  if (fakeDB[userId]) {
-    fakeDB[userId].activeCalories = 0;
-    fakeDB[userId].activities = [];
-  }
-  return fakeDB[userId] || initUser(userId);
+export async function resetActiveCalories(userId: number): Promise<UserData> {
+  const userData = fakeDB[userId] || initUser(userId);
+  userData.activeCalories = 0;
+  userData.activities = [];
+  
+  await syncUserToSupabase(userId);
+  
+  return userData;
 }
 
 export const FOODS: Record<string, { emoji: string; cal: number; pro: number; carb: number; fat: number; fiber: number }> = {
