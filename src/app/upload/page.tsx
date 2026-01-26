@@ -255,9 +255,10 @@ export default function UploadPage() {
                 </p>
                 <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white p-4">
                   <code className="whitespace-nowrap text-xs font-mono text-teal-800">
-                    {type === "logs"
-                      ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories,bmr,alcohol"
-                      : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber"}
+                      {type === "logs"
+                        ? "user_id,date,target_calories,target_protein,target_carbs,target_fats,target_fiber,target_water,target_deficit,calories,protein,carbs,fats,fiber,water,active_calories,bmr,alcohol"
+                        : "user_id,date,name,meal,grams,calories,protein,carbs,fats,fiber,alcohol"}
+
                   </code>
                 </div>
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-500">
