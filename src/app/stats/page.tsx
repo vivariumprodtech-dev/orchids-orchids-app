@@ -1049,9 +1049,14 @@ function StatsContent() {
                         {food.time}
                       </div>
                     )}
-                      <div className="mb-2 flex items-center justify-between pr-12">
-                        <span className="text-primary-custom font-bold">{food.name}</span>
-                      </div>
+                        <div className="mb-2 flex items-center justify-between pr-12">
+                          <div className="flex items-center gap-2">
+                            <span className="text-primary-custom font-bold">{food.name}</span>
+                            {food.is_processed && (
+                              <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">P</span>
+                            )}
+                          </div>
+                        </div>
                       <div className="mb-2 flex items-center gap-1.5">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
                         <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
