@@ -111,17 +111,18 @@ export default function UploadPage() {
             };
 
             const { error } = await supabase.from("food_entries").insert({
-              log_id: logId,
-              name: row.name,
-              meal: row.meal ? normalizeMeal(row.meal) : "snack",
-              grams: row.grams ? Math.round(parseFloat(row.grams)) : 0,
-              calories: row.calories ? Math.round(parseFloat(row.calories)) : 0,
-              protein: row.protein ? Math.round(parseFloat(row.protein)) : 0,
-              carbs: row.carbs ? Math.round(parseFloat(row.carbs)) : 0,
-              fats: row.fats ? Math.round(parseFloat(row.fats)) : 0,
-              fiber: row.fiber ? Math.round(parseFloat(row.fiber)) : 0,
-              alcohol: row.alcohol ? Math.round(parseFloat(row.alcohol)) : 0,
-            });
+                log_id: logId,
+                name: row.name,
+                meal: row.meal ? normalizeMeal(row.meal) : "snack",
+                grams: row.grams ? Math.round(parseFloat(row.grams)) : 0,
+                calories: row.calories ? Math.round(parseFloat(row.calories)) : 0,
+                protein: row.protein ? Math.round(parseFloat(row.protein)) : 0,
+                carbs: row.carbs ? Math.round(parseFloat(row.carbs)) : 0,
+                fats: row.fats ? Math.round(parseFloat(row.fats)) : 0,
+                fiber: row.fiber ? Math.round(parseFloat(row.fiber)) : 0,
+                alcohol: row.alcohol ? Math.round(parseFloat(row.alcohol)) : 0,
+                is_processed: row.is_processed?.toLowerCase() === "sì" || row.is_processed?.toLowerCase() === "si" || row.is_processed?.toLowerCase() === "yes",
+              });
 
 
           if (error) throw error;
