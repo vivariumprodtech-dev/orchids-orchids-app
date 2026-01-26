@@ -863,33 +863,33 @@ function StatsContent() {
             ) : data.foods.length === 0 ? (
               <div className="rounded-2xl bg-white p-8 text-center text-tertiary-custom shadow-sm">Nessun cibo loggato</div>
             ) : (
-              data.foods.map((food, i) => (
+              [...data.foods].reverse().map((food, i) => (
                 <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-secondary-custom">{food.name}</span>
-                    <span className="rounded-full bg-gray-50 px-2 py-1 text-[10px] text-gray-400">10:00</span>
+                    <span className="text-primary-custom font-bold">{food.name}</span>
+                    <span className="text-[10px] text-gray-400">{food.grams}g</span>
                   </div>
                   <div className="mb-2 flex items-center gap-1.5">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
                     <span className="text-primary-custom font-bold">{food.calories}</span>
                     <span className="text-secondary-custom font-bold">Kcal</span>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-2">
-                    <div className="flex items-center gap-1.5 text-tertiary-custom">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FF9191" }} />
-                      <span>Protein {food.pro}g</span>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
+                      <BadgeIconSm semantic="Protein" />
+                      <span>{Math.round(food.pro)}g</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-tertiary-custom">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#3FA97A" }} />
-                      <span>Fiber {food.fiber}g</span>
+                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
+                      <BadgeIconSm semantic="Fiber" />
+                      <span>{Math.round(food.fiber)}g</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-tertiary-custom">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#FFBC58" }} />
-                      <span>Carbo {food.carb}g</span>
+                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
+                      <BadgeIconSm semantic="Carbo" />
+                      <span>{Math.round(food.carb)}g</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-tertiary-custom">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#9D9EFF" }} />
-                      <span>Fat {food.fat}g</span>
+                    <div className="flex items-center gap-1 text-tertiary-custom text-[11px]">
+                      <BadgeIconSm semantic="Fat" />
+                      <span>{Math.round(food.fat)}g</span>
                     </div>
                   </div>
                 </div>
