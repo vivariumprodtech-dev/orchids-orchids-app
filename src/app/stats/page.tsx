@@ -783,7 +783,7 @@ function StatsContent() {
     return d;
   });
 
-    const BMR = data.targets?.calories || 1600;
+    const BMR = data.bmr || data.targets?.calories || 1600;
     const totalTarget = BMR + data.activeCalories;
     const caloriesLeft = totalTarget - data.calories;
     const isOver = data.calories > totalTarget;
