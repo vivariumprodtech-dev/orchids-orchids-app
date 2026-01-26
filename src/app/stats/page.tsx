@@ -600,7 +600,7 @@ function StatsContent() {
             foods: [],
             meals: [
                 {
-                  meal: "Colazione",
+                  meal: "breakfast",
                   totalCalories: 450,
                   foods: [
                     { name: "Skyr Bianco", grams: 150, calories: 95, pro: 16, carb: 6, fat: 0, fiber: 0, time: "08:30" },
@@ -609,7 +609,7 @@ function StatsContent() {
                   ]
                 },
                 {
-                  meal: "Pranzo",
+                  meal: "lunch",
                   totalCalories: 650,
                   foods: [
                     { name: "Pasta al Pomodoro", grams: 100, calories: 350, pro: 12, carb: 70, fat: 2, fiber: 3, time: "13:15" },
@@ -618,7 +618,7 @@ function StatsContent() {
                   ]
                 },
                 {
-                  meal: "Spuntino",
+                  meal: "snack",
                   totalCalories: 200,
                   foods: [
                     { name: "Mela", grams: 200, calories: 104, pro: 1, carb: 28, fat: 0, fiber: 5, time: "16:45" },
@@ -626,7 +626,7 @@ function StatsContent() {
                   ]
                 },
                 {
-                  meal: "Cena",
+                  meal: "dinner",
                   totalCalories: 500,
                   foods: [
                     { name: "Salmone", grams: 150, calories: 310, pro: 30, carb: 0, fat: 20, fiber: 0, time: "20:10" },
