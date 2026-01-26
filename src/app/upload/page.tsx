@@ -101,17 +101,19 @@ export default function UploadPage() {
             logId = newLog.id;
           }
 
-          const { error } = await supabase.from("food_entries").insert({
-            log_id: logId,
-            name: row.name,
-            meal: row.meal || "Spuntino",
-            grams: row.grams ? parseInt(row.grams) : 0,
-            calories: row.calories ? parseFloat(row.calories) : 0,
-            protein: row.protein ? parseFloat(row.protein) : 0,
-            carbs: row.carbs ? parseFloat(row.carbs) : 0,
-            fats: row.fats ? parseFloat(row.fats) : 0,
-            fiber: row.fiber ? parseFloat(row.fiber) : 0,
-          });
+            const { error } = await supabase.from("food_entries").insert({
+              log_id: logId,
+              name: row.name,
+              meal: row.meal || "Spuntino",
+              grams: row.grams ? parseInt(row.grams) : 0,
+              calories: row.calories ? parseFloat(row.calories) : 0,
+              protein: row.protein ? parseFloat(row.protein) : 0,
+              carbs: row.carbs ? parseFloat(row.carbs) : 0,
+              fats: row.fats ? parseFloat(row.fats) : 0,
+              fiber: row.fiber ? parseFloat(row.fiber) : 0,
+              alcohol: row.alcohol ? parseFloat(row.alcohol) : 0,
+            });
+
 
           if (error) throw error;
         }
