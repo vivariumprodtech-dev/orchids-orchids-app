@@ -901,29 +901,46 @@ function StatsContent() {
                     isOpen={!!openMeals[meal.meal]} 
                     onToggle={() => toggleMeal(meal.meal)} 
                   />
-                  {openMeals[meal.meal] && (
-                    <div className="ml-4 space-y-3 border-l-2 border-teal-100 pl-4 py-2">
-                      {meal.foods.map((food, i) => (
-                        <div key={i} className="rounded-2xl bg-white/50 p-4 shadow-sm border border-white/40">
-                          <div className="mb-2 flex items-center justify-between">
-                            <span className="text-secondary-custom font-medium">{food.name}</span>
-                            <span className="text-[10px] text-gray-400">{food.grams}g</span>
+                    {openMeals[meal.meal] && (
+                      <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
+                        {meal.foods.map((food, i) => (
+                          <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
+                            {food.time && (
+                              <div className="absolute top-3 right-3 rounded-lg bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-400">
+                                {food.time}
+                              </div>
+                            )}
+                            <div className="mb-2 flex items-center justify-between pr-12">
+                              <span className="text-primary-custom font-bold">{food.name}</span>
+                              <span className="text-[10px] text-gray-400">{food.grams}g</span>
+                            </div>
+                            <div className="mb-2 flex items-center gap-1.5">
+                              <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                              <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
+                              <span className="text-secondary-custom font-bold">Kcal</span>
+                            </div>
+                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                <div className="h-1.5 w-1.5 rounded-full bg-[#FF4D4D]" />
+                                <i>Protein {Math.round(food.pro)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                <div className="h-1.5 w-1.5 rounded-full bg-[#4CD964]" />
+                                <i>Fiber {Math.round(food.fiber)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                <div className="h-1.5 w-1.5 rounded-full bg-[#FFCC00]" />
+                                <i>Carbs {Math.round(food.carb)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                                <div className="h-1.5 w-1.5 rounded-full bg-[#AF52DE]" />
+                                <i>Fat {Math.round(food.fat)}g</i>
+                              </div>
+                            </div>
                           </div>
-                          <div className="mb-2 flex items-center gap-1.5">
-                            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                            <span className="text-primary-custom font-bold">{food.calories}</span>
-                            <span className="text-secondary-custom font-bold">Kcal</span>
-                          </div>
-                          <div className="flex flex-wrap gap-x-4 gap-y-1">
-                            <div className="text-[11px] text-tertiary-custom">P: {food.pro}g</div>
-                            <div className="text-[11px] text-tertiary-custom">C: {food.carb}g</div>
-                            <div className="text-[11px] text-tertiary-custom">F: {food.fat}g</div>
-                            <div className="text-[11px] text-tertiary-custom">Fi: {food.fiber}g</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
                 </div>
               ))
             ) : data.foods.length === 0 ? (
