@@ -1060,6 +1060,12 @@ function StatsContent() {
                           <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
                           <i>Fat {Math.round(food.fat)}g</i>
                         </div>
+                        {food.alcohol > 0 && (
+                          <div className="flex items-center gap-1 text-[11px] text-tertiary-custom">
+                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                            <i>Alcohol {Math.round(food.alcohol)}g</i>
+                          </div>
+                        )}
                       </div>
                   </div>
                 ))
