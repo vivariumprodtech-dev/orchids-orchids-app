@@ -816,7 +816,7 @@ function StatsContent() {
       let foods: FoodEntry[] = [];
       if (foodsParam) {
         foods = foodsParam.split("|").map((f) => {
-          const [name, grams, cals, pro, carb, fat, fib] = f.split(":");
+          const [name, grams, cals, pro, carb, fat, fib, alc] = f.split(":");
           return {
             name,
             grams: parseInt(grams),
@@ -825,6 +825,7 @@ function StatsContent() {
             carb: parseFloat(carb),
             fat: parseFloat(fat),
             fiber: parseFloat(fib) || 0,
+            alcohol: parseFloat(alc) || 0,
           };
         });
       }
