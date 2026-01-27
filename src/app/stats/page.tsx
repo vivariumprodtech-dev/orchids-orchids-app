@@ -932,9 +932,10 @@ function StatsContent() {
       return d;
     });
   
-      const BMR = Math.round(data.bmr || data.targets?.calories || 1600);
-      const totalTarget = Math.round(BMR + data.activeCalories);
-      const caloriesLeft = Math.round(totalTarget - data.calories);
+        const BMR = Math.round(data.bmr || data.targets?.calories || 1600);
+        const deficit = data.targets?.deficit || 0;
+        const totalTarget = Math.round(BMR + data.activeCalories - deficit);
+        const caloriesLeft = Math.round(totalTarget - data.calories);
       const isOver = data.calories > totalTarget;
       const surplus = Math.round(data.calories - totalTarget);
       const waterLiters = data.water / 1000;
