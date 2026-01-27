@@ -382,7 +382,7 @@ function MacroCard({
       return (
         <div className="relative rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
           <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-            <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[72px]" : ""}`}>
+            <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[84px]" : ""}`}>
             {isSpecial ? (
               <div className="flex flex-col gap-[8px]">
                 <div className="flex items-center gap-1.5">
