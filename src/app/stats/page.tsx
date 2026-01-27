@@ -1019,7 +1019,7 @@ function StatsContent() {
                         <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
                           {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
                         </div>
-                        <div className="text-body-sm-custom">{isOver ? "over" : "left"}</div>
+                          <div className="text-helper-custom">{isOver ? "over" : "left"}</div>
                       </ShadcnRadialProgress>
 
               </div>
