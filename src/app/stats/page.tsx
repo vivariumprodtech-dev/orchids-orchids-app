@@ -401,9 +401,9 @@ function MacroCard({
                             <span className="text-primary-custom">
                               {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
                             </span>
-                            <span className="text-secondary-custom">
-                              /{Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} {name}
-                            </span>
+                              <span className="text-secondary-custom">
+                                /{type === "processed" ? "100" : Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} {name}
+                              </span>
                           </>
                         )}
                       </div>
