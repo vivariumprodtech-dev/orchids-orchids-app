@@ -363,7 +363,7 @@ function MacroCard({
       } else if (type === "water") {
         badge = getWaterBadge(value, target);
         const diff = target - value;
-        const displayVal = Math.round(Math.abs(diff));
+        const displayVal = Math.round(Math.abs(diff) * 10) / 10;
         circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
         circleLabel = value > target ? "over" : "left";
         helpText = "(Count in liters)";
