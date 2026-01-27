@@ -675,70 +675,77 @@ function StatsContent() {
               return;
             }
 
-                  if (log) {
-                    const rawFoods = log.food_entries || [];
-                    const foods = rawFoods.map((f: any) => ({
-                      name: f.name,
-                      grams: f.grams,
-                      calories: f.calories,
-                      pro: f.protein,
-                      carb: f.carbs,
-                      fat: f.fats,
-                      fiber: f.fiber,
-                      meal: f.meal,
-                        alcohol: f.alcohol || 0,
-                        is_processed: f.is_processed || false,
-                        time: f.intake_time || (f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined)
-                      })) || [];
+                    if (log) {
+                      const rawFoods = log.food_entries || [];
+                      const foods = rawFoods
+                        .filter((f: any) => {
+                          // Filter out water-only entries from the food log summary
+                          const isWater = f.calories === 0 && f.protein === 0 && f.carbs === 0 && f.fats === 0;
+                          const hasWaterName = f.name?.toLowerCase().includes("acqua") || f.name?.toLowerCase().includes("water");
+                          return !(isWater && hasWaterName);
+                        })
+                        .map((f: any) => ({
+                          name: f.name,
+                          grams: f.grams,
+                          calories: f.calories,
+                          pro: f.protein,
+                          carb: f.carbs,
+                          fat: f.fats,
+                          fiber: f.fiber,
+                          meal: f.meal,
+                          alcohol: f.alcohol || 0,
+                          is_processed: f.is_processed || false,
+                          time: f.intake_time || (f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined)
+                        })) || [];
 
-                  // Calculate totals from foods
-                  const foodTotals = foods.reduce((acc: any, f: any) => ({
-                    calories: acc.calories + (f.calories || 0),
-                    protein: acc.protein + (f.pro || 0),
-                    carbs: acc.carbs + (f.carb || 0),
-                    fats: acc.fats + (f.fat || 0),
-                    fiber: acc.fiber + (f.fiber || 0),
-                    alcohol: acc.alcohol + (f.alcohol || 0),
-                    processedCalories: acc.processedCalories + (f.is_processed ? f.calories : 0)
-                  }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0, processedCalories: 0 });
+                    // Calculate totals from foods
+                    const foodTotals = foods.reduce((acc: any, f: any) => ({
+                      calories: acc.calories + (f.calories || 0),
+                      protein: acc.protein + (f.pro || 0),
+                      carbs: acc.carbs + (f.carb || 0),
+                      fats: acc.fats + (f.fat || 0),
+                      fiber: acc.fiber + (f.fiber || 0),
+                      alcohol: acc.alcohol + (f.alcohol || 0),
+                      processedCalories: acc.processedCalories + (f.is_processed ? f.calories : 0)
+                    }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0, processedCalories: 0 });
 
-                  const processedPercentage = foodTotals.calories > 0 
-                    ? (foodTotals.processedCalories / foodTotals.calories) * 100 
-                    : 0;
+                    const processedPercentage = foodTotals.calories > 0 
+                      ? (foodTotals.processedCalories / foodTotals.calories) * 100 
+                      : 0;
 
-                // Group by meal with sequence-based snack categorization
-                const mealsMap: Record<string, MealEntry> = {};
-                let hasHadBreakfast = false;
-                let hasHadLunch = false;
-                let hasHadDinner = false;
-
-                foods.forEach((f: any) => {
-                  let m = (f.meal || "snack").toLowerCase().trim();
+                  // Group by meal with time-based snack categorization
+                  const mealsMap: Record<string, MealEntry> = {};
                   
-                  // Normalize if still in Italian from DB
-                  if (m === "colazione") m = "breakfast";
-                  else if (m === "pranzo") m = "lunch";
-                  else if (m === "cena") m = "dinner";
-                  else if (m === "spuntino") m = "snack";
+                  const getSnackKey = (time?: string) => {
+                    if (!time) return "afternoon"; // Default
+                    const [hours, minutes] = time.split(':').map(Number);
+                    const totalMinutes = hours * 60 + (minutes || 0);
+                    
+                    if (totalMinutes < 9 * 60) return "pre_breakfast"; // Before 9:00
+                    if (totalMinutes < 12 * 60 + 30) return "morning"; // 9:00 - 12:30
+                    if (totalMinutes < 19 * 60 + 30) return "afternoon"; // 12:30 - 19:30
+                    return "night"; // After 19:30
+                  };
 
-                  let finalMealKey = m;
-                  
-                  if (m === "breakfast") hasHadBreakfast = true;
-                  else if (m === "lunch") hasHadLunch = true;
-                  else if (m === "dinner") hasHadDinner = true;
-                  else if (m === "snack") {
-                    if (!hasHadBreakfast) finalMealKey = "pre_breakfast";
-                    else if (!hasHadLunch) finalMealKey = "morning";
-                    else if (!hasHadDinner) finalMealKey = "afternoon";
-                    else finalMealKey = "night";
-                  }
+                  foods.forEach((f: any) => {
+                    let m = (f.meal || "snack").toLowerCase().trim();
+                    
+                    // Normalize if still in Italian from DB
+                    if (m === "colazione") m = "breakfast";
+                    else if (m === "pranzo") m = "lunch";
+                    else if (m === "cena") m = "dinner";
+                    else if (m === "spuntino" || m === "snack") {
+                      m = getSnackKey(f.time);
+                    }
 
-                  if (!mealsMap[finalMealKey]) {
-                    mealsMap[finalMealKey] = { meal: finalMealKey, foods: [], totalCalories: 0 };
-                  }
-                  mealsMap[finalMealKey].foods.push({ ...f, meal: finalMealKey });
-                  mealsMap[finalMealKey].totalCalories += f.calories;
-                });
+                    const finalMealKey = m;
+
+                    if (!mealsMap[finalMealKey]) {
+                      mealsMap[finalMealKey] = { meal: finalMealKey, foods: [], totalCalories: 0 };
+                    }
+                    mealsMap[finalMealKey].foods.push({ ...f, meal: finalMealKey });
+                    mealsMap[finalMealKey].totalCalories += f.calories;
+                  });
                 
                 // Order meals
                 const mealOrder = [
