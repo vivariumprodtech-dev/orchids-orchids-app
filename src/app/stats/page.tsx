@@ -1003,20 +1003,20 @@ function StatsContent() {
               <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2.5">
                   <h2 className="mb-4 text-primary-custom">Daily Calories</h2>
-                  <div className="flex items-center gap-1 text-secondary-custom">
-                    <BadgeIconSm semantic="Lunch" />
-                    <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
-                  </div>
                     <div className="flex items-center gap-1 text-secondary-custom">
-                      <BadgeIconSm semantic="Goal" />
-                      <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
+                      <BadgeIconSm semantic="Lunch" />
+                      <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active{deficit > 0 ? " - deficit" : ""})</span></span>
                     </div>
-                    {deficit > 0 && (
                       <div className="flex items-center gap-1 text-secondary-custom">
                         <BadgeIconSm semantic="Goal" />
-                        <span><span className="text-primary-custom">-{deficit.toLocaleString("it-IT")}</span> target deficit</span>
+                        <span><span className="text-primary-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> goal {deficit > 0 && <span className="text-tertiary-custom">({BMR.toLocaleString("it-IT")} - {deficit.toLocaleString("it-IT")})</span>}</span>
                       </div>
-                    )}
+                      {deficit > 0 && (
+                        <div className="flex items-center gap-1 text-secondary-custom">
+                          <BadgeIconSm semantic="Goal" />
+                          <span><span className="text-primary-custom">-{deficit.toLocaleString("it-IT")}</span> target deficit</span>
+                        </div>
+                      )}
                     <div className="flex items-center gap-1 text-secondary-custom">
                       <BadgeIconSm semantic="KcalActive" />
                       <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
