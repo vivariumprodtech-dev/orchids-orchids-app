@@ -1125,30 +1125,30 @@ function StatsContent() {
                         <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
                         <span className="text-body-sm-custom font-bold">Kcal</span>
                       </div>
-                      <div className="flex flex-wrap gap-x-3 gap-y-1">
-                        <div className="flex items-center gap-1 text-[11px] text-helper-custom">
-                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                          <i>Protein {Math.round(food.pro)}g</i>
-                        </div>
-                        <div className="flex items-center gap-1 text-[11px] text-helper-custom">
-                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                          <i>Fiber {Math.round(food.fiber)}g</i>
-                        </div>
-                        <div className="flex items-center gap-1 text-[11px] text-helper-custom">
-                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                          <i>Carbo {Math.round(food.carb)}g</i>
-                        </div>
-                        <div className="flex items-center gap-1 text-[11px] text-helper-custom">
-                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                          <i>Fat {Math.round(food.fat)}g</i>
-                        </div>
-                        {food.alcohol > 0 && (
-                          <div className="flex items-center gap-1 text-[11px] text-helper-custom">
-                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                            <i>Alcohol {Math.round(food.alcohol)}g</i>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                          <div className="flex items-center gap-1 text-helper-custom">
+                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                            <i>Protein {Math.round(food.pro)}g</i>
                           </div>
-                        )}
-                      </div>
+                          <div className="flex items-center gap-1 text-helper-custom">
+                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                            <i>Fiber {Math.round(food.fiber)}g</i>
+                          </div>
+                          <div className="flex items-center gap-1 text-helper-custom">
+                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                            <i>Carbo {Math.round(food.carb)}g</i>
+                          </div>
+                          <div className="flex items-center gap-1 text-helper-custom">
+                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                            <i>Fat {Math.round(food.fat)}g</i>
+                          </div>
+                          {food.alcohol > 0 && (
+                            <div className="flex items-center gap-1 text-helper-custom">
+                              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                              <i>Alcohol {Math.round(food.alcohol)}g</i>
+                            </div>
+                          )}
+                        </div>
                   </div>
                 ))
               )}
