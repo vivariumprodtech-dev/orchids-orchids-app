@@ -414,21 +414,21 @@ function MacroCard({
                   </div>
                 ) : (
                   <>
-                    <div className="mb-1 flex items-center gap-1">
-                      {iconBg ? (
-                        <div
-                          className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                          style={{ background: iconBg }}
-                        >
-                          {icon}
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center">
-                          {icon}
-                        </div>
-                      )}
-                      <span className="text-body-sm-custom">{name}</span>
-                    </div>
+                      <div className="mb-1 flex items-center gap-1">
+                        {iconBg ? (
+                          <div
+                            className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                            style={{ background: iconBg }}
+                          >
+                            {icon}
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            {icon}
+                          </div>
+                        )}
+                        <span className="text-body-md-custom">{name}</span>
+                      </div>
                       <div className="mb-2">
                         <span className="text-subtitle-1-custom">{Math.round(value)}</span>
                         <span className="text-body-sm-custom">/{Math.round(target)}g</span>
