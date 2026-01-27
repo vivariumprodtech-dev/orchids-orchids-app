@@ -686,10 +686,10 @@ function StatsContent() {
                       fat: f.fats,
                       fiber: f.fiber,
                       meal: f.meal,
-                      alcohol: f.alcohol || 0,
-                      is_processed: f.is_processed || false,
-                      time: f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined
-                    })) || [];
+                        alcohol: f.alcohol || 0,
+                        is_processed: f.is_processed || false,
+                        time: f.intake_time || (f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined)
+                      })) || [];
 
                   // Calculate totals from foods
                   const foodTotals = foods.reduce((acc: any, f: any) => ({
