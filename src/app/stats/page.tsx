@@ -148,24 +148,24 @@ function MissingAlert() {
     <div 
       style={{
         background: "#FEF5F7",
-        borderRadius: "16px",
-        padding: "12px",
+        borderRadius: "1rem",
+        padding: "0.75rem",
         display: "flex",
         alignItems: "center",
-        gap: "12px",
-        marginBottom: "16px"
+        gap: "0.75rem",
+        marginBottom: "1rem"
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.125rem" }}>
         <div 
           style={{ 
             color: "#C10127", 
             fontFamily: "var(--font-dm-sans)", 
             fontWeight: "600", 
-            fontSize: "12px",
+            fontSize: "0.75rem",
             display: "flex",
             alignItems: "center",
-            gap: "4px"
+            gap: "0.25rem"
           }}
         >
           🚨 Something might be missing
@@ -174,7 +174,7 @@ function MissingAlert() {
           style={{ 
             color: "#C10127", 
             fontFamily: "var(--font-dm-sans)",
-            fontSize: "12px",
+            fontSize: "0.75rem",
             fontWeight: "400",
             lineHeight: "1.4"
           }}
