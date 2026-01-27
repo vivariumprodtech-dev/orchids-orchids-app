@@ -117,7 +117,7 @@
   }
 
   .text-body-md-custom {
-    color: var(--text-primary);
+    color: var(--text-secondary);
     font-size: 1rem;
     font-style: normal;
     font-weight: 400;
