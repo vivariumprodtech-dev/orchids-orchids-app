@@ -1019,15 +1019,17 @@ function StatsContent() {
               </div>
             </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={data.targets?.protein || 96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
-                <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbo" value={data.carbs} target={data.targets?.carbs || 160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
-                <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={data.targets?.fats || 64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
-                <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
-              </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="Protein" value={data.protein} target={data.targets?.protein || 96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
+                  <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="Carbo" value={data.carbs} target={data.targets?.carbs || 160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
+                  <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="Fat" value={data.fats} target={data.targets?.fats || 64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
+                  <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="Fiber" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
+                </div>
 
-            <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={waterTarget} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
-            <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+              {data.targets?.water && data.targets.water > 0 ? (
+                <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={data.targets.water} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
+              ) : null}
+              <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
             <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
           </div>
 
