@@ -120,9 +120,10 @@ export default function UploadPage() {
                 carbs: row.carbs ? Math.round(parseFloat(row.carbs)) : 0,
                 fats: row.fats ? Math.round(parseFloat(row.fats)) : 0,
                 fiber: row.fiber ? Math.round(parseFloat(row.fiber)) : 0,
-                alcohol: row.alcohol ? Math.round(parseFloat(row.alcohol)) : 0,
-                is_processed: row.is_processed?.toLowerCase() === "sì" || row.is_processed?.toLowerCase() === "si" || row.is_processed?.toLowerCase() === "yes",
-              });
+                  alcohol: row.alcohol ? Math.round(parseFloat(row.alcohol)) : 0,
+                  is_processed: row.is_processed?.toLowerCase() === "sì" || row.is_processed?.toLowerCase() === "si" || row.is_processed?.toLowerCase() === "yes",
+                  intake_time: row.intake_time || null,
+                });
 
 
           if (error) throw error;
