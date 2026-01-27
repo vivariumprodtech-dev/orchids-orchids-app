@@ -1109,9 +1109,9 @@ function StatsContent() {
               ) : data.foods.length === 0 ? (
                 <div className="rounded-2xl bg-white p-8 text-center text-helper-custom shadow-sm">No food logged for this day</div>
                 ) : (
-                  [...data.foods].reverse().map((food, i) => (
-                    <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
-                      <div className="absolute top-3 right-3 flex items-center gap-2">
+                    [...data.foods].reverse().map((food, i) => (
+                      <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
+                        <div className="absolute top-3 right-3 flex items-center gap-1">
                         {food.is_processed && (
                           <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
                             P
