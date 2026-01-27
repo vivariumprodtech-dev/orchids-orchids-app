@@ -999,28 +999,28 @@ function StatsContent() {
             <div className="space-y-3">
               <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
                 <div className="flex items-center justify-between">
-                <div className="flex-1 space-y-2.5">
-                  <h2 className="mb-5 text-title-custom">Daily Calories</h2>
-                          <div className="flex items-start gap-1 text-body-sm-custom">
-                            <BadgeIconSm semantic="Lunch" />
-                            <span><span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-helper-custom">(target + active)</span></span>
-                          </div>
-                        <div className="flex items-start gap-1 text-body-sm-custom">
-                          <BadgeIconSm semantic="KcalActive" />
-                          <span><span className="text-subtitle-1-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
-                        </div>
+                  <div className="flex-1 space-y-2.5">
+                    <h2 className="mb-5 text-title-custom">Daily Calories</h2>
                             <div className="flex items-start gap-1 text-body-sm-custom">
-                              <BadgeIconSm semantic="Goal" />
-                              <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">({BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit)</span></span>
+                              <BadgeIconSm semantic="Lunch" />
+                              <span><span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-helper-custom">target + active</span></span>
                             </div>
-                  <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
-                </div>
-                    <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
-                      <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
-                        {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                      </div>
-                      <div className="text-body-sm-custom !text-[0.75rem]">{isOver ? "over" : "left"}</div>
-                    </ShadcnRadialProgress>
+                          <div className="flex items-start gap-1 text-body-sm-custom">
+                            <BadgeIconSm semantic="KcalActive" />
+                            <span><span className="text-subtitle-1-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                          </div>
+                              <div className="flex items-start gap-1 text-body-sm-custom">
+                                <BadgeIconSm semantic="Goal" />
+                                <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">{BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit</span></span>
+                              </div>
+                    <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+                  </div>
+                      <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                        <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
+                          {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                        </div>
+                        <div className="text-body-sm-custom">{isOver ? "over" : "left"}</div>
+                      </ShadcnRadialProgress>
 
               </div>
             </div>
