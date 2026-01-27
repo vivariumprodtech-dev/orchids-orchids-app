@@ -661,7 +661,7 @@ function StatsContent() {
       }
 
             try {
-            const [{ data: log, error }, { data: profile }] = await Promise.all([
+            const [{ data: log, error }, { data: profile }, { data: ugoProfile }] = await Promise.all([
               supabase
                 .from('daily_logs')
                 .select('*, food_entries(*)')
@@ -673,6 +673,11 @@ function StatsContent() {
                 .from('profiles')
                 .select('*')
                 .eq('telegram_id', userId)
+                .maybeSingle(),
+              supabase
+                .from('profiles')
+                .select('*')
+                .eq('telegram_id', 'ugo_demo')
                 .maybeSingle()
             ]);
 
@@ -796,19 +801,19 @@ function StatsContent() {
                         foods: foods,
                         meals: meals.length > 0 ? meals : undefined,
                         activeCalories: Math.round(log.active_calories || 0),
-                        bmr: log.bmr || profile?.bmr || undefined,
+                        bmr: log.bmr || profile?.bmr || ugoProfile?.bmr || undefined,
                         processedPercentage: processedPercentage,
                         alcohol: { 
                           grams: Math.round(finalAlcoholGrams), 
                           calories: Math.round(finalAlcoholGrams * 7)
                         },
                       targets: {
-                        calories: log.target_calories || profile?.target_calories || 1600,
-                        protein: log.target_protein || profile?.target_protein || 96,
-                        carbs: log.target_carbs || profile?.target_carbs || 160,
-                        fats: log.target_fats || profile?.target_fats || 64,
-                        fiber: log.target_fiber || profile?.target_fiber || 30,
-                        water: log.target_water || profile?.target_water || 2,
+                        calories: log.target_calories || profile?.target_calories || ugoProfile?.target_calories || 1600,
+                        protein: log.target_protein || profile?.target_protein || ugoProfile?.target_protein || 96,
+                        carbs: log.target_carbs || profile?.target_carbs || ugoProfile?.target_carbs || 160,
+                        fats: log.target_fats || profile?.target_fats || ugoProfile?.target_fats || 64,
+                        fiber: log.target_fiber || profile?.target_fiber || ugoProfile?.target_fiber || 30,
+                        water: log.target_water || profile?.target_water || ugoProfile?.target_water || 2,
                         deficit: log.target_deficit || 0
                       }
                     });
@@ -821,7 +826,16 @@ function StatsContent() {
               setData({
                 calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
                 water: 0, activeCalories: 0, foods: [],
-                alcohol: { grams: 0, calories: 0 }
+                alcohol: { grams: 0, calories: 0 },
+                targets: {
+                  calories: profile?.target_calories || ugoProfile?.target_calories || 1600,
+                  protein: profile?.target_protein || ugoProfile?.target_protein || 96,
+                  carbs: profile?.target_carbs || ugoProfile?.target_carbs || 160,
+                  fats: profile?.target_fats || ugoProfile?.target_fats || 64,
+                  fiber: profile?.target_fiber || ugoProfile?.target_fiber || 30,
+                  water: profile?.target_water || ugoProfile?.target_water || 2,
+                  deficit: 0
+                }
               });
             }
           }
