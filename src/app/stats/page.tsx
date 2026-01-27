@@ -1062,7 +1062,7 @@ function StatsContent() {
                             )}
                                 <div className="mb-2 flex items-center justify-between pr-12">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-primary-custom font-bold">{food.name}</span>
+                                    <span className="text-body-md-custom font-bold">{food.name}</span>
                                     {food.is_processed && (
                                       <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">P</span>
                                     )}
