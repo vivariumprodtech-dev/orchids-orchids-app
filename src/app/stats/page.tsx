@@ -974,23 +974,23 @@ function StatsContent() {
             if (isSelected) textColor = "#262C44";
             else if (isTodayDay) textColor = "#088D98";
 
-              return (
-                <div
-                  key={i}
-                  onClick={() => setSelectedDate(dateStr)}
-                  className="flex-1 rounded-[24px] py-3 text-center transition-all"
-                  style={{ 
-                    backgroundColor: bgColor,
-                    cursor: "pointer",
-                    fontFamily: '"DM Sans", sans-serif',
-                    minWidth: "40px",
-                    maxWidth: "48px"
-                  }}
-                >
-                  <div style={{ fontSize: "14px", fontWeight: 700, color: textColor }}>{dayName}</div>
-                  <div style={{ fontSize: "14px", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "4px" }}>{dayNum}</div>
-                </div>
-              );
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setSelectedDate(dateStr)}
+                    className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
+                    style={{ 
+                      backgroundColor: bgColor,
+                      cursor: "pointer",
+                      fontFamily: '"DM Sans", sans-serif',
+                      minWidth: "40px",
+                      maxWidth: "48px"
+                    }}
+                  >
+                    <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                    <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                  </div>
+                );
           })}
         </div>
 
