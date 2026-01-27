@@ -118,25 +118,25 @@ function StatusBadge({
 
   const style = styles[connotation];
 
-  return (
-    <div 
-      style={{
-        display: "inline-flex",
-        height: "20px",
-        padding: "0 8px",
-        alignItems: "center",
-        gap: "4px",
-        borderRadius: "100px",
-        background: style.bg,
-        color: style.color,
-        fontFamily: "var(--font-dm-sans)",
-        fontSize: "12px",
-        fontWeight: "600",
-        lineHeight: "1",
-        width: "fit-content",
-        whiteSpace: "nowrap"
-      }}
-    >
+    return (
+      <div 
+        style={{
+          display: "inline-flex",
+          height: "1.25rem",
+          padding: "0 0.5rem",
+          alignItems: "center",
+          gap: "0.25rem",
+          borderRadius: "6.25rem",
+          background: style.bg,
+          color: style.color,
+          fontFamily: "var(--font-dm-sans)",
+          fontSize: "0.75rem",
+          fontWeight: "600",
+          lineHeight: "1",
+          width: "fit-content",
+          whiteSpace: "nowrap"
+        }}
+      >
       {style.icon}
       <span>{text}</span>
     </div>
