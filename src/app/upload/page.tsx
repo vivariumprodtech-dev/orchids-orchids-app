@@ -141,6 +141,25 @@ export default function UploadPage() {
     }
   };
 
+  const handleSync = async () => {
+    setSyncing(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch("/api/sync-airtable", { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Errore durante la sincronizzazione");
+
+      setMessage({ text: "Sincronizzazione Airtable completata con successo!", type: "success" });
+    } catch (err: any) {
+      console.error(err);
+      setMessage({ text: `Errore: ${err.message}`, type: "error" });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-50 to-white p-4 md:p-8">
       <div className="w-full max-w-3xl">
