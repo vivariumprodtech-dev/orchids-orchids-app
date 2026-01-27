@@ -822,29 +822,35 @@ function StatsContent() {
                         alcohol: { 
                           grams: Math.round(finalAlcoholGrams), 
                           calories: Math.round(finalAlcoholGrams * 7)
-                        },
-                      targets: {
-                        calories: log.target_calories || profile?.target_calories || ugoProfile?.target_calories || 1600,
-                        protein: log.target_protein || profile?.target_protein || ugoProfile?.target_protein || 96,
-                        carbs: log.target_carbs || profile?.target_carbs || ugoProfile?.target_carbs || 160,
-                        fats: log.target_fats || profile?.target_fats || ugoProfile?.target_fats || 64,
-                        fiber: log.target_fiber || profile?.target_fiber || ugoProfile?.target_fiber || 30,
-                        water: log.target_water || profile?.target_water || ugoProfile?.target_water || 2,
-                        deficit: log.target_deficit || 0
-                      }
-                    });
+                          },
+                        targets: {
+                          calories: log.target_calories || profile?.target_calories || ugoProfile?.target_calories || 1600,
+                          protein: log.target_protein || profile?.target_protein || ugoProfile?.target_protein || 96,
+                          carbs: log.target_carbs || profile?.target_carbs || ugoProfile?.target_carbs || 160,
+                          fats: log.target_fats || profile?.target_fats || ugoProfile?.target_fats || 64,
+                          fiber: log.target_fiber || profile?.target_fiber || ugoProfile?.target_fiber || 30,
+                          water: (() => {
+                            const raw = log.target_water ?? profile?.target_water ?? (profile ? 0 : ugoProfile?.target_water) ?? 0;
+                            return raw > 10 ? raw / 1000 : raw;
+                          })(),
+                          deficit: log.target_deficit || profile?.target_deficit || 0
+                        }
+                      });
 
-              return;
-            } else {
-              const targets = {
-                calories: profile?.target_calories || ugoProfile?.target_calories || 1600,
-                protein: profile?.target_protein || ugoProfile?.target_protein || 96,
-                carbs: profile?.target_carbs || ugoProfile?.target_carbs || 160,
-                fats: profile?.target_fats || ugoProfile?.target_fats || 64,
-                fiber: profile?.target_fiber || ugoProfile?.target_fiber || 30,
-                water: profile?.target_water || ugoProfile?.target_water || 2,
-                deficit: 0
-              };
+                return;
+              } else {
+                const targets = {
+                  calories: profile?.target_calories || ugoProfile?.target_calories || 1600,
+                  protein: profile?.target_protein || ugoProfile?.target_protein || 96,
+                  carbs: profile?.target_carbs || ugoProfile?.target_carbs || 160,
+                  fats: profile?.target_fats || ugoProfile?.target_fats || 64,
+                  fiber: profile?.target_fiber || ugoProfile?.target_fiber || 30,
+                  water: (() => {
+                    const raw = profile?.target_water ?? (profile ? 0 : ugoProfile?.target_water) ?? 0;
+                    return raw > 10 ? raw / 1000 : raw;
+                  })(),
+                  deficit: profile?.target_deficit || 0
+                };
 
               if (selectedDate === new Date().toISOString().split('T')[0]) {
                 loadFromParams(targets);
