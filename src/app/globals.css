@@ -78,14 +78,62 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --text-secondary: #262C44;
-  --placeholder-color: #5A658D;
-  --action-components-hover-color: #757FA0;
+  --text-primary: #262C44;
+  --text-secondary: #5A658D;
+  --text-helper: #757FA0;
 }
 
 @layer components {
-  .text-primary-custom {
+  .text-title-custom {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.375rem;
+  }
+
+  .text-subtitle-1-custom {
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.375rem;
+  }
+
+  .text-caption-custom {
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 0.875rem;
+  }
+
+  .text-body-sm-custom {
     color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem;
+  }
+
+  .text-body-md-custom {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.125rem;
+  }
+
+  .text-helper-custom {
+    color: var(--text-helper);
+    font-size: 0.75rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 0.875rem;
+  }
+
+  .text-primary-custom {
+    color: var(--text-primary);
     font-family: var(--font-dm-sans), sans-serif;
     font-size: 1rem;
     font-style: normal;
@@ -94,7 +142,7 @@
   }
 
   .text-secondary-custom {
-    color: var(--placeholder-color);
+    color: var(--text-secondary);
     font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.875rem;
     font-style: normal;
@@ -103,7 +151,7 @@
   }
 
   .text-tertiary-custom {
-    color: var(--action-components-hover-color);
+    color: var(--text-helper);
     font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.75rem;
     font-style: italic;
