@@ -157,30 +157,29 @@ function MissingAlert() {
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "0.125rem" }}>
-        <div 
-          style={{ 
-            color: "#C10127", 
-            fontFamily: "var(--font-dm-sans)", 
-            fontWeight: "600", 
-            fontSize: "0.75rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.25rem"
-          }}
-        >
-          🚨 Something might be missing
-        </div>
-        <div 
-          style={{ 
-            color: "#C10127", 
-            fontFamily: "var(--font-dm-sans)",
-            fontSize: "0.75rem",
-            fontWeight: "400",
-            lineHeight: "1.4"
-          }}
-        >
-          Tell me in the chat if there are missing meals to adjust this day.
-        </div>
+          <div 
+            className="text-caption-custom"
+            style={{ 
+              color: "#C10127", 
+              fontWeight: "600", 
+              display: "flex",
+              alignItems: "center",
+              gap: "0.25rem"
+            }}
+          >
+            🚨 Something might be missing
+          </div>
+          <div 
+            className="text-caption-custom"
+            style={{ 
+              color: "#C10127", 
+              fontWeight: "400",
+              lineHeight: "1.4"
+            }}
+          >
+            Tell me in the chat if there are missing meals to adjust this day.
+          </div>
+
       </div>
     </div>
   );
