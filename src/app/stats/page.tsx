@@ -305,10 +305,8 @@ function getMacroBadge(type: "protein" | "carbs" | "fat" | "fiber", consumed: nu
 }
 
 function getProcessedFoodBadge(consumed: number, target: number) {
-  if (target === 0) return { text: "No target", connotation: "neutral" as const };
-  const percentage = (consumed / target) * 100;
-  if (percentage < 25) return { text: "Great! 🏆", connotation: "great" as const };
-  if (percentage <= 49) return { text: "Good", connotation: "good" as const };
+  if (consumed <= 25) return { text: "Great! 🏆", connotation: "great" as const };
+  if (consumed <= 50) return { text: "Good", connotation: "good" as const };
   return { text: "Over", connotation: "danger" as const };
 }
 
