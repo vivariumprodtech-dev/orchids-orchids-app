@@ -120,6 +120,7 @@ function StatusBadge({
 
     return (
       <div 
+        className="text-caption-custom"
         style={{
           display: "inline-flex",
           height: "1.25rem",
@@ -130,7 +131,6 @@ function StatusBadge({
           background: style.bg,
           color: style.color,
           fontFamily: "var(--font-dm-sans)",
-          fontSize: "0.75rem",
           fontWeight: "600",
           lineHeight: "1",
           width: "fit-content",
