@@ -45,30 +45,51 @@ export async function POST(req: NextRequest) {
     const mealDetails = await fetchAirtable("Export_Meal_Details");
     console.log(`Fetched ${mealDetails.length} meal details.`);
 
-    // 3. Sync Daily Logs
-    // We group by user_id and date to ensure we have one log per day
-    for (const summary of dailySummaries) {
-      const { user_id, date, water, active_calories, alcohol, ...targets } = summary;
-      
-      if (!user_id || !date) continue;
+      // 3. Sync Daily Logs
+      // We group by user_id and date to ensure we have one log per day
+      for (const summary of dailySummaries) {
+        const { 
+          user_id, 
+          date, 
+          water, 
+          active_calories, 
+          alcohol, 
+          target_calories,
+          target_protein,
+          target_carbs,
+          target_fats,
+          target_fiber,
+          target_water,
+          target_deficit,
+          bmr
+        } = summary;
+        
+        if (!user_id || !date) continue;
 
-      // Upsert daily log
-      const { data: log, error: logError } = await supabase
-        .from("daily_logs")
-        .upsert(
-          {
-            user_id: String(user_id),
-            date,
-            water: water || 0,
-            active_calories: active_calories || 0,
-            alcohol: alcohol || 0,
-            // You can add targets here if they exist in Airtable
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id,date" }
-        )
-        .select()
-        .single();
+        // Upsert daily log
+        const { data: log, error: logError } = await supabase
+          .from("daily_logs")
+          .upsert(
+            {
+              user_id: String(user_id),
+              date,
+              water: water || 0,
+              active_calories: active_calories || 0,
+              alcohol: alcohol || 0,
+              target_calories: target_calories || null,
+              target_protein: target_protein || null,
+              target_carbs: target_carbs || null,
+              target_fats: target_fats || null,
+              target_fiber: target_fiber || null,
+              target_water: target_water || null,
+              target_deficit: target_deficit || null,
+              bmr: bmr || null,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id,date" }
+          )
+          .select()
+          .single();
 
       if (logError) {
         console.error(`Error upserting log for ${user_id} on ${date}:`, logError);
