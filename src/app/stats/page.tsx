@@ -829,10 +829,10 @@ function StatsContent() {
                           carbs: log.target_carbs || profile?.target_carbs || ugoProfile?.target_carbs || 160,
                           fats: log.target_fats || profile?.target_fats || ugoProfile?.target_fats || 64,
                           fiber: log.target_fiber || profile?.target_fiber || ugoProfile?.target_fiber || 30,
-                          water: (() => {
-                            const raw = log.target_water ?? profile?.target_water ?? (profile ? 0 : ugoProfile?.target_water) ?? 0;
-                            return raw > 10 ? raw / 1000 : raw;
-                          })(),
+                            water: (() => {
+                              const raw = log.target_water ?? profile?.target_water ?? (profile ? 0 : (ugoProfile?.target_water || 0));
+                              return (raw && raw > 10) ? raw / 1000 : (raw || 0);
+                            })(),
                           deficit: log.target_deficit || profile?.target_deficit || 0
                         }
                       });
