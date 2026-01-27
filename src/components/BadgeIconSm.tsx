@@ -40,7 +40,7 @@ import {
       Protein: "#FF8A8A",
       Carbo: "#FFB74D",
       Fat: "#95A4FC",
-      Fiber: "#4CAF50",
+      Fiber: "#3FA97A",
       ProcessFood: "#DB74ED",
       Water: "#73B0FF",
       Alcohol: "#CE6194",
