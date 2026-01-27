@@ -953,7 +953,8 @@ function StatsContent() {
           >
             Giada.
           </div>
-          <div className="text-primary-custom">
+            <div className="text-subtitle-1-custom">
+
             {displayDate}
           </div>
         </div>
