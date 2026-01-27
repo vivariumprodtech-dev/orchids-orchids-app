@@ -835,26 +835,28 @@ function StatsContent() {
                     });
 
               return;
-          } else {
-            if (selectedDate === new Date().toISOString().split('T')[0]) {
-              loadFromParams();
             } else {
-              setData({
-                calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
-                water: 0, activeCalories: 0, foods: [],
-                alcohol: { grams: 0, calories: 0 },
-                targets: {
-                  calories: profile?.target_calories || ugoProfile?.target_calories || 1600,
-                  protein: profile?.target_protein || ugoProfile?.target_protein || 96,
-                  carbs: profile?.target_carbs || ugoProfile?.target_carbs || 160,
-                  fats: profile?.target_fats || ugoProfile?.target_fats || 64,
-                  fiber: profile?.target_fiber || ugoProfile?.target_fiber || 30,
-                  water: profile?.target_water || ugoProfile?.target_water || 2,
-                  deficit: 0
-                }
-              });
+              const targets = {
+                calories: profile?.target_calories || ugoProfile?.target_calories || 1600,
+                protein: profile?.target_protein || ugoProfile?.target_protein || 96,
+                carbs: profile?.target_carbs || ugoProfile?.target_carbs || 160,
+                fats: profile?.target_fats || ugoProfile?.target_fats || 64,
+                fiber: profile?.target_fiber || ugoProfile?.target_fiber || 30,
+                water: profile?.target_water || ugoProfile?.target_water || 2,
+                deficit: 0
+              };
+
+              if (selectedDate === new Date().toISOString().split('T')[0]) {
+                loadFromParams(targets);
+              } else {
+                setData({
+                  calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0,
+                  water: 0, activeCalories: 0, foods: [],
+                  alcohol: { grams: 0, calories: 0 },
+                  targets
+                });
+              }
             }
-          }
         } catch (err) {
         console.error("Unexpected error fetching data:", err);
         loadFromParams();
