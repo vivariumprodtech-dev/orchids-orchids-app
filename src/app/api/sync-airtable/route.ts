@@ -45,51 +45,58 @@ export async function POST(req: NextRequest) {
     const mealDetails = await fetchAirtable("Export_Meal_Details");
     console.log(`Fetched ${mealDetails.length} meal details.`);
 
-      // 3. Sync Daily Logs
-      // We group by user_id and date to ensure we have one log per day
-      for (const summary of dailySummaries) {
-        const { 
-          user_id, 
-          date, 
-          water, 
-          active_calories, 
-          alcohol, 
-          target_calories,
-          target_protein,
-          target_carbs,
-          target_fats,
-          target_fiber,
-          target_water,
-          target_deficit,
-          bmr
-        } = summary;
-        
-        if (!user_id || !date) continue;
+    // 3. Sync Daily Logs
+    // We group by user_id and date to ensure we have one log per day
+    for (const summary of dailySummaries) {
+      // Robust field extraction (handling both snake_case and Title Case with spaces)
+      const getValue = (keys: string[]) => {
+        for (const key of keys) {
+          if (summary[key] !== undefined) return summary[key];
+        }
+        return undefined;
+      };
 
-        // Upsert daily log
-        const { data: log, error: logError } = await supabase
-          .from("daily_logs")
-          .upsert(
-            {
-              user_id: String(user_id),
-              date,
-              water: water || 0,
-              active_calories: active_calories || 0,
-              alcohol: alcohol || 0,
-              target_calories: target_calories || null,
-              target_protein: target_protein || null,
-              target_carbs: target_carbs || null,
-              target_fats: target_fats || null,
-              target_fiber: target_fiber || null,
-              target_water: target_water || null,
-              target_deficit: target_deficit || null,
-              bmr: bmr || null,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: "user_id,date" }
-          )
-          .select()
-          .single();
+      const user_id = getValue(["user_id", "User ID", "UserId"]);
+      const date = getValue(["date", "Date"]);
+      const water = getValue(["water", "Water"]);
+      const active_calories = getValue(["active_calories", "Active Calories", "active_kcal"]);
+      const alcohol = getValue(["alcohol", "Alcohol"]);
+      
+      const target_calories = getValue(["target_calories", "Target Calories", "target_kcal"]);
+      const target_protein = getValue(["target_protein", "Target Protein", "target_pro"]);
+      const target_carbs = getValue(["target_carbs", "Target Carbs", "target_carb"]);
+      const target_fats = getValue(["target_fats", "Target Fats", "target_fat"]);
+      const target_fiber = getValue(["target_fiber", "Target Fiber", "target_fib"]);
+      const target_water = getValue(["target_water", "Target Water"]);
+      const target_deficit = getValue(["target_deficit", "Target Deficit"]);
+      const bmr = getValue(["bmr", "BMR"]);
+      
+      if (!user_id || !date) continue;
+
+      // Upsert daily log
+      const { data: log, error: logError } = await supabase
+        .from("daily_logs")
+        .upsert(
+          {
+            user_id: String(user_id),
+            date,
+            water: Number(water) || 0,
+            active_calories: Number(active_calories) || 0,
+            alcohol: Number(alcohol) || 0,
+            target_calories: target_calories ? Number(target_calories) : null,
+            target_protein: target_protein ? Number(target_protein) : null,
+            target_carbs: target_carbs ? Number(target_carbs) : null,
+            target_fats: target_fats ? Number(target_fats) : null,
+            target_fiber: target_fiber ? Number(target_fiber) : null,
+            target_water: target_water ? Number(target_water) : null,
+            target_deficit: target_deficit ? Number(target_deficit) : null,
+            bmr: bmr ? Number(bmr) : null,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id,date" }
+        )
+        .select()
+        .single();
 
       if (logError) {
         console.error(`Error upserting log for ${user_id} on ${date}:`, logError);
