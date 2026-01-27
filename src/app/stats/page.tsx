@@ -446,15 +446,15 @@ function MacroCard({
                     color={color}
                     innerRadius={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? "78.2%" : "80%"}
                 >
-                    <div
-                      className="text-caption-custom font-bold"
-                      style={{ 
-                        color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
-                      }}
-                    >
-                      {circleText}
-                    </div>
-                    {circleLabel && <div className="text-helper-custom !text-[0.625rem]" style={{ color: "#9FA5BC" }}>{circleLabel}</div>}
+                      <div
+                        className="text-caption-custom font-bold"
+                        style={{ 
+                          color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
+                        }}
+                      >
+                        {circleText}
+                      </div>
+                      {circleLabel && <div className="text-helper-custom">{circleLabel}</div>}
 
               </ShadcnRadialProgress>
             </div>
