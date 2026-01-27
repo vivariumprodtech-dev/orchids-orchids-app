@@ -1001,7 +1001,7 @@ function StatsContent() {
               <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
                 <div className="flex items-center justify-between">
                 <div className="flex-1 space-y-2.5">
-                  <h2 className="mb-5 text-primary-custom">Daily Calories</h2>
+                  <h2 className="mb-5 text-title-custom">Daily Calories</h2>
                           <div className="flex items-start gap-1 text-secondary-custom">
                             <BadgeIconSm semantic="Lunch" />
                             <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(target + active)</span></span>
