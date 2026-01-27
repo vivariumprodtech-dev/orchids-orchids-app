@@ -861,7 +861,7 @@ function StatsContent() {
       }
     };
 
-    function loadFromParams() {
+    function loadFromParams(customTargets?: any) {
       const calories = parseInt(searchParams.get("calories") || "0");
       const protein = parseFloat(searchParams.get("protein") || "0");
       const carbs = parseFloat(searchParams.get("carbs") || "0");
@@ -890,7 +890,8 @@ function StatsContent() {
         });
       }
   
-      setData({ 
+      setData(prev => ({ 
+        ...prev,
         calories, 
         protein, 
         carbs, 
@@ -899,8 +900,9 @@ function StatsContent() {
         water, 
         activeCalories, 
         foods,
-        alcohol: { grams: alcoholGrams, calories: alcoholKcal }
-      });
+        alcohol: { grams: alcoholGrams, calories: alcoholKcal },
+        targets: customTargets || prev.targets
+      }));
     }
 
     fetchData();
