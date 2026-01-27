@@ -1007,14 +1007,20 @@ function StatsContent() {
                     <BadgeIconSm semantic="Lunch" />
                     <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(goal + active)</span></span>
                   </div>
-                  <div className="flex items-center gap-1 text-secondary-custom">
-                    <BadgeIconSm semantic="Goal" />
-                    <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-secondary-custom">
-                    <BadgeIconSm semantic="KcalActive" />
-                    <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
-                  </div>
+                    <div className="flex items-center gap-1 text-secondary-custom">
+                      <BadgeIconSm semantic="Goal" />
+                      <span><span className="text-primary-custom">{BMR.toLocaleString("it-IT")}</span> goal</span>
+                    </div>
+                    {deficit > 0 && (
+                      <div className="flex items-center gap-1 text-secondary-custom">
+                        <BadgeIconSm semantic="Goal" />
+                        <span><span className="text-primary-custom">-{deficit.toLocaleString("it-IT")}</span> target deficit</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1 text-secondary-custom">
+                      <BadgeIconSm semantic="KcalActive" />
+                      <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                    </div>
                   <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                 </div>
                 <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
