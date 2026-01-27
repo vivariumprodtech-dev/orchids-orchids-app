@@ -660,72 +660,85 @@ function StatsContent() {
         return;
       }
 
-          try {
-            const { data: log, error } = await supabase
-              .from('daily_logs')
-              .select('*, food_entries(*)')
-              .eq('user_id', userId)
-              .eq('date', selectedDate)
-              .order('created_at', { foreignTable: 'food_entries', ascending: true })
-              .maybeSingle();
+            try {
+            const [{ data: log, error }, { data: profile }] = await Promise.all([
+              supabase
+                .from('daily_logs')
+                .select('*, food_entries(*)')
+                .eq('user_id', userId)
+                .eq('date', selectedDate)
+                .order('created_at', { foreignTable: 'food_entries', ascending: true })
+                .maybeSingle(),
+              supabase
+                .from('profiles')
+                .select('*')
+                .eq('telegram_id', userId)
+                .maybeSingle()
+            ]);
 
-            if (error) {
-              console.error("Error fetching data:", error);
-              loadFromParams();
-              return;
-            }
+              if (error) {
+                console.error("Error fetching data:", error);
+                loadFromParams();
+                return;
+              }
 
-                    if (log) {
-                      const rawFoods = log.food_entries || [];
-                      const foods = rawFoods
-                        .filter((f: any) => {
-                          // Filter out water-only entries from the food log summary
-                          const isWater = f.calories === 0 && f.protein === 0 && f.carbs === 0 && f.fats === 0;
-                          const hasWaterName = f.name?.toLowerCase().includes("acqua") || f.name?.toLowerCase().includes("water");
-                          return !(isWater && hasWaterName);
-                        })
-                        .map((f: any) => ({
-                          name: f.name,
-                          grams: f.grams,
-                          calories: f.calories,
-                          pro: f.protein,
-                          carb: f.carbs,
-                          fat: f.fats,
-                          fiber: f.fiber,
-                          meal: f.meal,
-                          alcohol: f.alcohol || 0,
-                          is_processed: f.is_processed || false,
-                          time: f.intake_time || (f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined)
-                        })) || [];
+                      if (log) {
+                        const rawFoods = log.food_entries || [];
+                        const foods = rawFoods
+                          .filter((f: any) => {
+                            // Filter out water-only entries from the food log summary
+                            const isWater = (f.calories || 0) === 0 && (f.protein || 0) === 0 && (f.carbs || 0) === 0 && (f.fats || 0) === 0;
+                            const hasWaterName = f.name?.toLowerCase().includes("acqua") || f.name?.toLowerCase().includes("water");
+                            return !(isWater && hasWaterName);
+                          })
+                          .map((f: any) => ({
+                            name: f.name,
+                            grams: f.grams,
+                            calories: f.calories,
+                            pro: f.protein,
+                            carb: f.carbs,
+                            fat: f.fats,
+                            fiber: f.fiber,
+                            meal: f.meal,
+                            alcohol: f.alcohol || 0,
+                            is_processed: f.is_processed || false,
+                            time: f.intake_time || (f.created_at ? new Date(f.created_at).toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' }) : undefined)
+                          })) || [];
 
-                    // Calculate totals from foods
-                    const foodTotals = foods.reduce((acc: any, f: any) => ({
-                      calories: acc.calories + (f.calories || 0),
-                      protein: acc.protein + (f.pro || 0),
-                      carbs: acc.carbs + (f.carb || 0),
-                      fats: acc.fats + (f.fat || 0),
-                      fiber: acc.fiber + (f.fiber || 0),
-                      alcohol: acc.alcohol + (f.alcohol || 0),
-                      processedCalories: acc.processedCalories + (f.is_processed ? f.calories : 0)
-                    }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0, processedCalories: 0 });
+                      // Calculate totals from foods
+                      const foodTotals = foods.reduce((acc: any, f: any) => ({
+                        calories: acc.calories + (f.calories || 0),
+                        protein: acc.protein + (f.pro || 0),
+                        carbs: acc.carbs + (f.carb || 0),
+                        fats: acc.fats + (f.fat || 0),
+                        fiber: acc.fiber + (f.fiber || 0),
+                        alcohol: acc.alcohol + (f.alcohol || 0),
+                        processedCalories: acc.processedCalories + (f.is_processed ? f.calories : 0)
+                      }), { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0, processedCalories: 0 });
 
-                    const processedPercentage = foodTotals.calories > 0 
-                      ? (foodTotals.processedCalories / foodTotals.calories) * 100 
-                      : 0;
+                      const processedPercentage = foodTotals.calories > 0 
+                        ? (foodTotals.processedCalories / foodTotals.calories) * 100 
+                        : 0;
 
-                  // Group by meal with time-based snack categorization
-                  const mealsMap: Record<string, MealEntry> = {};
-                  
-                  const getSnackKey = (time?: string) => {
-                    if (!time) return "afternoon"; // Default
-                    const [hours, minutes] = time.split(':').map(Number);
-                    const totalMinutes = hours * 60 + (minutes || 0);
+                    // Group by meal with time-based snack categorization
+                    const mealsMap: Record<string, MealEntry> = {};
                     
-                    if (totalMinutes < 9 * 60) return "pre_breakfast"; // Before 9:00
-                    if (totalMinutes < 12 * 60 + 30) return "morning"; // 9:00 - 12:30
-                    if (totalMinutes < 19 * 60 + 30) return "afternoon"; // 12:30 - 19:30
-                    return "night"; // After 19:30
-                  };
+                    const getSnackKey = (time?: string) => {
+                      if (!time) return "afternoon"; // Default
+                      // Clean time: remove non-numeric/colon characters (e.g., "07:10," -> "07:10")
+                      const cleanTime = time.replace(/[^\d:]/g, '');
+                      const [hours, minutes] = cleanTime.split(':').map(Number);
+                      
+                      if (isNaN(hours)) return "afternoon"; // Fallback for invalid formats
+                      
+                      const totalMinutes = hours * 60 + (minutes || 0);
+                      
+                      if (totalMinutes < 9 * 60) return "pre_breakfast"; // Before 9:00
+                      if (totalMinutes < 12 * 60 + 30) return "morning"; // 9:00 - 12:30
+                      if (totalMinutes < 19 * 60 + 30) return "afternoon"; // 12:30 - 19:30
+                      return "night"; // After 19:30
+                    };
+
 
                   foods.forEach((f: any) => {
                     let m = (f.meal || "snack").toLowerCase().trim();
