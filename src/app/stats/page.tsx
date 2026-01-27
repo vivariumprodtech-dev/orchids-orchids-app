@@ -1054,7 +1054,7 @@ function StatsContent() {
                         <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
                           {meal.foods.map((food, i) => (
                             <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
-                              <div className="absolute top-3 right-3 flex items-center gap-2">
+                                <div className="absolute top-3 right-3 flex items-center gap-1">
                                 {food.is_processed && (
                                   <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
                                     P
