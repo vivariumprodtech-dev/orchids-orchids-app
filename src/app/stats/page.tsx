@@ -1040,7 +1040,7 @@ function StatsContent() {
           </div>
 
         <div>
-          <h2 className="mb-4 text-primary-custom">Food log → <span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
+          <h2 className="mb-4 text-title-custom">Food log → <span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
           <div className="space-y-3">
             {data.meals && data.meals.length > 0 && !isToday ? (
               data.meals.map((meal, mealIdx) => (
