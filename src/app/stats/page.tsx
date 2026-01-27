@@ -575,15 +575,15 @@ function StatsContent() {
       activeCalories: 0,
       foods: [],
       alcohol: { grams: 0, calories: 0 },
-      targets: {
-        calories: 1600,
-        protein: 96,
-        carbs: 160,
-        fats: 64,
-        fiber: 30,
-        water: 2,
-        deficit: 0
-      }
+        targets: {
+          calories: 1600,
+          protein: 96,
+          carbs: 160,
+          fats: 64,
+          fiber: 30,
+          water: 0,
+          deficit: 0
+        }
     });
 
   useEffect(() => {
