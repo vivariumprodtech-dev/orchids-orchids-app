@@ -443,9 +443,9 @@ function MacroCard({
                 <ShadcnRadialProgress 
                   value={value} 
                   max={target} 
-                  size={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber") ? 77 : (type === "water" ? 66 : 72)} 
-                  color={color}
-                  innerRadius={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? "78.2%" : "80%"}
+                    size={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? 77 : 72} 
+                    color={color}
+                    innerRadius={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? "78.2%" : "80%"}
                 >
                 <div
                   className="font-bold"
