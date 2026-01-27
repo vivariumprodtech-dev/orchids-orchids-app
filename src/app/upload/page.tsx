@@ -11,6 +11,7 @@ export default function UploadPage() {
   const [type, setType] = useState<"logs" | "foods">("logs");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
