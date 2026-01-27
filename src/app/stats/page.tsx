@@ -392,13 +392,13 @@ function MacroCard({
                   <div className="flex items-baseline gap-1">
                       {type === "alcohol" ? (
                         <>
-                          <span className="text-primary-custom">{Math.round(value)}g</span>
-                          <span className="text-secondary-custom">→ <span className="text-primary-custom">{Math.round(value * 7)}</span> Kcal</span>
+                          <span className="text-subtitle-1-custom">{Math.round(value)}g</span>
+                          <span className="text-secondary-custom">→ <span className="text-subtitle-1-custom">{Math.round(value * 7)}</span> Kcal</span>
                           <span className="ml-0.5 text-secondary-custom">{name}</span>
                         </>
                       ) : (
                         <>
-                            <span className="text-primary-custom">
+                            <span className="text-subtitle-1-custom">
                               {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
                             </span>
                               <span className="text-secondary-custom">
@@ -431,7 +431,7 @@ function MacroCard({
                       <span className="text-secondary-custom">{name}</span>
                     </div>
                       <div className="mb-2">
-                        <span className="text-primary-custom">{Math.round(value)}</span>
+                        <span className="text-subtitle-1-custom">{Math.round(value)}</span>
                         <span className="text-secondary-custom">/{Math.round(target)}g</span>
                       </div>
                     <StatusBadge text={badge.text} connotation={badge.connotation} />
@@ -516,9 +516,9 @@ function MacroCard({
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <BadgeIconSm semantic={semantic} />
-              <span className="text-primary-custom font-bold">{displayName}</span>
+              <span className="text-subtitle-1-custom font-bold">{displayName}</span>
               <MoveRight size={16} className="text-secondary-custom" />
-              <span className="text-primary-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-secondary-custom">Kcal</span></span>
+              <span className="text-subtitle-1-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-secondary-custom">Kcal</span></span>
             </div>
             <div className="flex flex-wrap gap-x-4">
               <div className="flex items-center gap-1 text-tertiary-custom">
@@ -1004,15 +1004,15 @@ function StatsContent() {
                   <h2 className="mb-5 text-title-custom">Daily Calories</h2>
                           <div className="flex items-start gap-1 text-secondary-custom">
                             <BadgeIconSm semantic="Lunch" />
-                            <span><span className="text-primary-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(target + active)</span></span>
+                            <span><span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-tertiary-custom">(target + active)</span></span>
                           </div>
                         <div className="flex items-start gap-1 text-secondary-custom">
                           <BadgeIconSm semantic="KcalActive" />
-                          <span><span className="text-primary-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                          <span><span className="text-subtitle-1-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
                         </div>
                             <div className="flex items-start gap-1 text-secondary-custom">
                               <BadgeIconSm semantic="Goal" />
-                              <span><span className="text-primary-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-tertiary-custom">({BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit)</span></span>
+                              <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-tertiary-custom">({BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit)</span></span>
                             </div>
                   <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                 </div>
@@ -1070,7 +1070,7 @@ function StatsContent() {
                                 </div>
                               <div className="mb-2 flex items-center gap-1.5">
                                 <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                                <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
+                                <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
                                 <span className="text-secondary-custom font-bold">Kcal</span>
                               </div>
                               <div className="flex flex-wrap gap-x-3 gap-y-1">
@@ -1115,7 +1115,7 @@ function StatsContent() {
                     )}
                         <div className="mb-2 flex items-center justify-between pr-12">
                           <div className="flex items-center gap-2">
-                            <span className="text-primary-custom font-bold">{food.name}</span>
+                            <span className="text-subtitle-1-custom font-bold">{food.name}</span>
                             {food.is_processed && (
                               <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">P</span>
                             )}
@@ -1123,7 +1123,7 @@ function StatsContent() {
                         </div>
                       <div className="mb-2 flex items-center gap-1.5">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                        <span className="text-primary-custom font-bold">{Math.round(food.calories)}</span>
+                        <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
                         <span className="text-secondary-custom font-bold">Kcal</span>
                       </div>
                       <div className="flex flex-wrap gap-x-3 gap-y-1">
