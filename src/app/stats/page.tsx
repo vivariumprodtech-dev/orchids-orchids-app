@@ -936,16 +936,21 @@ function MacroCard({
   useEffect(() => {
     if (activeView !== "progress") return;
 
-    const fetchWeeklyData = async () => {
+    const fetchProgressData = async () => {
       const today = new Date();
-      const last7DaysDates = Array.from({ length: 7 }, (_, i) => {
+      let days = 7;
+      if (timeRange === "1m") days = 30;
+      if (timeRange === "3m") days = 90;
+      if (timeRange === "6m") days = 180;
+
+      const dates = Array.from({ length: days }, (_, i) => {
         const d = new Date(today);
-        d.setDate(today.getDate() - (6 - i));
+        d.setDate(today.getDate() - (days - 1 - i));
         return d.toISOString().split('T')[0];
       });
 
       if (userId === "ugo_demo") {
-        const formattedData = last7DaysDates.map((dateStr) => {
+        const formattedData = dates.map((dateStr) => {
           const date = new Date(dateStr);
           const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
           const pseudoRandom = (seed: number) => {
@@ -956,18 +961,20 @@ function MacroCard({
 
           const target = 1600;
           const active = 200 + Math.floor(r(7) * 300);
-          const consumed = 1500 + Math.floor(r(1) * 800);
+          // For area chart we want more variance to look like a real progress
+          const consumed = 1400 + Math.floor(r(1) * 1000);
           const baseline = target + active;
 
           return {
             dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
             dayNumber: date.getDate(),
+            date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
             diff: consumed - baseline,
             baseline: 0,
-            date: dateStr
+            fullDate: dateStr
           };
         });
-        setWeeklyData(formattedData);
+        setProgressData(formattedData);
         return;
       }
 
@@ -978,7 +985,7 @@ function MacroCard({
           .from('daily_logs')
           .select('date, calories, active_calories, target_calories, target_deficit')
           .eq('user_id', userId)
-          .in('date', last7DaysDates);
+          .in('date', dates);
 
         const { data: profile } = await supabase
           .from('profiles')
@@ -988,7 +995,7 @@ function MacroCard({
 
         const logsMap = new Map(logs?.map(log => [log.date, log]));
 
-        const formattedData = last7DaysDates.map((dateStr) => {
+        const formattedData = dates.map((dateStr) => {
           const date = new Date(dateStr);
           const log = logsMap.get(dateStr);
           
@@ -1000,20 +1007,22 @@ function MacroCard({
           return {
             dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
             dayNumber: date.getDate(),
+            date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
             diff: consumed > 0 ? consumed - baseline : 0,
             baseline: 0,
-            date: dateStr
+            fullDate: dateStr
           };
         });
 
-        setWeeklyData(formattedData);
+        setProgressData(formattedData);
       } catch (err) {
-        console.error("Error fetching weekly data:", err);
+        console.error("Error fetching progress data:", err);
       }
     };
 
-    fetchWeeklyData();
-  }, [activeView, userId]);
+    fetchProgressData();
+  }, [activeView, userId, timeRange]);
+
 
     const isToday = selectedDate === new Date().toISOString().split('T')[0];
     
