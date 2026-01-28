@@ -1022,8 +1022,8 @@ function MacroCard({
                         Macros
                       </button>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                      <div className="flex items-center justify-center gap-2">
+                        {(["7d", "1m", "3m", "6m"] as const).map((range) => (
                         <button
                           key={range}
                           onClick={() => setTimeRange(range)}
