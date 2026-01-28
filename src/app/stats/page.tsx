@@ -559,6 +559,8 @@ function MacroCard({
     const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
     const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
     const [activeView, setActiveView] = useState<"day" | "progress" | "profile">("day");
+    const [progressTab, setProgressTab] = useState<"kcal" | "macros">("kcal");
+    const [timeRange, setTimeRange] = useState<"7d" | "1m" | "3m" | "6m">("7d");
 
   const toggleMeal = (mealName: string) => {
     setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
