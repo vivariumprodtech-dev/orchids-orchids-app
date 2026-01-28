@@ -10,11 +10,13 @@ import {
   YAxis,
   CartesianGrid,
   ComposedChart,
+  Area,
 } from "recharts";
 
 interface BalanceData {
-  dayName: string; // "S", "M", etc.
-  dayNumber: number;
+  dayName?: string; // "S", "M", etc.
+  dayNumber?: number;
+  date?: string; // "DD/MM" or YYYY-MM-DD
   diff: number;
   baseline: number;
 }
@@ -23,9 +25,15 @@ interface BalanceChartProps {
   data: BalanceData[];
   title?: string;
   subtitle?: string;
+  type?: "bar" | "area";
 }
 
-export default function BalanceChart({ data, title = "Balance", subtitle }: BalanceChartProps) {
+export default function BalanceChart({ 
+  data, 
+  title = "Balance", 
+  subtitle,
+  type = "bar"
+}: BalanceChartProps) {
   const maxAbsDiff = Math.max(...data.map(d => Math.abs(d.diff)), 0);
   
   // Dynamic tick calculation for 5 lines centered at 0
@@ -38,15 +46,33 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
   }
   
   const limit = step * 2;
-  const ticks = [-limit, -step, 0, step, limit];
-  const domain = [-limit, limit];
+  const ticksY = [-limit, -step, 0, step, limit];
+  const domainY = [-limit, limit];
+
+  // For area chart, we need 6 dates on X-axis
+  const showXAxisDates = type === "area";
+  const xTicks = showXAxisDates 
+    ? Array.from({ length: 6 }, (_, i) => Math.floor(i * (data.length - 1) / 5))
+    : undefined;
+
+  const gradientOffset = () => {
+    const dataMax = Math.max(...data.map((i) => i.diff));
+    const dataMin = Math.min(...data.map((i) => i.diff));
+
+    if (dataMax <= 0) return 0;
+    if (dataMin >= 0) return 1;
+
+    return dataMax / (dataMax - dataMin);
+  };
+
+  const off = gradientOffset();
 
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm">
       <div className="mb-3">
         <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
         {subtitle && (
-          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{subtitle}</p>
+          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
         )}
       </div>
 
@@ -56,41 +82,70 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
             data={data}
             margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
           >
+            <defs>
+              <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
+                <stop offset={off} stopColor="#ED5070" stopOpacity={0.4} />
+                <stop offset={off} stopColor="#FFE5A3" stopOpacity={0.4} />
+              </linearGradient>
+            </defs>
             <CartesianGrid vertical={false} stroke="#ECEDF2" />
             <XAxis
-              dataKey="dayNumber"
+              dataKey={type === "area" ? "date" : "dayNumber"}
               axisLine={false}
               tickLine={false}
+              ticks={xTicks}
               tick={(props) => {
-                const { x, y, index } = props;
-                const day = data[index];
-                if (!day) return null;
-                return (
-                  <g transform={`translate(${x},${y + 15})`}>
-                    <text
-                      x={0}
-                      y={0}
-                      dy={0}
-                      textAnchor="middle"
-                      fill="#757FA0"
-                      className="text-[12px] font-medium"
-                      style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-                    >
-                      {day.dayName}
-                    </text>
-                    <text
-                      x={0}
-                      y={18}
-                      dy={0}
-                      textAnchor="middle"
-                      fill="#757FA0"
-                      className="text-[12px] font-medium"
-                      style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-                    >
-                      {day.dayNumber}
-                    </text>
-                  </g>
-                );
+                const { x, y, index, payload } = props;
+                if (type === "bar") {
+                  const day = data[index];
+                  if (!day) return null;
+                  return (
+                    <g transform={`translate(${x},${y + 15})`}>
+                      <text
+                        x={0}
+                        y={0}
+                        dy={0}
+                        textAnchor="middle"
+                        fill="#757FA0"
+                        className="text-[12px] font-medium"
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {day.dayName}
+                      </text>
+                      <text
+                        x={0}
+                        y={18}
+                        dy={0}
+                        textAnchor="middle"
+                        fill="#757FA0"
+                        className="text-[12px] font-medium"
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {day.dayNumber}
+                      </text>
+                    </g>
+                  );
+                } else {
+                  // Area chart date display
+                  const dateStr = payload.value;
+                  // If it's the last date, make it bold
+                  const isLast = index === 5;
+                  return (
+                    <g transform={`translate(${x},${y + 15})`}>
+                      <text
+                        x={0}
+                        y={0}
+                        dy={0}
+                        textAnchor="middle"
+                        fill={isLast ? "#262C44" : "#757FA0"}
+                        className={`text-[12px] ${isLast ? "font-bold" : "font-medium"}`}
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {dateStr}
+                      </text>
+                    </g>
+                  );
+                }
               }}
               interval={0}
             />
@@ -98,26 +153,37 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
-              domain={domain}
-              ticks={ticks}
+              domain={domainY}
+              ticks={ticksY}
               allowDataOverflow={true}
             />
             
-            <Bar dataKey="diff" radius={[4, 4, 4, 4]} barSize={32}>
-              {data.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={entry.diff >= 0 ? "#ED5070" : "#FFE5A3"} 
-                />
-              ))}
-            </Bar>
+            {type === "bar" ? (
+              <Bar dataKey="diff" radius={[4, 4, 4, 4]} barSize={32}>
+                {data.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.diff >= 0 ? "#ED5070" : "#FFE5A3"} 
+                  />
+                ))}
+              </Bar>
+            ) : (
+              <Area
+                type="monotone"
+                dataKey="diff"
+                stroke="#ED5070"
+                strokeWidth={2}
+                fill="url(#splitColor)"
+                isAnimationActive={false}
+              />
+            )}
 
             <Line
               type="monotone"
               dataKey={() => 0}
               stroke="#757FA0"
               strokeWidth={2}
-              dot={{ r: 3, fill: "#757FA0", strokeWidth: 0 }}
+              dot={type === "bar" ? { r: 3, fill: "#757FA0", strokeWidth: 0 } : false}
               activeDot={false}
               legendType="none"
               isAnimationActive={false}
@@ -130,17 +196,17 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
       <div className="mt-3 flex items-center justify-center gap-6">
 
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm bg-[#ED5070]" />
+          <div className="h-3 w-3 rounded-sm bg-[#ED5070]" style={{ opacity: type === "area" ? 0.4 : 1, border: type === "area" ? "1px solid #ED5070" : "none" }} />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm bg-[#FFE5A3]" />
+          <div className="h-3 w-3 rounded-sm bg-[#FFE5A3]" style={{ opacity: type === "area" ? 0.4 : 1, border: type === "area" ? "1px solid #FFE5A3" : "none" }} />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal low</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center">
             <div className="h-[2px] w-6 bg-[#757FA0]" />
-            <div className="h-2 w-2 rounded-full bg-[#757FA0] -ml-[5px]" />
+            {type === "bar" && <div className="h-2 w-2 rounded-full bg-[#757FA0] -ml-[5px]" />}
           </div>
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Target + active kcal</span>
         </div>
