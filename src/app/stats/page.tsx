@@ -958,39 +958,84 @@ function MacroCard({
           </div>
 
           <div className="flex justify-between gap-2">
-            {last7Days.map((date, i) => {
-              const dateStr = date.toISOString().split('T')[0];
-              const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-              const isSelected = selectedDate === dateStr;
-              const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-              const dayNum = date.getDate();
-              
-              let bgColor = "#FFFFFF";
-              if (isSelected) bgColor = "#9EDDE2";
-              else if (isTodayDay) bgColor = "#E2F7F9";
+            {activeView === "day" ? (
+              last7Days.map((date, i) => {
+                const dateStr = date.toISOString().split('T')[0];
+                const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+                const isSelected = selectedDate === dateStr;
+                const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+                const dayNum = date.getDate();
+                
+                let bgColor = "#FFFFFF";
+                if (isSelected) bgColor = "#9EDDE2";
+                else if (isTodayDay) bgColor = "#E2F7F9";
 
-              let textColor = "#5A658D";
-              if (isSelected) textColor = "#262C44";
-              else if (isTodayDay) textColor = "#088D98";
+                let textColor = "#5A658D";
+                if (isSelected) textColor = "#262C44";
+                else if (isTodayDay) textColor = "#088D98";
 
-                  return (
-                    <div
-                      key={i}
-                      onClick={() => setSelectedDate(dateStr)}
-                      className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
-                      style={{ 
-                        backgroundColor: bgColor,
-                        cursor: "pointer",
-                        fontFamily: '"DM Sans", sans-serif',
-                        minWidth: "40px",
-                        maxWidth: "48px"
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setSelectedDate(dateStr)}
+                    className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
+                    style={{ 
+                      backgroundColor: bgColor,
+                      cursor: "pointer",
+                      fontFamily: '"DM Sans", sans-serif',
+                      minWidth: "40px",
+                      maxWidth: "48px"
+                    }}
+                  >
+                    <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                    <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                  </div>
+                );
+              })
+            ) : activeView === "progress" ? (
+              <div className="flex flex-col w-full gap-3">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setProgressTab("kcal")}
+                    className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
+                    style={{
+                      backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
+                      color: progressTab === "kcal" ? "#262C44" : "#5A658D",
+                    }}
+                  >
+                    Kcal & goals
+                  </button>
+                  <button
+                    onClick={() => setProgressTab("macros")}
+                    className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
+                    style={{
+                      backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
+                      color: progressTab === "macros" ? "#262C44" : "#5A658D",
+                    }}
+                  >
+                    Macros
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                    <button
+                      key={range}
+                      onClick={() => setTimeRange(range)}
+                      className="flex-1 rounded-full py-2.5 text-center transition-all text-caption-custom font-bold"
+                      style={{
+                        backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
+                        color: timeRange === range ? "#FFFFFF" : "#5A658D",
                       }}
                     >
-                      <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                      <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                    </div>
-                  );
-            })}
+                      {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                    </button>
+                  ))}
+                  <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#5A658D]">
+                    <Calendar size={20} />
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
           <div style={{ borderBottom: '2px solid #ECEDF2', marginTop: '8px' }} />
         </div>
