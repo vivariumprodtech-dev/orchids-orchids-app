@@ -949,70 +949,66 @@ function MacroCard({
         return d.toISOString().split('T')[0];
       });
 
-      if (userId === "ugo_demo") {
-        const formattedData = dates.map((dateStr) => {
-          const date = new Date(dateStr);
-          const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
-          const pseudoRandom = (seed: number) => {
-            const x = Math.sin(seed) * 10000;
-            return x - Math.floor(x);
-          };
-          const r = (offset: number) => pseudoRandom(dateSeed + offset);
+        if (userId === "ugo_demo") {
+          const formattedData = dates.map((dateStr) => {
+            const date = new Date(dateStr);
+            const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
+            const pseudoRandom = (seed: number) => {
+              const x = Math.sin(seed) * 10000;
+              return x - Math.floor(x);
+            };
+            const r = (offset: number) => pseudoRandom(dateSeed + offset);
 
-          const target = 1600;
-          const active = 200 + Math.floor(r(7) * 300);
-          // For area chart we want more variance to look like a real progress
-          const consumed = 1400 + Math.floor(r(1) * 1000);
-          const baseline = target + active;
+            const target = 1600;
+            // For area chart we want more variance to look like a real progress
+            const consumed = 1400 + Math.floor(r(1) * 1000);
 
-          return {
-            dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-            dayNumber: date.getDate(),
-            date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-            diff: consumed - baseline,
-            baseline: 0,
-            fullDate: dateStr
-          };
-        });
-        setProgressData(formattedData);
-        return;
-      }
+            return {
+              dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+              dayNumber: date.getDate(),
+              date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+              diff: consumed - target,
+              baseline: 0,
+              fullDate: dateStr
+            };
+          });
+          setProgressData(formattedData);
+          return;
+        }
 
-      if (!userId) return;
+        if (!userId) return;
 
-      try {
-        const { data: logs } = await supabase
-          .from('daily_logs')
-          .select('date, calories, active_calories, target_calories, target_deficit')
-          .eq('user_id', userId)
-          .in('date', dates);
+        try {
+          const { data: logs } = await supabase
+            .from('daily_logs')
+            .select('date, calories, target_calories')
+            .eq('user_id', userId)
+            .in('date', dates);
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('target_calories, target_deficit')
-          .eq('telegram_id', userId)
-          .maybeSingle();
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('target_calories')
+            .eq('telegram_id', userId)
+            .maybeSingle();
 
-        const logsMap = new Map(logs?.map(log => [log.date, log]));
+          const logsMap = new Map(logs?.map(log => [log.date, log]));
 
-        const formattedData = dates.map((dateStr) => {
-          const date = new Date(dateStr);
-          const log = logsMap.get(dateStr);
-          
-          const target = log?.target_calories || profile?.target_calories || 1600;
-          const active = log?.active_calories || 0;
-          const consumed = log?.calories || 0;
-          const baseline = target + active;
+          const formattedData = dates.map((dateStr) => {
+            const date = new Date(dateStr);
+            const log = logsMap.get(dateStr);
+            
+            const target = log?.target_calories || profile?.target_calories || 1600;
+            const consumed = log?.calories || 0;
 
-          return {
-            dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-            dayNumber: date.getDate(),
-            date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-            diff: consumed > 0 ? consumed - baseline : 0,
-            baseline: 0,
-            fullDate: dateStr
-          };
-        });
+            return {
+              dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+              dayNumber: date.getDate(),
+              date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+              diff: log ? consumed - target : null,
+              baseline: 0,
+              fullDate: dateStr
+            };
+          });
 
         setProgressData(formattedData);
       } catch (err) {
