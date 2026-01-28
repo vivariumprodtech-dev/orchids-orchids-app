@@ -1357,20 +1357,22 @@ function MacroCard({
           </div>
         </>
       )}
-        {activeView === "progress" && (
-          <div className="space-y-4">
-            {progressTab === "kcal" && timeRange === "7d" && (
-              <BalanceChart 
-                data={weeklyData} 
-                title="Balance"
-                subtitle={`From ${weeklyData[0]?.date ? new Date(weeklyData[0].date).toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }) : ''} to ${weeklyData[6]?.date ? new Date(weeklyData[6].date).toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }) : ''} (today)`}
-              />
-            )}
-            <div className="flex flex-col items-center justify-center py-10 text-helper-custom italic">
-              {/* Additional progress graphics will go here */}
+          {activeView === "progress" && (
+            <div className="space-y-4">
+              {progressTab === "kcal" && (
+                <BalanceChart 
+                  data={progressData} 
+                  title="Balance"
+                  type={timeRange === "7d" ? "bar" : "area"}
+                  subtitle={progressData.length > 0 ? `From ${progressData[0].date} to ${progressData[progressData.length - 1].date}${timeRange === "7d" ? " (today)" : ""}` : ""}
+                />
+              )}
+              <div className="flex flex-col items-center justify-center py-10 text-helper-custom italic">
+                {/* Additional progress graphics will go here */}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
     </div>
   </div>
   );
