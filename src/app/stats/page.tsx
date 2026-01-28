@@ -1070,11 +1070,12 @@ function MacroCard({
                                   <span className="text-body-md-custom">{food.name}</span>
                                 </div>
                               </div>
-                              <div className="mb-2 flex items-center gap-1.5">
-                                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                                <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
-                                <span className="text-body-sm-custom font-bold">Kcal</span>
-                              </div>
+                                <div className="mb-2 flex items-center gap-1.5">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                                  <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
+                                  <span className="text-body-sm-custom">kcal</span>
+                                </div>
+
                               <div className="flex flex-wrap gap-x-3 gap-y-1">
                                 <div className="flex items-center gap-1 text-helper-custom">
                                   <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
