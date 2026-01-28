@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import BadgeIconSm, { BadgeIconColors, BadgeIconSemantic } from "@/components/BadgeIconSm";
+import BalanceChart from "@/components/BalanceChart";
 import {
   PolarAngleAxis,
   RadialBar,
