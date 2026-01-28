@@ -939,58 +939,61 @@ function MacroCard({
       const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
     return (
-      <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="text-3xl font-bold"
-            style={{
-              background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Giada.
+      <div className="min-h-screen bg-gray-100 font-sans text-gray-900">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-3xl font-bold"
+              style={{
+                background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Giada.
+            </div>
+            <HeaderNav activeView={activeView} onViewChange={setActiveView} />
           </div>
-          <HeaderNav activeView={activeView} onViewChange={setActiveView} />
+
+          <div className="flex justify-between gap-2">
+            {last7Days.map((date, i) => {
+              const dateStr = date.toISOString().split('T')[0];
+              const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+              const isSelected = selectedDate === dateStr;
+              const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+              const dayNum = date.getDate();
+              
+              let bgColor = "#FFFFFF";
+              if (isSelected) bgColor = "#9EDDE2";
+              else if (isTodayDay) bgColor = "#E2F7F9";
+
+              let textColor = "#5A658D";
+              if (isSelected) textColor = "#262C44";
+              else if (isTodayDay) textColor = "#088D98";
+
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedDate(dateStr)}
+                      className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
+                      style={{ 
+                        backgroundColor: bgColor,
+                        cursor: "pointer",
+                        fontFamily: '"DM Sans", sans-serif',
+                        minWidth: "40px",
+                        maxWidth: "48px"
+                      }}
+                    >
+                      <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                      <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                    </div>
+                  );
+            })}
+          </div>
+          <div style={{ borderBottom: '2px solid #ECEDF2', marginTop: '8px' }} />
         </div>
 
-        <div className="mb-5 flex justify-between gap-2">
-          {last7Days.map((date, i) => {
-            const dateStr = date.toISOString().split('T')[0];
-            const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-            const isSelected = selectedDate === dateStr;
-            const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-            const dayNum = date.getDate();
-            
-            let bgColor = "#FFFFFF";
-            if (isSelected) bgColor = "#9EDDE2";
-            else if (isTodayDay) bgColor = "#E2F7F9";
-
-            let textColor = "#5A658D";
-            if (isSelected) textColor = "#262C44";
-            else if (isTodayDay) textColor = "#088D98";
-
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedDate(dateStr)}
-                    className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
-                    style={{ 
-                      backgroundColor: bgColor,
-                      cursor: "pointer",
-                      fontFamily: '"DM Sans", sans-serif',
-                      minWidth: "40px",
-                      maxWidth: "48px"
-                    }}
-                  >
-                    <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                    <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                  </div>
-                );
-          })}
-        </div>
-
-        <div className="space-y-8">
+        <div className="px-5 pb-5 pt-[168px] space-y-8">
           {calorieBadge.showAlert && <MissingAlert />}
             <div className="space-y-3">
               <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
