@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartBar, User } from "lucide-react";
+import { BarChart3, User2 } from "lucide-react";
 
 interface HeaderNavProps {
   activeView: "day" | "progress" | "profile";
@@ -31,7 +31,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
         onClick={() => onViewChange("progress")}
         className={`${buttonBase} px-2 py-1 gap-[10px] ${getButtonStyles("progress")}`}
       >
-        <ChartBar size={16} />
+        <BarChart3 size={16} />
         <span className={labelStyle}>Progress</span>
       </button>
 
@@ -39,7 +39,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
         onClick={() => onViewChange("profile")}
         className={`${buttonBase} w-6 p-1 ${getButtonStyles("profile")}`}
       >
-        <User size={16} />
+        <User2 size={16} />
       </button>
     </nav>
   );
