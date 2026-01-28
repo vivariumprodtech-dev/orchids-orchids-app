@@ -27,15 +27,15 @@ interface BalanceChartProps {
 
 export default function BalanceChart({ data, title = "Balance", subtitle }: BalanceChartProps) {
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm">
-      <div className="mb-6">
+    <div className="rounded-2xl bg-white p-4 shadow-sm">
+      <div className="mb-3">
         <h2 className="text-title-custom font-bold text-[#262C44]">{title}</h2>
         {subtitle && (
           <p className="text-body-sm-custom text-[#757FA0] mt-1">{subtitle}</p>
         )}
       </div>
 
-      <div className="h-[240px] w-full">
+      <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
@@ -83,7 +83,7 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
-              domain={['dataMin - 500', 'dataMax + 500']}
+              domain={[-1000, 1000]}
               ticks={[-1000, -500, 0, 500, 1000]}
             />
             
@@ -110,7 +110,7 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-6">
+      <div className="mt-3 flex items-center justify-center gap-6">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm bg-[#ED5070]" />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
