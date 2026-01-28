@@ -940,276 +940,293 @@ function MacroCard({
       const waterTarget = data.targets?.water || 2.0;
       const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
-    return (
-      <div className="min-h-screen bg-gray-100 font-sans text-gray-900">
-        <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0">
-          <div className="mb-3 flex items-center justify-between">
-            <div className="text-3xl font-bold"
-              style={{
-                background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Giada.
+      return (
+        <div className="min-h-screen bg-gray-100 font-sans text-gray-900">
+          <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="text-3xl font-bold"
+                style={{
+                  background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Giada.
+              </div>
+              <HeaderNav activeView={activeView} onViewChange={setActiveView} />
             </div>
-            <HeaderNav activeView={activeView} onViewChange={setActiveView} />
-          </div>
-
-          <div className="flex justify-between gap-2">
-            {activeView === "day" ? (
-              last7Days.map((date, i) => {
-                const dateStr = date.toISOString().split('T')[0];
-                const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-                const isSelected = selectedDate === dateStr;
-                const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-                const dayNum = date.getDate();
-                
-                let bgColor = "#FFFFFF";
-                if (isSelected) bgColor = "#9EDDE2";
-                else if (isTodayDay) bgColor = "#E2F7F9";
-
-                let textColor = "#5A658D";
-                if (isSelected) textColor = "#262C44";
-                else if (isTodayDay) textColor = "#088D98";
-
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedDate(dateStr)}
-                    className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
-                    style={{ 
-                      backgroundColor: bgColor,
-                      cursor: "pointer",
-                      fontFamily: '"DM Sans", sans-serif',
-                      minWidth: "40px",
-                      maxWidth: "48px"
-                    }}
-                  >
-                    <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                    <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                  </div>
-                );
-              })
-            ) : activeView === "progress" ? (
-              <div className="flex flex-col w-full gap-3">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setProgressTab("kcal")}
-                    className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
-                    style={{
-                      backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
-                      color: progressTab === "kcal" ? "#262C44" : "#5A658D",
-                    }}
-                  >
-                    Kcal & goals
-                  </button>
-                  <button
-                    onClick={() => setProgressTab("macros")}
-                    className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
-                    style={{
-                      backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
-                      color: progressTab === "macros" ? "#262C44" : "#5A658D",
-                    }}
-                  >
-                    Macros
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  {(["7d", "1m", "3m", "6m"] as const).map((range) => (
-                    <button
-                      key={range}
-                      onClick={() => setTimeRange(range)}
-                      className="flex-1 rounded-full py-2.5 text-center transition-all text-caption-custom font-bold"
-                      style={{
-                        backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
-                        color: timeRange === range ? "#FFFFFF" : "#5A658D",
+  
+            <div className="flex justify-between gap-2">
+              {activeView === "day" ? (
+                last7Days.map((date, i) => {
+                  const dateStr = date.toISOString().split('T')[0];
+                  const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+                  const isSelected = selectedDate === dateStr;
+                  const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+                  const dayNum = date.getDate();
+                  
+                  let bgColor = "#FFFFFF";
+                  if (isSelected) bgColor = "#9EDDE2";
+                  else if (isTodayDay) bgColor = "#E2F7F9";
+  
+                  let textColor = "#5A658D";
+                  if (isSelected) textColor = "#262C44";
+                  else if (isTodayDay) textColor = "#088D98";
+  
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedDate(dateStr)}
+                      className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
+                      style={{ 
+                        backgroundColor: bgColor,
+                        cursor: "pointer",
+                        fontFamily: '"DM Sans", sans-serif',
+                        minWidth: "40px",
+                        maxWidth: "48px"
                       }}
                     >
-                      {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                      <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                      <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                    </div>
+                  );
+                })
+              ) : activeView === "progress" ? (
+                <div className="flex flex-col w-full gap-3">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setProgressTab("kcal")}
+                      className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
+                      style={{
+                        backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
+                        color: progressTab === "kcal" ? "#262C44" : "#5A658D",
+                      }}
+                    >
+                      Kcal & goals
                     </button>
-                  ))}
-                  <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#5A658D]">
-                    <Calendar size={20} />
-                  </button>
-                </div>
-              </div>
-            ) : null}
-          </div>
-          <div style={{ borderBottom: '2px solid #ECEDF2', marginTop: '8px' }} />
-        </div>
-
-        <div className="px-5 pb-5 pt-[168px] space-y-8">
-          {calorieBadge.showAlert && <MissingAlert />}
-            <div className="space-y-3">
-              <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 space-y-2.5">
-                    <h2 className="mb-5 text-title-custom">Daily Calories</h2>
-                            <div className="flex items-start gap-1 text-body-sm-custom">
-                              <BadgeIconSm semantic="Lunch" />
-                              <span><span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-helper-custom">target + active</span></span>
-                            </div>
-                          <div className="flex items-start gap-1 text-body-sm-custom">
-                            <BadgeIconSm semantic="KcalActive" />
-                            <span><span className="text-subtitle-1-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
-                          </div>
-                              <div className="flex items-start gap-1 text-body-sm-custom">
-                                <BadgeIconSm semantic="Goal" />
-                                <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">{BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit</span></span>
-                              </div>
-                    <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+                    <button
+                      onClick={() => setProgressTab("macros")}
+                      className="flex-1 rounded-full py-4 text-center transition-all text-subtitle-1-custom font-bold"
+                      style={{
+                        backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
+                        color: progressTab === "macros" ? "#262C44" : "#5A658D",
+                      }}
+                    >
+                      Macros
+                    </button>
                   </div>
-                      <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
-                        <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
-                          {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                        </div>
-                          <div className="text-helper-custom">{isOver ? "over" : "left"}</div>
-                      </ShadcnRadialProgress>
-
+                  <div className="flex items-center gap-2">
+                    {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                      <button
+                        key={range}
+                        onClick={() => setTimeRange(range)}
+                        className="flex-1 rounded-full py-2.5 text-center transition-all text-caption-custom font-bold"
+                        style={{
+                          backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
+                          color: timeRange === range ? "#FFFFFF" : "#5A658D",
+                        }}
+                      >
+                        {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                      </button>
+                    ))}
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#5A658D]">
+                      <Calendar size={20} />
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div style={{ borderBottom: '2px solid #ECEDF2', marginTop: '8px' }} />
+          </div>
+  
+          <div 
+            className="px-5 pb-5 space-y-8"
+            style={{ 
+              paddingTop: activeView === "progress" ? "216px" : "168px" 
+            }}
+          >
+            {activeView === "day" && (
+              <>
+                {calorieBadge.showAlert && <MissingAlert />}
+                <div className="space-y-3">
+                  <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 space-y-2.5">
+                        <h2 className="mb-5 text-title-custom">Daily Calories</h2>
+                                <div className="flex items-start gap-1 text-body-sm-custom">
+                                  <BadgeIconSm semantic="Lunch" />
+                                  <span><span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span>/{totalTarget.toLocaleString("it-IT")} <span className="text-helper-custom">target + active</span></span>
+                                </div>
+                              <div className="flex items-start gap-1 text-body-sm-custom">
+                                <BadgeIconSm semantic="KcalActive" />
+                                <span><span className="text-subtitle-1-custom">{data.activeCalories.toLocaleString("it-IT")}</span> active kcal</span>
+                              </div>
+                                  <div className="flex items-start gap-1 text-body-sm-custom">
+                                    <BadgeIconSm semantic="Goal" />
+                                    <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">{BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit</span></span>
+                                  </div>
+                        <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
+                      </div>
+                          <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                            <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
+                              {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
+                            </div>
+                              <div className="text-helper-custom">{isOver ? "over" : "left"}</div>
+                          </ShadcnRadialProgress>
+  
+                  </div>
+                </div>
+  
+                      <div className="grid grid-cols-2 gap-3">
+                        <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="PRO" value={data.protein} target={data.targets?.protein || 96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
+                        <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="CAR" value={data.carbs} target={data.targets?.carbs || 160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
+                        <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="FAT" value={data.fats} target={data.targets?.fats || 64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
+                        <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="FIB" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
+                      </div>
+  
+                  {data.targets?.water && data.targets.water > 0 ? (
+                    <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={data.targets.water} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
+                  ) : null}
+                  <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+                <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
+              </div>
+  
+            <div>
+              <h2 className="mb-4 text-title-custom">Food log → <span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
+              <div className="space-y-3">
+                {data.meals && data.meals.length > 0 && !isToday ? (
+                  data.meals.map((meal, mealIdx) => (
+                    <div key={mealIdx} className="space-y-2">
+                      <MealMomentCard 
+                        meal={meal} 
+                        isOpen={!!openMeals[meal.meal]} 
+                        onToggle={() => toggleMeal(meal.meal)} 
+                      />
+                        {openMeals[meal.meal] && (
+                            <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
+                              {meal.foods.map((food, i) => (
+                                <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
+                                    <div className="absolute top-3 right-3 flex items-center gap-1">
+                                    {food.is_processed && (
+                                      <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
+                                        P
+                                      </div>
+                                    )}
+                                    {food.time && (
+                                      <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
+                                        {food.time}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="mb-2 flex items-center justify-between pr-24">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-body-md-custom">{food.name}</span>
+                                    </div>
+                                  </div>
+                                    <div className="mb-2 flex items-center gap-1.5">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                                      <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
+                                      <span className="text-body-sm-custom">kcal</span>
+                                    </div>
+  
+                                  <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                    <div className="flex items-center gap-1 text-helper-custom">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                                      <i>Protein {Math.round(food.pro)}g</i>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-helper-custom">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                                      <i>Fiber {Math.round(food.fiber)}g</i>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-helper-custom">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                                      <i>Carbo {Math.round(food.carb)}g</i>
+                                    </div>
+                                      <div className="flex items-center gap-1 text-helper-custom">
+                                        <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                                        <i>Fat {Math.round(food.fat)}g</i>
+                                      </div>
+                                      {food.alcohol > 0 && (
+                                        <div className="flex items-center gap-1 text-helper-custom">
+                                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                                          <i>Alcohol {Math.round(food.alcohol)}g</i>
+                                        </div>
+                                      )}
+                                    </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                    </div>
+                  ))
+                  ) : data.foods.length === 0 ? (
+                    <div className="rounded-2xl bg-white p-8 text-center text-helper-custom shadow-sm">No food logged for this day</div>
+                    ) : (
+                        [...data.foods].reverse().map((food, i) => (
+                          <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
+                            <div className="absolute top-3 right-3 flex items-center gap-1">
+                            {food.is_processed && (
+                              <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
+                                P
+                              </div>
+                            )}
+                            {food.time && (
+                              <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
+                                {food.time}
+                              </div>
+                            )}
+                          </div>
+                          <div className="mb-2 flex items-center justify-between pr-24">
+                            <div className="flex items-center gap-2">
+                              <span className="text-body-md-custom">{food.name}</span>
+                            </div>
+                          </div>
+                            <div className="mb-2 flex items-center gap-1.5">
+                              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
+                              <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
+                              <span className="text-body-sm-custom">kcal</span>
+                            </div>
+                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                              <div className="flex items-center gap-1 text-helper-custom">
+                                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                                <i>Protein {Math.round(food.pro)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-helper-custom">
+                                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                                <i>Fiber {Math.round(food.fiber)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-helper-custom">
+                                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                                <i>Carbo {Math.round(food.carb)}g</i>
+                              </div>
+                              <div className="flex items-center gap-1 text-helper-custom">
+                                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                                <i>Fat {Math.round(food.fat)}g</i>
+                              </div>
+                              {food.alcohol > 0 && (
+                                <div className="flex items-center gap-1 text-helper-custom">
+                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                                  <i>Alcohol {Math.round(food.alcohol)}g</i>
+                                </div>
+                              )}
+                            </div>
+                      </div>
+                    ))
+                  )}
               </div>
             </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <MacroCard icon={<BadgeIconSm semantic="Protein" />} name="PRO" value={data.protein} target={data.targets?.protein || 96} color={BadgeIconColors.Protein} isToday={isToday} type="protein" />
-                    <MacroCard icon={<BadgeIconSm semantic="Carbo" />} name="CAR" value={data.carbs} target={data.targets?.carbs || 160} color={BadgeIconColors.Carbo} isToday={isToday} type="carbs" />
-                    <MacroCard icon={<BadgeIconSm semantic="Fat" />} name="FAT" value={data.fats} target={data.targets?.fats || 64} color={BadgeIconColors.Fat} isToday={isToday} type="fat" />
-                    <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="FIB" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
-                  </div>
-
-              {data.targets?.water && data.targets.water > 0 ? (
-                <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={data.targets.water} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
-              ) : null}
-              <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
-            <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
+          </>
+        )}
+        {activeView === "progress" && (
+          <div className="flex flex-col items-center justify-center py-20 text-helper-custom italic">
+            {/* Progress view is currently empty below the header */}
           </div>
-
-        <div>
-          <h2 className="mb-4 text-title-custom">Food log → <span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
-          <div className="space-y-3">
-            {data.meals && data.meals.length > 0 && !isToday ? (
-              data.meals.map((meal, mealIdx) => (
-                <div key={mealIdx} className="space-y-2">
-                  <MealMomentCard 
-                    meal={meal} 
-                    isOpen={!!openMeals[meal.meal]} 
-                    onToggle={() => toggleMeal(meal.meal)} 
-                  />
-                    {openMeals[meal.meal] && (
-                        <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
-                          {meal.foods.map((food, i) => (
-                            <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
-                                <div className="absolute top-3 right-3 flex items-center gap-1">
-                                {food.is_processed && (
-                                  <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
-                                    P
-                                  </div>
-                                )}
-                                {food.time && (
-                                  <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
-                                    {food.time}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="mb-2 flex items-center justify-between pr-24">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-body-md-custom">{food.name}</span>
-                                </div>
-                              </div>
-                                <div className="mb-2 flex items-center gap-1.5">
-                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                                  <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
-                                  <span className="text-body-sm-custom">kcal</span>
-                                </div>
-
-                              <div className="flex flex-wrap gap-x-3 gap-y-1">
-                                <div className="flex items-center gap-1 text-helper-custom">
-                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                                  <i>Protein {Math.round(food.pro)}g</i>
-                                </div>
-                                <div className="flex items-center gap-1 text-helper-custom">
-                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                                  <i>Fiber {Math.round(food.fiber)}g</i>
-                                </div>
-                                <div className="flex items-center gap-1 text-helper-custom">
-                                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                                  <i>Carbo {Math.round(food.carb)}g</i>
-                                </div>
-                                  <div className="flex items-center gap-1 text-helper-custom">
-                                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                                    <i>Fat {Math.round(food.fat)}g</i>
-                                  </div>
-                                  {food.alcohol > 0 && (
-                                    <div className="flex items-center gap-1 text-helper-custom">
-                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                                      <i>Alcohol {Math.round(food.alcohol)}g</i>
-                                    </div>
-                                  )}
-                                </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </div>
-              ))
-              ) : data.foods.length === 0 ? (
-                <div className="rounded-2xl bg-white p-8 text-center text-helper-custom shadow-sm">No food logged for this day</div>
-                ) : (
-                    [...data.foods].reverse().map((food, i) => (
-                      <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
-                        <div className="absolute top-3 right-3 flex items-center gap-1">
-                        {food.is_processed && (
-                          <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
-                            P
-                          </div>
-                        )}
-                        {food.time && (
-                          <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
-                            {food.time}
-                          </div>
-                        )}
-                      </div>
-                      <div className="mb-2 flex items-center justify-between pr-24">
-                        <div className="flex items-center gap-2">
-                          <span className="text-body-md-custom">{food.name}</span>
-                        </div>
-                      </div>
-                        <div className="mb-2 flex items-center gap-1.5">
-                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                          <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
-                          <span className="text-body-sm-custom">kcal</span>
-                        </div>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1">
-                          <div className="flex items-center gap-1 text-helper-custom">
-                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                            <i>Protein {Math.round(food.pro)}g</i>
-                          </div>
-                          <div className="flex items-center gap-1 text-helper-custom">
-                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                            <i>Fiber {Math.round(food.fiber)}g</i>
-                          </div>
-                          <div className="flex items-center gap-1 text-helper-custom">
-                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                            <i>Carbo {Math.round(food.carb)}g</i>
-                          </div>
-                          <div className="flex items-center gap-1 text-helper-custom">
-                            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                            <i>Fat {Math.round(food.fat)}g</i>
-                          </div>
-                          {food.alcohol > 0 && (
-                            <div className="flex items-center gap-1 text-helper-custom">
-                              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                              <i>Alcohol {Math.round(food.alcohol)}g</i>
-                            </div>
-                          )}
-                        </div>
-                  </div>
-                ))
-              )}
-          </div>
-        </div>
+        )}
       </div>
+    </div>
+  );
+
     </div>
   );
 }
