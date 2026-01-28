@@ -962,7 +962,7 @@ function MacroCard({
             >
               Giada.
             </div>
-            <HeaderNav activeView={activeView} onViewChange={setActiveView} />
+              <HeaderNav activeView={activeView} onViewChange={handleViewChange} />
           </div>
 
           <div className="flex justify-between gap-2">
