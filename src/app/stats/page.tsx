@@ -562,40 +562,41 @@ function MacroCard({
       const [activeView, setActiveView] = useState<"day" | "progress" | "profile">("day");
       const [progressTab, setProgressTab] = useState<"kcal" | "macros">("kcal");
       const [timeRange, setTimeRange] = useState<"7d" | "1m" | "3m" | "6m">("7d");
-      const [weeklyData, setWeeklyData] = useState<any[]>([]);
+      const [progressData, setProgressData] = useState<any[]>([]);
 
       const toggleMeal = (mealName: string) => {
-      setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
-    };
+        setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
+      };
 
-    const handleViewChange = (view: "day" | "progress" | "profile") => {
-      if (view === "progress") {
-        setProgressTab("kcal");
-        setTimeRange("7d");
-      }
-      setActiveView(view);
-    };
-
-    const [data, setData] = useState<StatsData>({
-      calories: 0,
-      protein: 0,
-      carbs: 0,
-      fats: 0,
-      fiber: 0,
-      water: 0,
-      activeCalories: 0,
-      foods: [],
-      alcohol: { grams: 0, calories: 0 },
-        targets: {
-          calories: 1600,
-          protein: 96,
-          carbs: 160,
-          fats: 64,
-          fiber: 30,
-          water: 0,
-          deficit: 0
+      const handleViewChange = (view: "day" | "progress" | "profile") => {
+        if (view === "progress") {
+          setProgressTab("kcal");
+          setTimeRange("7d");
         }
-    });
+        setActiveView(view);
+      };
+
+      const [data, setData] = useState<StatsData>({
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+        fiber: 0,
+        water: 0,
+        activeCalories: 0,
+        foods: [],
+        alcohol: { grams: 0, calories: 0 },
+          targets: {
+            calories: 1600,
+            protein: 96,
+            carbs: 160,
+            fats: 64,
+            fiber: 30,
+            water: 0,
+            deficit: 0
+          }
+      });
+
 
   useEffect(() => {
     setOpenMeals({});
