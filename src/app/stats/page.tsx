@@ -553,11 +553,12 @@ function MacroCard({
   );
 }
 
-function StatsContent() {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
-  const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
-  const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
+  const StatsContent = () => {
+    const searchParams = useSearchParams();
+    const userId = searchParams.get("userId");
+    const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
+    const [openMeals, setOpenMeals] = useState<Record<string, boolean>>({});
+    const [activeView, setActiveView] = useState<"day" | "progress" | "profile">("day");
 
   const toggleMeal = (mealName: string) => {
     setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
