@@ -2,15 +2,14 @@
 
 import {
   Bar,
-  BarChart,
   Cell,
-  Line,
   ResponsiveContainer,
   XAxis,
   YAxis,
   CartesianGrid,
   ComposedChart,
   Area,
+  Line,
 } from "recharts";
 
 interface BalanceData {
@@ -34,18 +33,13 @@ export default function BalanceChart({
   subtitle,
   type = "bar"
 }: BalanceChartProps) {
-  const maxAbsDiff = Math.max(...data.map(d => Math.abs(d.diff)), 0);
+  // Use a default minimum limit of 500 if data is empty or all zero
+  const maxAbsDiff = Math.max(...data.map(d => Math.abs(d.diff)), 500);
   
-  // Dynamic tick calculation for 5 lines centered at 0
-  let step = 250;
-  if (maxAbsDiff > 500) {
-    step = 500;
-  }
-  if (maxAbsDiff > 1000) {
-    step = Math.ceil(maxAbsDiff / 2 / 250) * 250;
-  }
-  
-  const limit = step * 2;
+  // For Month view (area), the vertical baseline values adapt to the values in the graphic
+  // Highest and lowest lines represent the limit, maintain always 5 horizontal lines centered at zero
+  const limit = maxAbsDiff;
+  const step = limit / 2;
   const ticksY = [-limit, -step, 0, step, limit];
   const domainY = [-limit, limit];
 
@@ -87,6 +81,10 @@ export default function BalanceChart({
                 <stop offset={off} stopColor="#ED5070" stopOpacity={0.4} />
                 <stop offset={off} stopColor="#FFE5A3" stopOpacity={0.4} />
               </linearGradient>
+              <linearGradient id="strokeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset={off} stopColor="#ED5070" stopOpacity={1} />
+                <stop offset={off} stopColor="#FFC840" stopOpacity={1} />
+              </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="#ECEDF2" />
             <XAxis
@@ -126,9 +124,8 @@ export default function BalanceChart({
                     </g>
                   );
                 } else {
-                  // Area chart date display
+                  // Area chart date display (6 dates)
                   const dateStr = payload.value;
-                  // If it's the last date, make it bold
                   const isLast = index === 5;
                   return (
                     <g transform={`translate(${x},${y + 15})`}>
@@ -171,7 +168,7 @@ export default function BalanceChart({
               <Area
                 type="monotone"
                 dataKey="diff"
-                stroke="#ED5070"
+                stroke="url(#strokeGradient)"
                 strokeWidth={2}
                 fill="url(#splitColor)"
                 isAnimationActive={false}
@@ -194,7 +191,6 @@ export default function BalanceChart({
       </div>
 
       <div className="mt-3 flex items-center justify-center gap-6">
-
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm bg-[#ED5070]" style={{ opacity: type === "area" ? 0.4 : 1, border: type === "area" ? "1px solid #ED5070" : "none" }} />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
