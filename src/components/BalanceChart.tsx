@@ -34,12 +34,13 @@ export default function BalanceChart({
   type = "bar"
 }: BalanceChartProps) {
   // Use a default minimum limit of 500 if data is empty or all zero
-  const maxAbsDiff = Math.max(...data.map(d => Math.abs(d.diff)), 500);
+  const validDiffs = data.map(d => d.diff).filter((v): v is number => v !== null);
+  const maxAbsDiff = validDiffs.length > 0 ? Math.max(...validDiffs.map(v => Math.abs(v)), 500) : 500;
   
   // For Month view (area), the vertical baseline values adapt to the values in the graphic
   // Highest and lowest lines represent the limit, maintain always 5 horizontal lines centered at zero
-  const limit = maxAbsDiff;
-  const step = limit / 2;
+  const limit = Math.round(maxAbsDiff);
+  const step = Math.round(limit / 2);
   const ticksY = [-limit, -step, 0, step, limit];
   const domainY = [-limit, limit];
 
@@ -50,8 +51,11 @@ export default function BalanceChart({
     : undefined;
 
   const gradientOffset = () => {
-    const dataMax = Math.max(...data.map((i) => i.diff));
-    const dataMin = Math.min(...data.map((i) => i.diff));
+    const activeDiffs = data.map(d => d.diff).filter((v): v is number => v !== null);
+    if (activeDiffs.length === 0) return 0.5;
+    
+    const dataMax = Math.max(...activeDiffs);
+    const dataMin = Math.min(...activeDiffs);
 
     if (dataMax <= 0) return 0;
     if (dataMin >= 0) return 1;
@@ -126,6 +130,8 @@ export default function BalanceChart({
                 } else {
                   // Area chart date display (6 dates)
                   const dateStr = payload.value;
+                  // For the x-axis dates, we need to map the index of ticks to labels
+                  // Recharts calls this tick component for each tick in 'ticks' prop
                   const isLast = index === 5;
                   return (
                     <g transform={`translate(${x},${y + 15})`}>
@@ -153,6 +159,7 @@ export default function BalanceChart({
               domain={domainY}
               ticks={ticksY}
               allowDataOverflow={true}
+              tickFormatter={(value) => Math.round(value).toString()}
             />
             
             {type === "bar" ? (
@@ -160,7 +167,7 @@ export default function BalanceChart({
                 {data.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={entry.diff >= 0 ? "#ED5070" : "#FFE5A3"} 
+                    fill={entry.diff === null ? "transparent" : (entry.diff >= 0 ? "#ED5070" : "#FFE5A3")} 
                   />
                 ))}
               </Bar>
@@ -172,6 +179,7 @@ export default function BalanceChart({
                 strokeWidth={2}
                 fill="url(#splitColor)"
                 isAnimationActive={false}
+                connectNulls={false}
               />
             )}
 
@@ -204,7 +212,7 @@ export default function BalanceChart({
             <div className="h-[2px] w-6 bg-[#757FA0]" />
             {type === "bar" && <div className="h-2 w-2 rounded-full bg-[#757FA0] -ml-[5px]" />}
           </div>
-          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Target + active kcal</span>
+          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Target kcal</span>
         </div>
       </div>
     </div>
