@@ -26,12 +26,27 @@ interface BalanceChartProps {
 }
 
 export default function BalanceChart({ data, title = "Balance", subtitle }: BalanceChartProps) {
+  const maxAbsDiff = Math.max(...data.map(d => Math.abs(d.diff)), 0);
+  
+  // Dynamic tick calculation for 5 lines centered at 0
+  let step = 250;
+  if (maxAbsDiff > 500) {
+    step = 500;
+  }
+  if (maxAbsDiff > 1000) {
+    step = Math.ceil(maxAbsDiff / 2 / 250) * 250;
+  }
+  
+  const limit = step * 2;
+  const ticks = [-limit, -step, 0, step, limit];
+  const domain = [-limit, limit];
+
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm">
       <div className="mb-3">
-        <h2 className="text-title-custom font-bold text-[#262C44]">{title}</h2>
+        <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
         {subtitle && (
-          <p className="text-body-sm-custom text-[#757FA0] mt-1">{subtitle}</p>
+          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{subtitle}</p>
         )}
       </div>
 
@@ -40,7 +55,6 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
           <ComposedChart
             data={data}
             margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
-            stackOffset="sign"
           >
             <CartesianGrid vertical={false} stroke="#ECEDF2" />
             <XAxis
@@ -48,8 +62,9 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
               axisLine={false}
               tickLine={false}
               tick={(props) => {
-                const { x, y, payload, index } = props;
+                const { x, y, index } = props;
                 const day = data[index];
+                if (!day) return null;
                 return (
                   <g transform={`translate(${x},${y + 15})`}>
                     <text
@@ -83,8 +98,9 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
-              domain={[-1000, 1000]}
-              ticks={[-1000, -500, 0, 500, 1000]}
+              domain={domain}
+              ticks={ticks}
+              allowDataOverflow={true}
             />
             
             <Bar dataKey="diff" radius={[4, 4, 4, 4]} barSize={32}>
@@ -98,19 +114,21 @@ export default function BalanceChart({ data, title = "Balance", subtitle }: Bala
 
             <Line
               type="monotone"
-              dataKey="baseline"
+              dataKey={() => 0}
               stroke="#757FA0"
               strokeWidth={2}
               dot={{ r: 3, fill: "#757FA0", strokeWidth: 0 }}
               activeDot={false}
               legendType="none"
               isAnimationActive={false}
+              connectNulls
             />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
       <div className="mt-3 flex items-center justify-center gap-6">
+
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm bg-[#ED5070]" />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
