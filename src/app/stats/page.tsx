@@ -948,137 +948,150 @@ function MacroCard({
       const waterTarget = data.targets?.water || 2.0;
       const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
-    return (
-      <div className="min-h-screen bg-gray-100 font-sans text-gray-900">
-        <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0">
-          <div className="mb-3 flex items-center justify-between">
-            <div className="text-3xl font-bold"
-              style={{
-                background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Giada.
+      return (
+        <div className="h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
+          <style jsx global>{`
+            .scrollbar-hide::-webkit-scrollbar {
+              display: none;
+            }
+            .scrollbar-hide {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+          `}</style>
+          <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0" style={{ height: '216px' }}>
+            <div className="mb-3 flex items-center justify-between">
+              <div className="text-3xl font-bold"
+                style={{
+                  background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Giada.
+              </div>
+                <HeaderNav activeView={activeView} onViewChange={handleViewChange} />
             </div>
-              <HeaderNav activeView={activeView} onViewChange={handleViewChange} />
-          </div>
 
-          <div className="flex justify-between gap-2">
-            {activeView === "day" ? (
-              last7Days.map((date, i) => {
-                const dateStr = date.toISOString().split('T')[0];
-                const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-                const isSelected = selectedDate === dateStr;
-                const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-                const dayNum = date.getDate();
-                
-                let bgColor = "#FFFFFF";
-                if (isSelected) bgColor = "#9EDDE2";
-                else if (isTodayDay) bgColor = "#E2F7F9";
+            <div className="flex justify-between gap-2 h-[120px] flex-col">
+              {activeView === "day" ? (
+                <div className="flex justify-between gap-2">
+                  {last7Days.map((date, i) => {
+                    const dateStr = date.toISOString().split('T')[0];
+                    const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+                    const isSelected = selectedDate === dateStr;
+                    const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+                    const dayNum = date.getDate();
+                    
+                    let bgColor = "#FFFFFF";
+                    if (isSelected) bgColor = "#9EDDE2";
+                    else if (isTodayDay) bgColor = "#E2F7F9";
 
-                let textColor = "#5A658D";
-                if (isSelected) textColor = "#262C44";
-                else if (isTodayDay) textColor = "#088D98";
+                    let textColor = "#5A658D";
+                    if (isSelected) textColor = "#262C44";
+                    else if (isTodayDay) textColor = "#088D98";
 
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedDate(dateStr)}
-                    className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
-                    style={{ 
-                      backgroundColor: bgColor,
-                      cursor: "pointer",
-                      fontFamily: '"DM Sans", sans-serif',
-                      minWidth: "40px",
-                      maxWidth: "48px"
-                    }}
-                  >
-                    <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                    <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                  </div>
-                );
-              })
-            ) : activeView === "progress" ? (
-                  <div className="flex flex-col w-full gap-3">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setProgressTab("kcal")}
-                        className="flex-1 rounded-full text-center transition-all flex items-center justify-center"
-                        style={{
-                          height: "32px",
-                          backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
-                          color: progressTab === "kcal" ? "#262C44" : "#5A658D",
-                          fontSize: "0.875rem",
-                          fontWeight: 700,
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => setSelectedDate(dateStr)}
+                        className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
+                        style={{ 
+                          backgroundColor: bgColor,
+                          cursor: "pointer",
+                          fontFamily: '"DM Sans", sans-serif',
+                          minWidth: "40px",
+                          maxWidth: "48px"
                         }}
                       >
-                        Kcal & goals
-                      </button>
-                      <button
-                        onClick={() => setProgressTab("macros")}
-                        className="flex-1 rounded-full text-center transition-all flex items-center justify-center"
-                        style={{
-                          height: "32px",
-                          backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
-                          color: progressTab === "macros" ? "#262C44" : "#5A658D",
-                          fontSize: "0.875rem",
-                          fontWeight: 700,
-                        }}
-                      >
-                        Macros
-                      </button>
-                    </div>
-                      <div className="flex items-center justify-center gap-2">
-                        {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                        <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                        <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : activeView === "progress" ? (
+                    <div className="flex flex-col w-full gap-3">
+                      <div className="flex gap-2">
                         <button
-                          key={range}
-                          onClick={() => setTimeRange(range)}
-                          className="text-caption-custom transition-all"
+                          onClick={() => setProgressTab("kcal")}
+                          className="flex-1 rounded-full text-center transition-all flex items-center justify-center"
                           style={{
-                            display: "flex",
-                            height: "24px",
-                            padding: "4px 8px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
-                            borderRadius: "100px",
-                            backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
-                            color: timeRange === range ? "#FFFFFF" : "#5A658D",
+                            height: "32px",
+                            backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
+                            color: progressTab === "kcal" ? "#262C44" : "#5A658D",
+                            fontSize: "0.875rem",
+                            fontWeight: 700,
                           }}
                         >
-                          {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                          Kcal & goals
                         </button>
-                      ))}
-                      <button 
-                        style={{
-                          display: "flex",
-                          width: "24px",
-                          height: "24px",
-                          padding: "4px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          backgroundColor: "#FFFFFF",
-                          color: "#5A658D",
-                          borderRadius: "100px",
-                        }}
-                      >
-                        <Calendar size={16} />
-                      </button>
+                        <button
+                          onClick={() => setProgressTab("macros")}
+                          className="flex-1 rounded-full text-center transition-all flex items-center justify-center"
+                          style={{
+                            height: "32px",
+                            backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
+                            color: progressTab === "macros" ? "#262C44" : "#5A658D",
+                            fontSize: "0.875rem",
+                            fontWeight: 700,
+                          }}
+                        >
+                          Macros
+                        </button>
+                      </div>
+                        <div className="flex items-center justify-center gap-2">
+                          {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                          <button
+                            key={range}
+                            onClick={() => setTimeRange(range)}
+                            className="text-caption-custom transition-all"
+                            style={{
+                              display: "flex",
+                              height: "24px",
+                              padding: "4px 8px",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: "10px",
+                              borderRadius: "100px",
+                              backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
+                              color: timeRange === range ? "#FFFFFF" : "#5A658D",
+                            }}
+                          >
+                            {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                          </button>
+                        ))}
+                        <button 
+                          style={{
+                            display: "flex",
+                            width: "24px",
+                            height: "24px",
+                            padding: "4px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#FFFFFF",
+                            color: "#5A658D",
+                            borderRadius: "100px",
+                          }}
+                        >
+                          <Calendar size={16} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ) : null}
+                  ) : (
+                    <div className="h-[120px]" />
+                  )}
+            </div>
+            <div className="absolute bottom-0 left-5 right-5" style={{ borderBottom: '2px solid #ECEDF2' }} />
           </div>
-          <div style={{ borderBottom: '2px solid #ECEDF2', marginTop: '8px' }} />
-        </div>
 
-        <div 
-          className="px-5 pb-5 space-y-8"
-          style={{ 
-            paddingTop: activeView === "progress" ? "216px" : "168px" 
-          }}
-        >
+          <div 
+            className="px-5 pb-5 space-y-8"
+            style={{ 
+              paddingTop: "216px" 
+            }}
+          >
           {activeView === "day" && (
             <>
               {calorieBadge.showAlert && <MissingAlert />}
