@@ -13,7 +13,7 @@ import {
   ChartConfig,
   ChartContainer,
 } from "@/components/ui/chart";
-import { ChevronDown, ChevronUp, MoveRight } from "lucide-react";
+import { ChevronDown, ChevronUp, MoveRight, Calendar } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface FoodEntry {
