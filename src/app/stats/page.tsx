@@ -921,10 +921,7 @@ function MacroCard({
   }, [searchParams, selectedDate, userId]);
 
     const isToday = selectedDate === new Date().toISOString().split('T')[0];
-    const displayDate = isToday 
-      ? "Today's Balance" 
-      : new Date(selectedDate || "").toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' });
-  
+    
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (6 - i));
