@@ -943,7 +943,7 @@ function MacroCard({
 
     return (
       <div className="min-h-screen bg-gray-100 p-5 font-sans text-gray-900">
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-3 flex items-center justify-between">
           <div className="text-3xl font-bold"
             style={{
               background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
@@ -954,10 +954,7 @@ function MacroCard({
           >
             Giada.
           </div>
-            <div className="text-subtitle-1-custom">
-
-            {displayDate}
-          </div>
+          <HeaderNav activeView={activeView} onViewChange={setActiveView} />
         </div>
 
         <div className="mb-5 flex justify-between gap-2">
