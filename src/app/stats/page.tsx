@@ -562,9 +562,17 @@ function MacroCard({
     const [progressTab, setProgressTab] = useState<"kcal" | "macros">("kcal");
     const [timeRange, setTimeRange] = useState<"7d" | "1m" | "3m" | "6m">("7d");
 
-  const toggleMeal = (mealName: string) => {
-    setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
-  };
+    const toggleMeal = (mealName: string) => {
+      setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
+    };
+
+    const handleViewChange = (view: "day" | "progress" | "profile") => {
+      if (view === "progress") {
+        setProgressTab("kcal");
+        setTimeRange("7d");
+      }
+      setActiveView(view);
+    };
 
     const [data, setData] = useState<StatsData>({
       calories: 0,
