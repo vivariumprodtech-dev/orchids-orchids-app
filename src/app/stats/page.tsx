@@ -959,7 +959,7 @@ function MacroCard({
               scrollbar-width: none;
             }
           `}</style>
-          <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 pb-0" style={{ height: '216px' }}>
+          <div className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 border-b-2 border-[#ECEDF2]">
             <div className="mb-3 flex items-center justify-between">
               <div className="text-3xl font-bold"
                 style={{
@@ -974,9 +974,9 @@ function MacroCard({
                 <HeaderNav activeView={activeView} onViewChange={handleViewChange} />
             </div>
 
-            <div className="flex justify-between gap-2 h-[120px] flex-col">
+            <div className="flex flex-col">
               {activeView === "day" ? (
-                <div className="flex justify-between gap-2">
+                <div className="flex justify-between gap-2 pb-2">
                   {last7Days.map((date, i) => {
                     const dateStr = date.toISOString().split('T')[0];
                     const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
@@ -1012,7 +1012,7 @@ function MacroCard({
                   })}
                 </div>
               ) : activeView === "progress" ? (
-                    <div className="flex flex-col w-full gap-3">
+                    <div className="flex flex-col w-full gap-3 pb-2">
                       <div className="flex gap-2">
                         <button
                           onClick={() => setProgressTab("kcal")}
@@ -1080,16 +1080,15 @@ function MacroCard({
                       </div>
                     </div>
                   ) : (
-                    <div className="h-[120px]" />
+                    <div className="pb-2 h-[56px]" />
                   )}
             </div>
-            <div className="absolute bottom-0 left-5 right-5" style={{ borderBottom: '2px solid #ECEDF2' }} />
           </div>
 
           <div 
             className="px-5 pb-5 space-y-8"
             style={{ 
-              paddingTop: "216px" 
+              paddingTop: "160px" 
             }}
           >
           {activeView === "day" && (
