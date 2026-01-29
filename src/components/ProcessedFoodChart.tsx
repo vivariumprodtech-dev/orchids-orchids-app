@@ -133,7 +133,7 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
             {type === "bar" ? (
               <Bar 
                 dataKey="processedPercentage" 
-                fill="#D14FE8" 
+                fill="#DB74ED" 
                 radius={[4, 4, 0, 0]} 
                 barSize={32}
               />
@@ -141,8 +141,8 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
               <Area
                 type="monotone"
                 dataKey="processedPercentage"
-                stroke="#D14FE8"
-                fill="#D14FE8"
+                stroke="#DB74ED"
+                fill="#DB74ED"
                 fillOpacity={0.4}
                 strokeWidth={2}
               />
