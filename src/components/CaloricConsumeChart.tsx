@@ -185,7 +185,7 @@ export default function CaloricConsumeChart({
 
         <div className="mt-3 flex items-center justify-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-sm bg-[#6ACFD5]" style={{ opacity: type === "area" ? 0.2 : 1, border: type === "area" ? "1px solid #6ACFD5" : "none" }} />
+            <div className="h-3 w-3 rounded-sm bg-[#6ACFD5]" style={{ opacity: 1, border: type === "area" ? "1px solid #6ACFD5" : "none" }} />
             <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consumed kcal</span>
           </div>
           <div className="flex items-center gap-2">
