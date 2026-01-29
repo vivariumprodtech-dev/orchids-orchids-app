@@ -142,7 +142,7 @@ export default function BalanceChart({
                         x={0}
                         y={0}
                         dy={0}
-                        textAnchor="middle"
+                        textAnchor={isLast ? "end" : "middle"}
                         fill={isLast ? "#262C44" : "#757FA0"}
                         className={`text-[12px] ${isLast ? "font-bold" : "font-medium"}`}
                         style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
