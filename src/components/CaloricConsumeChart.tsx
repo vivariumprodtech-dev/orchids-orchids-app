@@ -144,7 +144,7 @@ export default function CaloricConsumeChart({
             />
             
             {type === "bar" ? (
-              <Bar dataKey="consumed" radius={[4, 4, 0, 0]} barSize={24} fill="#6ACFD5" />
+              <Bar dataKey="consumed" radius={[4, 4, 0, 0]} barSize={32} fill="#6ACFD5" />
             ) : (
               <Area
                 type="monotone"
