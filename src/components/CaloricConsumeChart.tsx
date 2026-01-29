@@ -50,15 +50,15 @@ export default function CaloricConsumeChart({
     : undefined;
 
   return (
-    <div className="rounded-[2.5rem] bg-white p-6 shadow-sm border border-[#F2F2F2]">
-      <div className="mb-4">
-        <h2 className="text-[20px] font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
+    <div className="rounded-2xl bg-white p-4 shadow-sm">
+      <div className="mb-3">
+        <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
         {subtitle && (
-          <p className="text-[14px] font-medium mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
         )}
       </div>
 
-      <div className="h-[220px] w-full">
+      <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
