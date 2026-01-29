@@ -957,69 +957,75 @@ function MacroCard({
             .eq('telegram_id', 'ugo_demo')
             .maybeSingle();
 
-          const formattedData = dates.map((dateStr) => {
-            const date = new Date(dateStr);
-            const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
-            const pseudoRandom = (seed: number) => {
-              const x = Math.sin(seed) * 10000;
-              return x - Math.floor(x);
-            };
-            const r = (offset: number) => pseudoRandom(dateSeed + offset);
-
-            const baseTarget = ugoProfile?.target_calories || 1600;
-            const activeCals = 200 + Math.floor(r(7) * 300);
-            const totalTarget = baseTarget + activeCals;
-            const consumed = 1800 + Math.floor(r(1) * 400);
-
-            return {
-              dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-              dayNumber: date.getDate(),
-              date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-              diff: consumed - totalTarget,
-              baseline: 0,
-              fullDate: dateStr
-            };
-          });
-          setProgressData(formattedData);
-          return;
-        }
-
-        if (!userId) return;
-
-          try {
-            const { data: logs } = await supabase
-              .from('daily_logs')
-              .select('date, calories, target_calories, active_calories, bmr, target_deficit')
-              .eq('user_id', userId)
-              .in('date', dates);
-
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('target_calories, bmr, target_deficit')
-              .eq('telegram_id', userId)
-              .maybeSingle();
-
-            const logsMap = new Map(logs?.map(log => [log.date, log]));
-
             const formattedData = dates.map((dateStr) => {
               const date = new Date(dateStr);
-              const log = logsMap.get(dateStr);
-              
-              const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
-              const activeCals = log?.active_calories || 0;
-              const deficit = log?.target_deficit || profile?.target_deficit || 0;
-              const totalTarget = Math.round(bmrForDay + activeCals - deficit);
-              const consumed = log?.calories || 0;
+              const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
+              const pseudoRandom = (seed: number) => {
+                const x = Math.sin(seed) * 10000;
+                return x - Math.floor(x);
+              };
+              const r = (offset: number) => pseudoRandom(dateSeed + offset);
+
+              const bmr = ugoProfile?.bmr || 1600;
+              const activeCals = 200 + Math.floor(r(7) * 300);
+              const totalTarget = bmr + activeCals;
+              const consumed = 1800 + Math.floor(r(1) * 400);
 
               return {
                 dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
                 dayNumber: date.getDate(),
                 date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                diff: log ? consumed - totalTarget : null,
+                diff: consumed - totalTarget,
                 baseline: 0,
-                fullDate: dateStr
+                fullDate: dateStr,
+                consumed: consumed,
+                bmr: bmr,
+                target: totalTarget
               };
             });
+            setProgressData(formattedData);
+            return;
+          }
+
+          if (!userId) return;
+
+            try {
+              const { data: logs } = await supabase
+                .from('daily_logs')
+                .select('date, calories, target_calories, active_calories, bmr, target_deficit')
+                .eq('user_id', userId)
+                .in('date', dates);
+
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('target_calories, bmr, target_deficit')
+                .eq('telegram_id', userId)
+                .maybeSingle();
+
+              const logsMap = new Map(logs?.map(log => [log.date, log]));
+
+              const formattedData = dates.map((dateStr) => {
+                const date = new Date(dateStr);
+                const log = logsMap.get(dateStr);
+                
+                const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
+                const activeCals = log?.active_calories || 0;
+                const deficit = log?.target_deficit || profile?.target_deficit || 0;
+                const totalTarget = Math.round(bmrForDay + activeCals - deficit);
+                const consumed = log?.calories || 0;
+
+                return {
+                  dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+                  dayNumber: date.getDate(),
+                  date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+                  diff: log ? consumed - totalTarget : null,
+                  baseline: 0,
+                  fullDate: dateStr,
+                  consumed: log ? consumed : null,
+                  bmr: bmrForDay,
+                  target: totalTarget
+                };
+              });
 
         setProgressData(formattedData);
       } catch (err) {
