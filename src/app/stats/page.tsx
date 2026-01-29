@@ -557,67 +557,192 @@ function MacroCard({
     );
   }
 
-  function KcalAveragesCard({ 
-    consumeAvg, 
-    cumulativeBalance, 
-    dailyAvg,
-    subtitle
-  }: { 
-    consumeAvg: number; 
-    cumulativeBalance: number; 
-    dailyAvg: number;
-    subtitle: string;
-  }) {
-    return (
-      <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
-        <div className="mb-4">
-          <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal averages</h2>
-          {subtitle && (
-            <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
-          )}
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BadgeIconSm semantic="Lunch" />
-              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consume average</span>
-            </div>
-            <div className="flex items-baseline gap-1 mr-2">
-              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{consumeAvg.toLocaleString("it-IT")}</span>
-              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
-            </div>
+    function KcalAveragesCard({ 
+      consumeAvg, 
+      cumulativeBalance, 
+      dailyAvg,
+      subtitle
+    }: { 
+      consumeAvg: number; 
+      cumulativeBalance: number; 
+      dailyAvg: number;
+      subtitle: string;
+    }) {
+      return (
+        <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal averages</h2>
+            {subtitle && (
+              <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+            )}
           </div>
-  
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#6ACFD5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <TrendingUp size={12} color="#FFFFFF" strokeWidth={2.5} />
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BadgeIconSm semantic="Lunch" />
+                <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consume average</span>
               </div>
-              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Cumulative balance</span>
-            </div>
-            <div className="flex items-baseline gap-1 mr-2">
-              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{cumulativeBalance > 0 ? "+" : ""}{cumulativeBalance.toLocaleString("it-IT")}</span>
-              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
-            </div>
-          </div>
-  
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#90E0E4", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <BarChart3 size={12} color="#FFFFFF" strokeWidth={2.5} />
+              <div className="flex items-baseline gap-1 mr-2">
+                <span className="text-subtitle-1-custom font-bold text-[#262C44]">{consumeAvg.toLocaleString("it-IT")}</span>
+                <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
               </div>
-              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Daily average</span>
             </div>
-            <div className="flex items-baseline gap-1 mr-2">
-              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{dailyAvg > 0 ? "+" : ""}{dailyAvg.toLocaleString("it-IT")}</span>
-              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+    
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#6ACFD5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <TrendingUp size={12} color="#FFFFFF" strokeWidth={2.5} />
+                </div>
+                <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Cumulative balance</span>
+              </div>
+              <div className="flex items-baseline gap-1 mr-2">
+                <span className="text-subtitle-1-custom font-bold text-[#262C44]">{cumulativeBalance > 0 ? "+" : ""}{cumulativeBalance.toLocaleString("it-IT")}</span>
+                <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+              </div>
+            </div>
+    
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#90E0E4", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <BarChart3 size={12} color="#FFFFFF" strokeWidth={2.5} />
+                </div>
+                <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Daily average</span>
+              </div>
+              <div className="flex items-baseline gap-1 mr-2">
+                <span className="text-subtitle-1-custom font-bold text-[#262C44]">{dailyAvg > 0 ? "+" : ""}{dailyAvg.toLocaleString("it-IT")}</span>
+                <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
+
+    function MacroStatusCircle({ average, target, type }: { average: number; target: number; type: "protein" | "carbs" | "fat" | "fiber" }) {
+      const tolerance = 0.03;
+      const isNear = average >= target * (1 - tolerance) && average <= target * (1 + tolerance);
+      
+      let connotation: "good" | "warning" | "danger" = "good";
+      
+      if (isNear) {
+        connotation = "good";
+      } else if (average < target) {
+        connotation = "warning"; // Yellow down
+      } else {
+        connotation = "danger"; // Red up
+      }
+
+      const styles = {
+        good: {
+          bg: "#F5FAF8",
+          color: "#199761",
+          icon: (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 3L4.5 8.5L2 6" stroke="#199761" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )
+        },
+        warning: {
+          bg: "#FFF9D6",
+          color: "#A56D00",
+          icon: (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 9V3M6 9L3 6M6 9L9 6" stroke="#A56D00" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )
+        },
+        danger: {
+          bg: "#FEF5F7",
+          color: "#C10127",
+          icon: (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3V9M6 3L3 6M6 3L9 6" stroke="#C10127" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )
+        }
+      };
+
+      const style = styles[connotation];
+
+      return (
+        <div 
+          style={{
+            width: "24px",
+            height: "24px",
+            borderRadius: "9999px",
+            backgroundColor: style.bg,
+            color: style.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0
+          }}
+        >
+          {style.icon}
+        </div>
+      );
+    }
+
+    function MacrosAveragesCard({ 
+      proteinAvg, 
+      carbsAvg, 
+      fatsAvg, 
+      fiberAvg,
+      targets,
+      subtitle
+    }: { 
+      proteinAvg: number; 
+      carbsAvg: number; 
+      fatsAvg: number; 
+      fiberAvg: number;
+      targets: any;
+      subtitle: string;
+    }) {
+      const rows = [
+        { name: "Protein", avg: proteinAvg, goal: targets.protein, icon: "Protein", type: "protein" as const },
+        { name: "Fiber", avg: fiberAvg, goal: targets.fiber, icon: "Fiber", type: "fiber" as const },
+        { name: "Carbs", avg: carbsAvg, goal: targets.carbs, icon: "Carbo", type: "carbs" as const },
+        { name: "Fat", avg: fatsAvg, goal: targets.fats, icon: "Fat", type: "fat" as const },
+      ];
+
+      return (
+        <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Macros averages</h2>
+            {subtitle && (
+              <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+            )}
+          </div>
+
+          <div className="mb-2 flex justify-end gap-8 pr-12">
+            <span className="text-[12px] italic text-[#757FA0]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>day goal</span>
+            <span className="text-[12px] italic text-[#757FA0]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>average</span>
+          </div>
+          
+          <div className="space-y-4">
+            {rows.map((row) => (
+              <div key={row.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BadgeIconSm semantic={row.icon as any} />
+                  <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{row.name}</span>
+                </div>
+                <div className="flex items-center gap-6 mr-2">
+                  <div className="w-16 text-right">
+                    <span className="text-subtitle-1-custom font-medium text-[#5A658D]">{Math.round(row.goal)}g</span>
+                  </div>
+                  <div className="w-16 text-right">
+                    <span className="text-subtitle-1-custom font-bold text-[#262C44]">{Math.round(row.avg)}g</span>
+                  </div>
+                  <MacroStatusCircle average={row.avg} target={row.goal} type={row.type} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
 
     const StatsContent = () => {
     const searchParams = useSearchParams();
