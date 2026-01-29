@@ -1477,16 +1477,24 @@ function MacroCard({
                           dailyAvg={dailyAvg}
                           subtitle={progressSubtitle}
                         />
-                        <ActiveKcalChart 
-                          data={progressData}
-                          title="Active kcal"
-                          type={timeRange === "7d" ? "bar" : "area"}
-                          subtitle={progressSubtitle}
-                        />
-                      </>
-                  )}
-            </div>
-          )}
+                          <ActiveKcalChart 
+                            data={progressData}
+                            title="Active kcal"
+                            type={timeRange === "7d" ? "bar" : "area"}
+                            subtitle={progressSubtitle}
+                          />
+                        </>
+                    )}
+                    {progressTab === "macros" && (
+                      <MacrosChart 
+                        data={progressData}
+                        title="Macros"
+                        type={timeRange === "7d" ? "bar" : "area"}
+                        subtitle={progressSubtitle}
+                      />
+                    )}
+              </div>
+            )}
 
     </div>
   </div>
