@@ -61,7 +61,7 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
 
       <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+          <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 20 }}>
             <CartesianGrid vertical={false} stroke="#ECEDF2" />
             <XAxis
               dataKey={showXAxisDates ? "date" : "dayNumber"}
@@ -135,8 +135,7 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
                 dataKey="processedPercentage" 
                 fill="#D14FE8" 
                 radius={[4, 4, 0, 0]} 
-                barSize={32} 
-                fillOpacity={0.6}
+                barSize={32}
               />
             ) : (
               <Area
@@ -159,6 +158,7 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
               activeDot={false}
               legendType="none"
               tooltipType="none"
+              isAnimationActive={false}
             />
           </ComposedChart>
         </ResponsiveContainer>
@@ -166,16 +166,16 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
 
       <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#D14FE8", opacity: 0.6 }} />
-          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Process food %</span>
+          <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#D14FE8" }} />
+          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Process food %</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            <div className="h-[2px] w-3 bg-[#5A658D]" style={{ borderStyle: 'dashed' }} />
-            <div className="h-2 w-2 rounded-full bg-[#5A658D]" />
-            <div className="h-[2px] w-3 bg-[#5A658D]" style={{ borderStyle: 'dashed' }} />
+          <div className="flex items-center">
+            <div className="h-[2px] w-6 bg-[#5A658D]" style={{ borderStyle: 'dashed', backgroundImage: 'linear-gradient(to right, #5A658D 50%, rgba(255, 255, 255, 0) 0%)', backgroundSize: '6px 2px', backgroundRepeat: 'repeat-x' }} />
+            <div className="h-2 w-2 rounded-full bg-[#5A658D] -ml-[14px]" />
+            <div className="h-[2px] w-6" /> {/* Spacer */}
           </div>
-          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Goal</span>
+          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Goal</span>
         </div>
       </div>
     </div>
