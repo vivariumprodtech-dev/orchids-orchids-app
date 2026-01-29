@@ -151,10 +151,10 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
             <Line 
               type="monotone" 
               dataKey="goal" 
-              stroke="#5A658D" 
+              stroke="#757FA0" 
               strokeWidth={2} 
               strokeDasharray="5 5" 
-              dot={{ r: 3, fill: "#5A658D", strokeWidth: 0 }}
+              dot={type === "area" ? false : { r: 3, fill: "#757FA0", strokeWidth: 0 }}
               activeDot={false}
               legendType="none"
               tooltipType="none"
@@ -167,15 +167,15 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
       <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#DB74ED" }} />
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Processed food</span>
+          <span className="text-[14px] font-medium text-[#757FA0]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Processed food</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center">
-            <div className="h-[2px] w-6 bg-[#5A658D]" style={{ borderStyle: 'dashed', backgroundImage: 'linear-gradient(to right, #5A658D 50%, rgba(255, 255, 255, 0) 0%)', backgroundSize: '6px 2px', backgroundRepeat: 'repeat-x' }} />
-            <div className="h-2 w-2 rounded-full bg-[#5A658D] -ml-[14px]" />
+            <div className="h-[2px] w-6 bg-[#757FA0]" style={{ borderStyle: 'dashed', backgroundImage: 'linear-gradient(to right, #757FA0 50%, rgba(255, 255, 255, 0) 0%)', backgroundSize: '6px 2px', backgroundRepeat: 'repeat-x' }} />
+            {type !== "area" && <div className="h-2 w-2 rounded-full bg-[#757FA0] -ml-[14px]" />}
             <div className="h-[2px] w-6" /> {/* Spacer */}
           </div>
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Goal</span>
+          <span className="text-[14px] font-medium text-[#757FA0]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Goal</span>
         </div>
       </div>
     </div>
