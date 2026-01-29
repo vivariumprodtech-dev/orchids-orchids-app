@@ -1626,12 +1626,22 @@ function MacroCard({
                         </>
                     )}
                     {progressTab === "macros" && (
-                      <MacrosChart 
-                        data={progressData}
-                        title="Macros"
-                        type={timeRange === "7d" ? "bar" : "area"}
-                        subtitle={progressSubtitle}
-                      />
+                      <>
+                        <MacrosChart 
+                          data={progressData}
+                          title="Macros"
+                          type={timeRange === "7d" ? "bar" : "area"}
+                          subtitle={progressSubtitle}
+                        />
+                        <MacrosAveragesCard 
+                          proteinAvg={proteinAvg}
+                          carbsAvg={carbsAvg}
+                          fatsAvg={fatsAvg}
+                          fiberAvg={fiberAvg}
+                          targets={data.targets}
+                          subtitle={progressSubtitle}
+                        />
+                      </>
                     )}
               </div>
             )}
