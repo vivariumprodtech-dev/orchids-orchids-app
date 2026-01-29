@@ -113,22 +113,22 @@ export default function CaloricConsumeChart({
                   );
                   } else {
                     const dateStr = payload.value;
-                    const isLast = index === 4;
-                    return (
-                    <g transform={`translate(${x},${y + 15})`}>
-                      <text
-                        x={0}
-                        y={0}
-                        dy={0}
-                        textAnchor="middle"
-                        fill={isLast ? "#262C44" : "#757FA0"}
-                        className={`text-[12px] ${isLast ? "font-bold" : "font-medium"}`}
-                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-                      >
-                        {dateStr}
-                      </text>
-                    </g>
-                  );
+                      const isLast = index === 4;
+                      return (
+                      <g transform={`translate(${x},${y + 15})`}>
+                        <text
+                          x={0}
+                          y={0}
+                          dy={0}
+                          textAnchor={isLast ? "end" : "middle"}
+                          fill={isLast ? "#262C44" : "#757FA0"}
+                          className={`text-[12px] ${isLast ? "font-bold" : "font-medium"}`}
+                          style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                        >
+                          {dateStr}
+                        </text>
+                      </g>
+                    );
                 }
               }}
               interval={0}
