@@ -131,11 +131,11 @@ export default function BalanceChart({
                     </g>
                   );
                 } else {
-                  // Area chart date display (6 dates)
+                  // Area chart date display (5 dates)
                   const dateStr = payload.value;
                   // For the x-axis dates, we need to map the index of ticks to labels
                   // Recharts calls this tick component for each tick in 'ticks' prop
-                  const isLast = index === 5;
+                  const isLast = index === 4;
                   return (
                     <g transform={`translate(${x},${y + 15})`}>
                       <text
