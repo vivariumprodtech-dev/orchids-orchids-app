@@ -1446,20 +1446,26 @@ function MacroCard({
           {activeView === "progress" && (
             <div className="space-y-4">
                 {progressTab === "kcal" && (
-                  <>
-                    <BalanceChart 
-                      data={progressData} 
-                      title="Balance"
-                      type={timeRange === "7d" ? "bar" : "area"}
-                      subtitle={progressData.length > 0 ? `From ${progressData[0].date} to ${progressData[progressData.length - 1].date}${timeRange === "7d" ? " (today)" : ""}` : ""}
-                    />
-                    <CaloricConsumeChart 
-                      data={progressData}
-                      title="Caloric consume"
-                      type={timeRange === "7d" ? "bar" : "area"}
-                      subtitle={progressData.length > 0 ? `From ${progressData[0].date} to ${progressData[progressData.length - 1].date}${timeRange === "7d" ? " (today)" : ""}` : ""}
-                    />
-                  </>
+                    <>
+                      <BalanceChart 
+                        data={progressData} 
+                        title="Balance"
+                        type={timeRange === "7d" ? "bar" : "area"}
+                        subtitle={progressSubtitle}
+                      />
+                      <CaloricConsumeChart 
+                        data={progressData}
+                        title="Caloric consume"
+                        type={timeRange === "7d" ? "bar" : "area"}
+                        subtitle={progressSubtitle}
+                      />
+                      <KcalAveragesCard 
+                        consumeAvg={consumeAvg}
+                        cumulativeBalance={cumulativeBalance}
+                        dailyAvg={dailyAvg}
+                        subtitle={progressSubtitle}
+                      />
+                    </>
                 )}
             </div>
           )}
