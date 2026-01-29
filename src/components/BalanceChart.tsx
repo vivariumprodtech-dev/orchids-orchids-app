@@ -203,11 +203,11 @@ export default function BalanceChart({
 
       <div className="mt-3 flex items-center justify-center gap-6">
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm bg-[#ED5070]" style={{ opacity: type === "area" ? 0.4 : 1, border: type === "area" ? "1px solid #ED5070" : "none" }} />
+          <div className="h-3 w-3 rounded-sm bg-[#ED5070]" style={{ opacity: 1, border: type === "area" ? "1px solid #ED5070" : "none" }} />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm bg-[#FFE5A3]" style={{ opacity: type === "area" ? 0.4 : 1, border: type === "area" ? "1px solid #FFE5A3" : "none" }} />
+          <div className="h-3 w-3 rounded-sm bg-[#FFE5A3]" style={{ opacity: 1, border: type === "area" ? "1px solid #FFE5A3" : "none" }} />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal low</span>
         </div>
         <div className="flex items-center gap-2">
