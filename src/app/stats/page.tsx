@@ -8,6 +8,7 @@ import BalanceChart from "@/components/BalanceChart";
 import CaloricConsumeChart from "@/components/CaloricConsumeChart";
 import ActiveKcalChart from "@/components/ActiveKcalChart";
 import MacrosChart from "@/components/MacrosChart";
+import ProcessedFoodChart from "@/components/ProcessedFoodChart";
 import {
   PolarAngleAxis,
   RadialBar,
