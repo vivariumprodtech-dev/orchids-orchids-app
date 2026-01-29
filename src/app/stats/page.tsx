@@ -1118,6 +1118,16 @@ function MacroCard({
       const waterTarget = data.targets?.water || 2.0;
       const calorieBadge = getCalorieBadge(data.calories, totalTarget, isToday);
 
+      const validProgressData = progressData.filter(d => d.consumed !== null);
+      const consumeAvg = validProgressData.length > 0
+        ? Math.round(validProgressData.reduce((acc, d) => acc + d.consumed, 0) / validProgressData.length)
+        : 0;
+      const cumulativeBalance = Math.round(validProgressData.reduce((acc, d) => acc + (d.diff || 0), 0));
+      const dailyAvg = validProgressData.length > 0
+        ? Math.round(cumulativeBalance / validProgressData.length)
+        : 0;
+      const progressSubtitle = progressData.length > 0 ? `From ${progressData[0].date} to ${progressData[progressData.length - 1].date}${timeRange === "7d" ? " (today)" : ""}` : "";
+
       return (
         <div className="h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
           <style jsx global>{`
