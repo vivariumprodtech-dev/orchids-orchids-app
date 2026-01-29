@@ -1462,14 +1462,20 @@ function MacroCard({
                         type={timeRange === "7d" ? "bar" : "area"}
                         subtitle={progressSubtitle}
                       />
-                      <KcalAveragesCard 
-                        consumeAvg={consumeAvg}
-                        cumulativeBalance={cumulativeBalance}
-                        dailyAvg={dailyAvg}
-                        subtitle={progressSubtitle}
-                      />
-                    </>
-                )}
+                        <KcalAveragesCard 
+                          consumeAvg={consumeAvg}
+                          cumulativeBalance={cumulativeBalance}
+                          dailyAvg={dailyAvg}
+                          subtitle={progressSubtitle}
+                        />
+                        <ActiveKcalChart 
+                          data={progressData}
+                          title="Active kcal"
+                          type={timeRange === "7d" ? "bar" : "area"}
+                          subtitle={progressSubtitle}
+                        />
+                      </>
+                  )}
             </div>
           )}
 
