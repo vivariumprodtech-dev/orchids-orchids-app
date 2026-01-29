@@ -207,7 +207,14 @@ export default function BalanceChart({
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal over</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm bg-[#FFE5A3]" style={{ opacity: 1, border: type === "area" ? "1px solid #FFE5A3" : "none" }} />
+          <div 
+            className="h-3 w-3 rounded-sm" 
+            style={{ 
+              opacity: 1, 
+              backgroundColor: type === "area" ? "#FFC840" : "#FFE5A3",
+              border: type === "area" ? "1px solid #FFC840" : "none" 
+            }} 
+          />
           <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal low</span>
         </div>
         <div className="flex items-center gap-2">
