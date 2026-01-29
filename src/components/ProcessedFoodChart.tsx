@@ -22,7 +22,7 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
     goal: 50
   }));
 
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="rounded-lg border bg-white p-2 shadow-sm">
@@ -30,8 +30,8 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#D14FE8" }} />
-                <span className="text-xs text-gray-600">Processed food %</span>
+                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#DB74ED" }} />
+                <span className="text-xs text-gray-600">Processed food</span>
               </div>
               <span className="text-xs font-bold text-gray-900">{Math.round(payload[0].value)}%</span>
             </div>
