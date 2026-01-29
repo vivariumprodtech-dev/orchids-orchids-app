@@ -65,7 +65,7 @@ export default function CaloricConsumeChart({
         <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={data}
-              margin={{ top: 10, right: 30, left: -20, bottom: 20 }}
+                margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
             >
             <defs>
               <linearGradient id="areaColor" x1="0" y1="0" x2="0" y2="1">
