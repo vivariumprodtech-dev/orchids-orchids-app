@@ -1647,15 +1647,21 @@ function MacroCard({
                           type={timeRange === "7d" ? "bar" : "area"}
                           subtitle={progressSubtitle}
                         />
-                        <MacrosAveragesCard 
-                          proteinAvg={proteinAvg}
-                          carbsAvg={carbsAvg}
-                          fatsAvg={fatsAvg}
-                          fiberAvg={fiberAvg}
-                          targets={data.targets}
-                          subtitle={progressSubtitle}
-                        />
-                      </>
+                          <MacrosAveragesCard 
+                            proteinAvg={proteinAvg}
+                            carbsAvg={carbsAvg}
+                            fatsAvg={fatsAvg}
+                            fiberAvg={fiberAvg}
+                            targets={data.targets}
+                            subtitle={progressSubtitle}
+                          />
+                          <ProcessedFoodChart 
+                            data={progressData}
+                            title="Processed food"
+                            type={timeRange === "7d" ? "bar" : "area"}
+                            subtitle={progressSubtitle}
+                          />
+                        </>
                     )}
               </div>
             )}
