@@ -1476,11 +1476,11 @@ function MacroCard({
                       <MacroCard icon={<BadgeIconSm semantic="Fiber" />} name="FIB" value={data.fiber} target={data.targets?.fiber || 30} color={BadgeIconColors.Fiber} isToday={isToday} type="fiber" />
                     </div>
 
-                {data.targets?.water && data.targets.water > 0 ? (
-                  <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={data.targets.water} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
-                ) : null}
-                <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Process food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
-              <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
+                  {data.targets?.water && data.targets.water > 0 ? (
+                    <MacroCard icon={<BadgeIconSm semantic="Water" />} name="Water intake" value={waterLiters} target={data.targets.water} color={BadgeIconColors.Water} isToday={isToday} type="water" centered />
+                  ) : null}
+                  <MacroCard icon={<BadgeIconSm semantic="ProcessFood" />} name="Processed food" value={data.processedPercentage || 0} target={50} color={BadgeIconColors.ProcessFood} isToday={isToday} type="processed" centered />
+                <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
             </div>
 
           <div>
