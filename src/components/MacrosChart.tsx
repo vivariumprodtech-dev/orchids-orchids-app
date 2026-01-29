@@ -1,10 +1,11 @@
 "use client";
 
-import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart } from "recharts";
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart, ResponsiveContainer, ComposedChart } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 
 interface MacrosChartProps {
   data: Array<{
+    dayName?: string;
     dayNumber: number;
     date: string;
     protein: number;
@@ -60,9 +61,18 @@ export default function MacrosChart({ data, title, type = "bar", subtitle }: Mac
     return null;
   };
 
+  // For area chart, we need 5 dates on X-axis
+  const showXAxisDates = type === "area";
+  const xTicks = showXAxisDates 
+    ? Array.from({ length: 5 }, (_, i) => {
+        const idx = Math.floor(i * (data.length - 1) / 4);
+        return data[idx]?.date;
+      }).filter((v): v is string => !!v)
+    : undefined;
+
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <div className="mb-6">
+    <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+      <div className="mb-3">
         <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
         {subtitle && (
           <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
@@ -70,45 +80,93 @@ export default function MacrosChart({ data, title, type = "bar", subtitle }: Mac
       </div>
 
       <div className="h-[200px] w-full">
-        <ChartContainer config={chartConfig}>
+        <ResponsiveContainer width="100%" height="100%">
           {type === "bar" ? (
-            <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F0F0F0" />
+            <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+              <CartesianGrid vertical={false} stroke="#ECEDF2" />
               <XAxis
                 dataKey="dayNumber"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#5A658D", fontSize: 12, fontWeight: 400 }}
-                dy={10}
+                interval={0}
+                tick={(props) => {
+                  const { x, y, index } = props;
+                  const day = data[index];
+                  if (!day) return null;
+                  return (
+                    <g transform={`translate(${x},${y + 15})`}>
+                      <text
+                        x={0}
+                        y={0}
+                        dy={0}
+                        textAnchor="middle"
+                        fill="#757FA0"
+                        className="text-[12px] font-medium"
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {day.dayName}
+                      </text>
+                      <text
+                        x={0}
+                        y={18}
+                        dy={0}
+                        textAnchor="middle"
+                        fill="#757FA0"
+                        className="text-[12px] font-medium"
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {day.dayNumber}
+                      </text>
+                    </g>
+                  );
+                }}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#5A658D", fontSize: 12, fontWeight: 400 }}
-                tickFormatter={(value) => `${value}g`}
+                tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
+                tickFormatter={(value) => Math.round(value).toString()}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="protein" name="Protein" stackId="a" fill="#FF9191" radius={[0, 0, 0, 0]} barSize={24} />
-              <Bar dataKey="carbs" name="Carb" stackId="a" fill="#FFDD95" radius={[0, 0, 0, 0]} barSize={24} />
-              <Bar dataKey="fats" name="Fat" stackId="a" fill="#8586E2" radius={[0, 0, 0, 0]} barSize={24} />
-              <Bar dataKey="fiber" name="Fiber" stackId="a" fill="#79D58D" radius={[4, 4, 0, 0]} barSize={24} />
+              <Bar dataKey="protein" name="Protein" stackId="a" fill="#FF9191" radius={[0, 0, 0, 0]} barSize={32} />
+              <Bar dataKey="carbs" name="Carb" stackId="a" fill="#FFDD95" radius={[0, 0, 0, 0]} barSize={32} />
+              <Bar dataKey="fats" name="Fat" stackId="a" fill="#8586E2" radius={[0, 0, 0, 0]} barSize={32} />
+              <Bar dataKey="fiber" name="Fiber" stackId="a" fill="#79D58D" radius={[4, 4, 0, 0]} barSize={32} />
             </BarChart>
           ) : (
-            <AreaChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#F0F0F0" />
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+              <CartesianGrid vertical={false} stroke="#ECEDF2" />
               <XAxis
                 dataKey="date"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#5A658D", fontSize: 10, fontWeight: 400 }}
-                dy={10}
-                interval={Math.floor(data.length / 5)}
+                ticks={xTicks}
+                interval={0}
+                tick={(props) => {
+                  const { x, y, index, payload } = props;
+                  const isLast = index === 4;
+                  return (
+                    <g transform={`translate(${x},${y + 15})`}>
+                      <text
+                        x={0}
+                        y={0}
+                        dy={0}
+                        textAnchor={isLast ? "end" : "middle"}
+                        fill={isLast ? "#262C44" : "#757FA0"}
+                        className={`text-[12px] ${isLast ? "font-bold" : "font-medium"}`}
+                        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                      >
+                        {payload.value}
+                      </text>
+                    </g>
+                  );
+                }}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#5A658D", fontSize: 12, fontWeight: 400 }}
-                tickFormatter={(value) => `${value}g`}
+                tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
+                tickFormatter={(value) => Math.round(value).toString()}
               />
               <Tooltip content={<CustomTooltip />} />
               <Area
@@ -149,25 +207,25 @@ export default function MacrosChart({ data, title, type = "bar", subtitle }: Mac
               />
             </AreaChart>
           )}
-        </ChartContainer>
+        </ResponsiveContainer>
       </div>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-2">
+      <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#FF9191" }} />
-          <span className="text-body-sm-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Protein</span>
+          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Protein</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#FFDD95" }} />
-          <span className="text-body-sm-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Carb</span>
+          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Carb</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#8586E2" }} />
-          <span className="text-body-sm-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Fat</span>
+          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Fat</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#79D58D" }} />
-          <span className="text-body-sm-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Fiber</span>
+          <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Fiber</span>
         </div>
       </div>
     </div>
