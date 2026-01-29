@@ -6,6 +6,7 @@ import HeaderNav from "@/components/HeaderNav";
 import BadgeIconSm, { BadgeIconColors, BadgeIconSemantic } from "@/components/BadgeIconSm";
 import BalanceChart from "@/components/BalanceChart";
 import CaloricConsumeChart from "@/components/CaloricConsumeChart";
+import ActiveKcalChart from "@/components/ActiveKcalChart";
 import {
   PolarAngleAxis,
   RadialBar,
