@@ -1031,23 +1031,27 @@ function MacroCard({
               };
               const r = (offset: number) => pseudoRandom(dateSeed + offset);
 
-              const bmr = ugoProfile?.bmr || 1600;
-              const activeCals = 200 + Math.floor(r(7) * 300);
-              const totalTarget = bmr + activeCals;
-              const consumed = 1800 + Math.floor(r(1) * 400);
+                const bmr = ugoProfile?.bmr || 1600;
+                const activeCals = 200 + Math.floor(r(7) * 300);
+                const totalTarget = bmr + activeCals;
+                const consumed = 1800 + Math.floor(r(1) * 400);
 
-                return {
-                  dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-                  dayNumber: date.getDate(),
-                  date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                  diff: consumed - totalTarget,
-                  baseline: 0,
-                  fullDate: dateStr,
-                  consumed: consumed,
-                  bmr: bmr,
-                  target: totalTarget,
-                  activeCalories: activeCals
-                };
+                  return {
+                    dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+                    dayNumber: date.getDate(),
+                    date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+                    diff: consumed - totalTarget,
+                    baseline: 0,
+                    fullDate: dateStr,
+                    consumed: consumed,
+                    protein: 100 + Math.floor(r(2) * 20),
+                    carbs: 180 + Math.floor(r(3) * 40),
+                    fats: 60 + Math.floor(r(4) * 15),
+                    fiber: 25 + Math.floor(r(5) * 10),
+                    bmr: bmr,
+                    target: totalTarget,
+                    activeCalories: activeCals
+                  };
               });
               setProgressData(formattedData);
               return;
