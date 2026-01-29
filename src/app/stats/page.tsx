@@ -1035,61 +1035,63 @@ function MacroCard({
               const totalTarget = bmr + activeCals;
               const consumed = 1800 + Math.floor(r(1) * 400);
 
-              return {
-                dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-                dayNumber: date.getDate(),
-                date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                diff: consumed - totalTarget,
-                baseline: 0,
-                fullDate: dateStr,
-                consumed: consumed,
-                bmr: bmr,
-                target: totalTarget
-              };
-            });
-            setProgressData(formattedData);
-            return;
-          }
-
-          if (!userId) return;
-
-            try {
-              const { data: logs } = await supabase
-                .from('daily_logs')
-                .select('date, calories, target_calories, active_calories, bmr, target_deficit')
-                .eq('user_id', userId)
-                .in('date', dates);
-
-              const { data: profile } = await supabase
-                .from('profiles')
-                .select('target_calories, bmr, target_deficit')
-                .eq('telegram_id', userId)
-                .maybeSingle();
-
-              const logsMap = new Map(logs?.map(log => [log.date, log]));
-
-              const formattedData = dates.map((dateStr) => {
-                const date = new Date(dateStr);
-                const log = logsMap.get(dateStr);
-                
-                const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
-                const activeCals = log?.active_calories || 0;
-                const deficit = log?.target_deficit || profile?.target_deficit || 0;
-                const totalTarget = Math.round(bmrForDay + activeCals - deficit);
-                const consumed = log?.calories || 0;
-
                 return {
                   dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
                   dayNumber: date.getDate(),
                   date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                  diff: log ? consumed - totalTarget : null,
+                  diff: consumed - totalTarget,
                   baseline: 0,
                   fullDate: dateStr,
-                  consumed: log ? consumed : null,
-                  bmr: bmrForDay,
-                  target: totalTarget
+                  consumed: consumed,
+                  bmr: bmr,
+                  target: totalTarget,
+                  activeCalories: activeCals
                 };
               });
+              setProgressData(formattedData);
+              return;
+            }
+
+            if (!userId) return;
+
+              try {
+                const { data: logs } = await supabase
+                  .from('daily_logs')
+                  .select('date, calories, target_calories, active_calories, bmr, target_deficit')
+                  .eq('user_id', userId)
+                  .in('date', dates);
+
+                const { data: profile } = await supabase
+                  .from('profiles')
+                  .select('target_calories, bmr, target_deficit')
+                  .eq('telegram_id', userId)
+                  .maybeSingle();
+
+                const logsMap = new Map(logs?.map(log => [log.date, log]));
+
+                const formattedData = dates.map((dateStr) => {
+                  const date = new Date(dateStr);
+                  const log = logsMap.get(dateStr);
+                  
+                  const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
+                  const activeCals = log?.active_calories || 0;
+                  const deficit = log?.target_deficit || profile?.target_deficit || 0;
+                  const totalTarget = Math.round(bmrForDay + activeCals - deficit);
+                  const consumed = log?.calories || 0;
+
+                  return {
+                    dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+                    dayNumber: date.getDate(),
+                    date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+                    diff: log ? consumed - totalTarget : null,
+                    baseline: 0,
+                    fullDate: dateStr,
+                    consumed: log ? consumed : null,
+                    bmr: bmrForDay,
+                    target: totalTarget,
+                    activeCalories: log ? activeCals : null
+                  };
+                });
 
         setProgressData(formattedData);
       } catch (err) {
