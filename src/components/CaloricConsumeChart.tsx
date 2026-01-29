@@ -111,10 +111,10 @@ export default function CaloricConsumeChart({
                       </text>
                     </g>
                   );
-                } else {
-                  const dateStr = payload.value;
-                  const isLast = index === 5;
-                  return (
+                  } else {
+                    const dateStr = payload.value;
+                    const isLast = index === 4;
+                    return (
                     <g transform={`translate(${x},${y + 15})`}>
                       <text
                         x={0}
