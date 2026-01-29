@@ -1,10 +1,18 @@
 "use client";
 
-import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart } from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
 
 interface MacrosChartProps {
-  data: any[];
+  data: Array<{
+    dayNumber: number;
+    date: string;
+    protein: number;
+    carbs: number;
+    fats: number;
+    fiber: number;
+    [key: string]: any;
+  }>;
   title: string;
   type?: "bar" | "area";
   subtitle?: string;
@@ -30,7 +38,7 @@ export default function MacrosChart({ data, title, type = "bar", subtitle }: Mac
     },
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="rounded-lg border bg-white p-2 shadow-sm">
