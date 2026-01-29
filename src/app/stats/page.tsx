@@ -1499,11 +1499,11 @@ function MacroCard({
                             {meal.foods.map((food, i) => (
                               <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
                                   <div className="absolute top-3 right-3 flex items-center gap-1">
-                                  {food.is_processed && (
-                                    <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
-                                      P
-                                    </div>
-                                  )}
+                                    {food.is_processed && (
+                                      <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#DB74ED]">
+                                        P
+                                      </div>
+                                    )}
                                   {food.time && (
                                     <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
                                       {food.time}
