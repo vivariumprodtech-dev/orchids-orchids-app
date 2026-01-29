@@ -950,6 +950,13 @@ function MacroCard({
       });
 
         if (userId === "ugo_demo") {
+          // Fetch Ugo's profile from DB for real targets
+          const { data: ugoProfile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('telegram_id', 'ugo_demo')
+            .maybeSingle();
+
           const formattedData = dates.map((dateStr) => {
             const date = new Date(dateStr);
             const dateSeed = dateStr.split("-").reduce((acc, part) => acc + parseInt(part), 0);
@@ -959,15 +966,16 @@ function MacroCard({
             };
             const r = (offset: number) => pseudoRandom(dateSeed + offset);
 
-            const target = 1600;
-            // For area chart we want more variance to look like a real progress
-            const consumed = 1400 + Math.floor(r(1) * 1000);
+            const baseTarget = ugoProfile?.target_calories || 1600;
+            const activeCals = 200 + Math.floor(r(7) * 300);
+            const totalTarget = baseTarget + activeCals;
+            const consumed = 1800 + Math.floor(r(1) * 400);
 
             return {
               dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
               dayNumber: date.getDate(),
               date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-              diff: consumed - target,
+              diff: consumed - totalTarget,
               baseline: 0,
               fullDate: dateStr
             };
@@ -981,7 +989,7 @@ function MacroCard({
         try {
           const { data: logs } = await supabase
             .from('daily_logs')
-            .select('date, calories, target_calories')
+            .select('date, calories, target_calories, active_calories')
             .eq('user_id', userId)
             .in('date', dates);
 
@@ -997,14 +1005,16 @@ function MacroCard({
             const date = new Date(dateStr);
             const log = logsMap.get(dateStr);
             
-            const target = log?.target_calories || profile?.target_calories || 1600;
+            const baseTarget = log?.target_calories || profile?.target_calories || 1600;
+            const activeCals = log?.active_calories || 0;
+            const totalTarget = baseTarget + activeCals;
             const consumed = log?.calories || 0;
 
             return {
               dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
               dayNumber: date.getDate(),
               date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-              diff: log ? consumed - target : null,
+              diff: log ? consumed - totalTarget : null,
               baseline: 0,
               fullDate: dateStr
             };
