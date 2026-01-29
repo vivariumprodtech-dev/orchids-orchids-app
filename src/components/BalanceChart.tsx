@@ -79,10 +79,10 @@ export default function BalanceChart({
 
       <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={data}
-            margin={{ top: 10, right: 20, left: -20, bottom: 20 }}
-          >
+            <ComposedChart
+              data={data}
+              margin={{ top: 10, right: 30, left: -20, bottom: 20 }}
+            >
             <defs>
               <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
                 <stop offset={off} stopColor="#ED5070" stopOpacity={0.4} />
