@@ -166,8 +166,8 @@ export default function ProcessedFoodChart({ data, title, type = "bar", subtitle
 
       <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#D14FE8" }} />
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Process food %</span>
+          <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: "#DB74ED" }} />
+          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Processed food</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center">
