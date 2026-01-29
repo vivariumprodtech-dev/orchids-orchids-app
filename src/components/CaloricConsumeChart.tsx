@@ -53,7 +53,7 @@ export default function CaloricConsumeChart({
         : undefined;
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
+    <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
       <div className="mb-3">
         <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
         {subtitle && (
