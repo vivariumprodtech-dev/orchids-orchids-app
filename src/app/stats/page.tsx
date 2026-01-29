@@ -986,18 +986,18 @@ function MacroCard({
 
         if (!userId) return;
 
-        try {
-          const { data: logs } = await supabase
-            .from('daily_logs')
-            .select('date, calories, target_calories, active_calories')
-            .eq('user_id', userId)
-            .in('date', dates);
+          try {
+            const { data: logs } = await supabase
+              .from('daily_logs')
+              .select('date, calories, target_calories, active_calories, bmr, target_deficit')
+              .eq('user_id', userId)
+              .in('date', dates);
 
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('target_calories')
-            .eq('telegram_id', userId)
-            .maybeSingle();
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('target_calories, bmr, target_deficit')
+              .eq('telegram_id', userId)
+              .maybeSingle();
 
             const logsMap = new Map(logs?.map(log => [log.date, log]));
 
