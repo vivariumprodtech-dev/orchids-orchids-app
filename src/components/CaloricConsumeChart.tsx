@@ -43,14 +43,14 @@ export default function CaloricConsumeChart({
   const ticksY = [0, step, step * 2, step * 3, step * 4];
   const domainY = [0, limit];
 
-  // For area chart, we need 6 dates on X-axis
-  const showXAxisDates = type === "area";
-    const xTicks = showXAxisDates 
-      ? Array.from({ length: 6 }, (_, i) => {
-          const idx = Math.floor(i * (data.length - 1) / 5);
-          return data[idx]?.date;
-        }).filter((v): v is string => !!v)
-      : undefined;
+    // For area chart, we need 5 dates on X-axis
+    const showXAxisDates = type === "area";
+      const xTicks = showXAxisDates 
+        ? Array.from({ length: 5 }, (_, i) => {
+            const idx = Math.floor(i * (data.length - 1) / 4);
+            return data[idx]?.date;
+          }).filter((v): v is string => !!v)
+        : undefined;
 
   return (
     <div className="rounded-2xl bg-white p-4 shadow-sm">
