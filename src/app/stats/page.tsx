@@ -999,26 +999,27 @@ function MacroCard({
             .eq('telegram_id', userId)
             .maybeSingle();
 
-          const logsMap = new Map(logs?.map(log => [log.date, log]));
+            const logsMap = new Map(logs?.map(log => [log.date, log]));
 
-          const formattedData = dates.map((dateStr) => {
-            const date = new Date(dateStr);
-            const log = logsMap.get(dateStr);
-            
-            const baseTarget = log?.target_calories || profile?.target_calories || 1600;
-            const activeCals = log?.active_calories || 0;
-            const totalTarget = baseTarget + activeCals;
-            const consumed = log?.calories || 0;
+            const formattedData = dates.map((dateStr) => {
+              const date = new Date(dateStr);
+              const log = logsMap.get(dateStr);
+              
+              const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
+              const activeCals = log?.active_calories || 0;
+              const deficit = log?.target_deficit || profile?.target_deficit || 0;
+              const totalTarget = Math.round(bmrForDay + activeCals - deficit);
+              const consumed = log?.calories || 0;
 
-            return {
-              dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-              dayNumber: date.getDate(),
-              date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-              diff: log ? consumed - totalTarget : null,
-              baseline: 0,
-              fullDate: dateStr
-            };
-          });
+              return {
+                dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+                dayNumber: date.getDate(),
+                date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+                diff: log ? consumed - totalTarget : null,
+                baseline: 0,
+                fullDate: dateStr
+              };
+            });
 
         setProgressData(formattedData);
       } catch (err) {
