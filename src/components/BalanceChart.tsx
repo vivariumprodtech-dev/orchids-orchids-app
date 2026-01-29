@@ -46,9 +46,12 @@ export default function BalanceChart({
 
   // For area chart, we need 6 dates on X-axis
   const showXAxisDates = type === "area";
-  const xTicks = showXAxisDates 
-    ? Array.from({ length: 6 }, (_, i) => Math.floor(i * (data.length - 1) / 5))
-    : undefined;
+    const xTicks = showXAxisDates 
+      ? Array.from({ length: 6 }, (_, i) => {
+          const idx = Math.floor(i * (data.length - 1) / 5);
+          return data[idx]?.date;
+        }).filter((v): v is string => !!v)
+      : undefined;
 
   const gradientOffset = () => {
     const activeDiffs = data.map(d => d.diff).filter((v): v is number => v !== null);
