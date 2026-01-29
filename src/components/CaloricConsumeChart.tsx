@@ -154,52 +154,53 @@ export default function CaloricConsumeChart({
               />
             )}
 
-            <Line
-              type="monotone"
-              dataKey="bmr"
-              stroke="#757FA0"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={type === "bar" ? { r: 3, fill: "#FFFFFF", stroke: "#757FA0", strokeWidth: 2 } : false}
-              activeDot={false}
-              isAnimationActive={false}
-              connectNulls
-            />
+              <Line
+                type="monotone"
+                dataKey="bmr"
+                stroke="#757FA0"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={type === "bar" ? { r: 3, fill: "#757FA0", strokeWidth: 0 } : false}
+                activeDot={false}
+                isAnimationActive={false}
+                connectNulls
+              />
 
-            <Line
-              type="monotone"
-              dataKey="target"
-              stroke="#FF893F"
-              strokeWidth={2}
-              dot={type === "bar" ? { r: 3, fill: "#FFFFFF", stroke: "#FF893F", strokeWidth: 2 } : false}
-              activeDot={false}
-              isAnimationActive={false}
-              connectNulls
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+              <Line
+                type="monotone"
+                dataKey="target"
+                stroke="#FF893F"
+                strokeWidth={2}
+                dot={type === "bar" ? { r: 3, fill: "#FF893F", strokeWidth: 0 } : false}
+                activeDot={false}
+                isAnimationActive={false}
+                connectNulls
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-start gap-x-6 gap-y-2">
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-6 rounded-sm bg-[#6ACFD5]" style={{ opacity: type === "area" ? 0.2 : 1, border: type === "area" ? "1px solid #6ACFD5" : "none" }} />
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consumed kcal</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
-            <div className="h-[2px] w-6 bg-[#757FA0] border-t border-dashed" style={{ borderTop: "2px dashed #757FA0" }} />
-            {type === "bar" && <div className="h-2 w-2 rounded-full border-2 border-[#757FA0] bg-white -ml-[5px]" />}
+        <div className="mt-3 flex items-center justify-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-sm bg-[#6ACFD5]" style={{ opacity: type === "area" ? 0.2 : 1, border: type === "area" ? "1px solid #6ACFD5" : "none" }} />
+            <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consumed kcal</span>
           </div>
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>BMR</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
-            <div className="h-[2px] w-6 bg-[#FF893F]" />
-            {type === "bar" && <div className="h-2 w-2 rounded-full border-2 border-[#FF893F] bg-white -ml-[5px]" />}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              <div className="h-[2px] w-6 bg-[#757FA0] border-t border-dashed" style={{ borderTop: "2px dashed #757FA0" }} />
+              {type === "bar" && <div className="h-2 w-2 rounded-full bg-[#757FA0] -ml-[5px]" />}
+            </div>
+            <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>BMR</span>
           </div>
-          <span className="text-[14px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Target</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              <div className="h-[2px] w-6 bg-[#FF893F]" />
+              {type === "bar" && <div className="h-2 w-2 rounded-full bg-[#FF893F] -ml-[5px]" />}
+            </div>
+            <span className="text-[12px] font-medium text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Target</span>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
