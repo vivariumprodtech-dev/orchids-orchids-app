@@ -552,10 +552,72 @@ function MacroCard({
         </div>
       </div>
     </div>
-  );
-}
+    );
+  }
 
-  const StatsContent = () => {
+  function KcalAveragesCard({ 
+    consumeAvg, 
+    cumulativeBalance, 
+    dailyAvg,
+    subtitle
+  }: { 
+    consumeAvg: number; 
+    cumulativeBalance: number; 
+    dailyAvg: number;
+    subtitle: string;
+  }) {
+    return (
+      <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+        <div className="mb-4">
+          <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Kcal averages</h2>
+          {subtitle && (
+            <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+          )}
+        </div>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BadgeIconSm semantic="Lunch" />
+              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Consume average</span>
+            </div>
+            <div className="flex items-baseline gap-1 mr-2">
+              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{consumeAvg.toLocaleString("it-IT")}</span>
+              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+            </div>
+          </div>
+  
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#6ACFD5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <TrendingUp size={12} color="#FFFFFF" strokeWidth={2.5} />
+              </div>
+              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Cumulative balance</span>
+            </div>
+            <div className="flex items-baseline gap-1 mr-2">
+              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{cumulativeBalance > 0 ? "+" : ""}{cumulativeBalance.toLocaleString("it-IT")}</span>
+              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+            </div>
+          </div>
+  
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div style={{ width: "20px", height: "20px", borderRadius: "9999px", backgroundColor: "#90E0E4", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <BarChart3 size={12} color="#FFFFFF" strokeWidth={2.5} />
+              </div>
+              <span className="text-body-md-custom text-[#5A658D]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Daily average</span>
+            </div>
+            <div className="flex items-baseline gap-1 mr-2">
+              <span className="text-subtitle-1-custom font-bold text-[#262C44]">{dailyAvg > 0 ? "+" : ""}{dailyAvg.toLocaleString("it-IT")}</span>
+              <span className="text-body-sm-custom text-[#5A658D]">kcal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+    const StatsContent = () => {
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
     const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
