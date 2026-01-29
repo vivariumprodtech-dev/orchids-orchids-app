@@ -1059,12 +1059,12 @@ function MacroCard({
 
             if (!userId) return;
 
-              try {
-                const { data: logs } = await supabase
-                  .from('daily_logs')
-                  .select('date, calories, target_calories, active_calories, bmr, target_deficit')
-                  .eq('user_id', userId)
-                  .in('date', dates);
+                try {
+                  const { data: logs } = await supabase
+                    .from('daily_logs')
+                    .select('date, calories, protein, carbs, fats, fiber, target_calories, active_calories, bmr, target_deficit')
+                    .eq('user_id', userId)
+                    .in('date', dates);
 
                 const { data: profile } = await supabase
                   .from('profiles')
