@@ -69,6 +69,34 @@ export default function BalanceChart({
 
   const off = gradientOffset();
 
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded-lg border bg-white p-2 shadow-sm">
+          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+          <div className="flex flex-col gap-1">
+            {payload.map((item: any, index: number) => {
+              if (item.dataKey === "diff") {
+                const color = item.value >= 0 ? "#ED5070" : (type === "area" ? "#FFC840" : "#FFE5A3");
+                return (
+                  <div key={index} className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                      <span className="text-xs text-gray-600">Balance</span>
+                    </div>
+                    <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
       <div className="mb-3">
