@@ -171,10 +171,12 @@ export default function CaloricConsumeChart({
               domain={domainY}
               ticks={ticksY}
               allowDataOverflow={true}
-              tickFormatter={(value) => Math.round(value).toString()}
-            />
-            
-            {type === "bar" ? (
+                tickFormatter={(value) => Math.round(value).toString()}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              
+              {type === "bar" ? (
+
               <Bar dataKey="consumed" radius={[4, 4, 0, 0]} barSize={32} fill="#6ACFD5" />
             ) : (
               <Area
