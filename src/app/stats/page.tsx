@@ -1663,13 +1663,19 @@ function MacroCard({
                             targets={data.targets}
                             subtitle={progressSubtitle}
                           />
-                          <ProcessedFoodChart 
-                            data={progressData}
-                            title="Processed food"
-                            type={timeRange === "7d" ? "bar" : "area"}
-                            subtitle={progressSubtitle}
-                          />
-                        </>
+                            <ProcessedFoodChart 
+                              data={progressData}
+                              title="Processed food"
+                              type={timeRange === "7d" ? "bar" : "area"}
+                              subtitle={progressSubtitle}
+                            />
+                            <WaterChart 
+                              data={progressData}
+                              title="Water"
+                              type={timeRange === "7d" ? "bar" : "area"}
+                              subtitle={progressSubtitle}
+                            />
+                          </>
                     )}
               </div>
             )}
