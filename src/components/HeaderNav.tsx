@@ -12,7 +12,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
-  const buttonBase = "flex h-6 items-center justify-center rounded-full transition-colors";
+  const buttonBase = "flex h-8 items-center justify-center rounded-full transition-colors";
   const labelStyle = "text-caption-custom";
 
   const handleProfileClick = () => {
@@ -39,14 +39,14 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
     <nav className="flex items-center gap-2">
       <button
         onClick={() => onViewChange("day")}
-        className={`${buttonBase} px-2 py-1 gap-[10px] ${getButtonStyles("day")}`}
+        className={`${buttonBase} px-3 py-1 gap-[10px] ${getButtonStyles("day")}`}
       >
         <span className={`${labelStyle} ${getLabelStyles("day")}`}>Day view</span>
       </button>
 
       <button
         onClick={() => onViewChange("progress")}
-        className={`${buttonBase} px-2 py-1 gap-[10px] ${getButtonStyles("progress")}`}
+        className={`${buttonBase} px-3 py-1 gap-[10px] ${getButtonStyles("progress")}`}
       >
         <BarChart3 size={16} color={getIconColor("progress")} />
         <span className={`${labelStyle} ${getLabelStyles("progress")}`}>Progress</span>
@@ -54,7 +54,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
 
       <button
         onClick={handleProfileClick}
-        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full transition-all active:scale-95 active:bg-[#5A658D]/20 ${getButtonStyles("profile")}`}
+        className={`flex w-8 h-8 p-1 justify-center items-center rounded-full transition-all active:scale-95 active:bg-[#5A658D]/20 ${getButtonStyles("profile")}`}
       >
         <User2 size={16} color={getIconColor("profile")} />
       </button>
