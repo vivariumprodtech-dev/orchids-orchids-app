@@ -15,32 +15,33 @@ interface ProcessedFoodChartProps {
   subtitle?: string;
 }
 
-export default function ProcessedFoodChart({ data, title, type = "bar", subtitle }: ProcessedFoodChartProps) {
-  // Goal is always 50%
-  const chartData = data.map(d => ({
-    ...d,
-    goal: 50
-  }));
-
-    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border bg-white p-2 shadow-sm">
-          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#DB74ED" }} />
-                <span className="text-xs text-gray-600">Processed food</span>
+  export default function ProcessedFoodChart({ data, title, type = "bar", subtitle }: ProcessedFoodChartProps) {
+    // Goal is always 50%
+    const chartData = data.map((d, i) => ({
+      ...d,
+      goal: 50,
+      processedPercentage: i === data.length - 1 ? null : d.processedPercentage
+    }));
+  
+      const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="rounded-lg border bg-white p-2 shadow-sm">
+            <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#DB74ED" }} />
+                  <span className="text-xs text-gray-600">Processed food</span>
+                </div>
+                <span className="text-xs font-bold text-gray-900">{Math.round(payload[0].value)}%</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">{Math.round(payload[0].value)}%</span>
             </div>
           </div>
-        </div>
-      );
-    }
-    return null;
-  };
+        );
+      }
+      return null;
+    };
 
   const showXAxisDates = type === "area";
   const xTicks = showXAxisDates 
