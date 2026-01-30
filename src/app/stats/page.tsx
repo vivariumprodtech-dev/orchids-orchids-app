@@ -9,6 +9,7 @@ import CaloricConsumeChart from "@/components/CaloricConsumeChart";
 import ActiveKcalChart from "@/components/ActiveKcalChart";
 import MacrosChart from "@/components/MacrosChart";
 import ProcessedFoodChart from "@/components/ProcessedFoodChart";
+import WaterChart from "@/components/WaterChart";
 import {
   PolarAngleAxis,
   RadialBar,
