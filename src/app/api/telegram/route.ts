@@ -211,27 +211,32 @@ if (text === '💧 Acqua') {
           return NextResponse.json({ ok: true });
         }
 
-        if (text === '🍽 Cibi frequenti') {
-          await sendMessage(
-            chatId,
-            `🍽 *Cibi Frequenti*\n\nQuale cibo vuoi loggare?`,
-            {
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    { text: '🥛 Skyr Lidl', callback_data: 'food_Skyr Lidl' },
-                    { text: '🥛 Yogurt Mevgal', callback_data: 'food_Yogurt Mevgal' },
+          if (text === '🍽 Cibi frequenti') {
+            const frequentFoodsUrl = buildFrequentFoodsUrl(userId);
+            await sendMessage(
+              chatId,
+              `🍽 *Cibi Frequenti*\n\nQuale cibo vuoi loggare?`,
+              {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      { text: '🥛 Skyr Lidl', callback_data: 'food_Skyr Lidl' },
+                      { text: '🥛 Yogurt Mevgal', callback_data: 'food_Yogurt Mevgal' },
+                    ],
+                    [
+                      { text: '🍫 Cioccolato 78%', callback_data: 'food_Cioccolato 78%' },
+                      { text: '🥖 Pane Proteico', callback_data: 'food_Pane Proteico' },
+                    ],
+                    [
+                      { text: '🔍 Sfoglia lista completa', web_app: { url: frequentFoodsUrl } },
+                    ],
                   ],
-                  [
-                    { text: '🍫 Cioccolato 78%', callback_data: 'food_Cioccolato 78%' },
-                    { text: '🥖 Pane Proteico', callback_data: 'food_Pane Proteico' },
-                  ],
-                ],
-              },
-            }
-          );
-          return NextResponse.json({ ok: true });
-        }
+                },
+              }
+            );
+            return NextResponse.json({ ok: true });
+          }
+
 
       if (text === '🏃 Attività') {
         await sendMessage(
