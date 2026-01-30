@@ -41,6 +41,33 @@ export default function ActiveKcalChart({
   const ticksY = [0, step, step * 2, step * 3, step * 4];
   const domainY = [0, limit];
 
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded-lg border bg-white p-2 shadow-sm">
+          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+          <div className="flex flex-col gap-1">
+            {payload.map((item: any, index: number) => {
+              let name = "Active kcal";
+              let color = "#FF9F43";
+              
+              return (
+                <div key={index} className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                    <span className="text-xs text-gray-600">{name}</span>
+                  </div>
+                  <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   // For area chart, we need 5 dates on X-axis
   const showXAxisDates = type === "area";
   const xTicks = showXAxisDates 
