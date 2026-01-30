@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { ChevronRight, BarChart3, Utensils, Flag, Sliders, ChevronLeft } from "lucide-react";
+import { ChevronRight, BarChart3, Utensils, Flag, Settings2, ChevronLeft } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -27,7 +27,7 @@ function ProfileContent() {
     } else if (userId === "ugo_demo") {
       setProfile({ name: "Ugo", initials: "UG" });
     } else if (userId) {
-      setProfile({ name: "Sarah Minuzzi", initials: "SM" }); // Defaulting as in image if userId exists but not matched
+      setProfile({ name: "Sarah Minuzzi", initials: "SM" });
     }
   }, [userId]);
 
@@ -38,7 +38,7 @@ function ProfileContent() {
       onClick: () => router.push(`/stats?userId=${userId}`),
     },
     {
-      title: "Frequent food",
+      title: "Frequent foods",
       icon: <Utensils size={20} className="text-[#5A658D]" />,
       onClick: () => {},
     },
@@ -48,24 +48,24 @@ function ProfileContent() {
       onClick: () => {},
     },
     {
-      title: "Giada preferences",
-      icon: <Sliders size={20} className="text-[#5A658D]" />,
+      title: "Giada settings",
+      icon: <Settings2 size={20} className="text-[#5A658D]" />,
       onClick: () => {},
     },
   ];
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans text-gray-900 p-5 flex flex-col">
-      <div className="mb-8 flex items-center">
-         <button onClick={() => router.back()} className="p-2 -ml-2 text-[#5A658D]">
+      <div className="mb-2 flex items-center">
+         <button onClick={() => router.back()} className="p-2 -ml-2 text-[#5A658D] active:scale-95 transition-transform">
             <ChevronLeft size={24} />
          </button>
       </div>
 
       <div className="space-y-3 flex-1">
         {/* Profile Card */}
-        <div className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer">
-          <div className="flex items-center gap-3">
+        <div className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer active:bg-[#5A658D]/10 active:scale-[0.98] transition-all">
+          <div className="flex items-center gap-2">
             <div 
               className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
               style={{ backgroundColor: "#2BB0BB" }}
@@ -73,8 +73,8 @@ function ProfileContent() {
               {profile.initials}
             </div>
             <div>
-              <div className="text-lg font-bold text-[#262C44]">{profile.name}</div>
-              <div className="text-sm text-[#5A658D]">Profile</div>
+              <div className="text-title-custom text-[#262C44]">{profile.name}</div>
+              <div className="text-helper-custom text-[#5A658D]">Profile</div>
             </div>
           </div>
           <ChevronRight size={20} className="text-[#5A658D]" />
@@ -85,13 +85,13 @@ function ProfileContent() {
           <div 
             key={index}
             onClick={item.onClick}
-            className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer"
+            className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer active:bg-[#5A658D]/10 active:scale-[0.98] transition-all"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <div className="w-8 h-8 flex items-center justify-center">
                 {item.icon}
               </div>
-              <span className="text-lg font-medium text-[#262C44]">{item.title}</span>
+              <span className="text-subtitle-1-custom text-[#262C44]">{item.title}</span>
             </div>
             <ChevronRight size={20} className="text-[#5A658D]" />
           </div>
