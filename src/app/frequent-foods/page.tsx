@@ -21,7 +21,7 @@ function FrequentFoodsContent() {
       <div className="flex-1 flex flex-col items-center justify-center text-center p-10 bg-white rounded-3xl shadow-sm">
         <div className="text-4xl mb-4">🍽️</div>
         <p className="text-[#5A658D] text-lg">
-          Your full list of frequent foods will appear here.
+          Your full list of frequent foods will appear here {userId ? `for user ${userId}` : ""}.
         </p>
       </div>
 
