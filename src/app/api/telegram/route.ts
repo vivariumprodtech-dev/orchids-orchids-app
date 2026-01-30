@@ -82,6 +82,10 @@ function buildStatsUrl(userData: UserData, userId: number): string {
   return `${WEBAPP_URL}/stats?userId=${userId}&calories=${userData.calories}&protein=${userData.protein}&carbs=${userData.carbs}&fats=${userData.fats}&fiber=${userData.fiber}&water=${userData.water}&activeCalories=${userData.activeCalories}&foods=${encodeURIComponent(foodsStr)}&activities=${encodeURIComponent(activitiesStr)}&_v=${Date.now()}`;
 }
 
+function buildFrequentFoodsUrl(userId: number): string {
+  return `${WEBAPP_URL}/frequent-foods?userId=${userId}&_v=${Date.now()}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const update = await request.json();
