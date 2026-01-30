@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Area,
+  Tooltip,
 } from "recharts";
 
 interface ActiveKcalData {
