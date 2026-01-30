@@ -1239,7 +1239,7 @@ function MacroCard({
                           fiber: log?.fiber || 0,
                           water: log?.water || 0,
                           targetWater: (() => {
-                            const raw = log?.target_water ?? profile?.target_water ?? (ugoProfile?.target_water || 0);
+                            const raw = log?.target_water ?? profile?.target_water ?? 2;
                             return (raw && raw > 10) ? raw : (raw * 1000 || 0);
                           })(),
                           processedPercentage: log ? processedPercentage : null,
