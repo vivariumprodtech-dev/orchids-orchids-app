@@ -16,40 +16,44 @@ interface WaterChartProps {
   subtitle?: string;
 }
 
-export default function WaterChart({ data, title, type = "bar", subtitle }: WaterChartProps) {
-  // Ensure data is in liters
-    const chartData = data.map(d => ({
-      ...d,
-      waterLiters: (d.water || 0) / 1000,
-      targetWaterLiters: (d.targetWater || 0) / 1000
-    }));
-
-    const maxVal = Math.max(...chartData.map(d => Math.max(d.waterLiters || 0, d.targetWaterLiters || 0)), 0);
-    
-    // Monthly view (area) needs a tighter, proportional baseline
-    const areaLimit = maxVal > 0 ? Math.ceil(maxVal / 0.4) * 0.4 : 2;
-    const yDomain: [number, any] = type === "area" ? [0, areaLimit] : [0, "auto"];
-    const yTicks = type === "area" ? [0, areaLimit * 0.25, areaLimit * 0.5, areaLimit * 0.75, areaLimit] : undefined;
-
-    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border bg-white p-2 shadow-sm">
-          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#73B0FF" }} />
-                <span className="text-xs text-gray-600">Water consume</span>
+  export default function WaterChart({ data, title, type = "bar", subtitle }: WaterChartProps) {
+    // Ensure data is in liters
+      const chartData = data.map((d, i) => {
+        const isToday = i === data.length - 1;
+        return {
+          ...d,
+          waterLiters: isToday ? null : (d.water || 0) / 1000,
+          targetWaterLiters: isToday ? null : (d.targetWater || 0) / 1000
+        };
+      });
+  
+      const validLiters = chartData.flatMap(d => [d.waterLiters, d.targetWaterLiters]).filter((v): v is number => v !== null);
+      const maxVal = validLiters.length > 0 ? Math.max(...validLiters) : 0;
+      
+      // Monthly view (area) needs a tighter, proportional baseline
+      const areaLimit = maxVal > 0 ? Math.ceil(maxVal / 0.4) * 0.4 : 2;
+      const yDomain: [number, any] = type === "area" ? [0, areaLimit] : [0, "auto"];
+      const yTicks = type === "area" ? [0, areaLimit * 0.25, areaLimit * 0.5, areaLimit * 0.75, areaLimit] : undefined;
+  
+      const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="rounded-lg border bg-white p-2 shadow-sm">
+            <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: "#73B0FF" }} />
+                  <span className="text-xs text-gray-600">Water consume</span>
+                </div>
+                <span className="text-xs font-bold text-gray-900">{payload[0].value.toFixed(1)}L</span>
               </div>
-              <span className="text-xs font-bold text-gray-900">{payload[0].value.toFixed(1)}L</span>
             </div>
           </div>
-        </div>
-      );
-    }
-    return null;
-  };
+        );
+      }
+      return null;
+    };
 
   const showXAxisDates = type === "area";
   const xTicks = showXAxisDates 
