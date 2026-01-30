@@ -54,7 +54,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
 
       <button
         onClick={handleProfileClick}
-        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full transition-colors ${getButtonStyles("profile")}`}
+        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full transition-all active:scale-95 active:bg-[#5A658D]/20 ${getButtonStyles("profile")}`}
       >
         <User2 size={16} color={getIconColor("profile")} />
       </button>
