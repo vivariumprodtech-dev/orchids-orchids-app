@@ -191,10 +191,12 @@ export default function BalanceChart({
               domain={domainY}
               ticks={ticksY}
               allowDataOverflow={true}
-              tickFormatter={(value) => Math.round(value).toString()}
-            />
-            
-            {type === "bar" ? (
+                tickFormatter={(value) => Math.round(value).toString()}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              
+              {type === "bar" ? (
+
               <Bar dataKey="diff" radius={[4, 4, 4, 4]} barSize={32}>
                 {data.map((entry, index) => (
                   <Cell 
