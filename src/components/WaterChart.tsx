@@ -18,13 +18,16 @@ interface WaterChartProps {
 
 export default function WaterChart({ data, title, type = "bar", subtitle }: WaterChartProps) {
   // Ensure data is in liters
-  const chartData = data.map(d => ({
-    ...d,
-    waterLiters: (d.water || 0) / 1000,
-    targetWaterLiters: (d.targetWater || 0) / 1000
-  }));
+    const chartData = data.map(d => ({
+      ...d,
+      waterLiters: (d.water || 0) / 1000,
+      targetWaterLiters: (d.targetWater || 0) / 1000
+    }));
 
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+    const maxVal = Math.max(...chartData.map(d => Math.max(d.waterLiters || 0, d.targetWaterLiters || 0)), 0);
+    const yDomainMax = type === "area" ? (maxVal > 0 ? Math.ceil(maxVal * 1.1 * 2) / 2 : 2) : "auto";
+
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="rounded-lg border bg-white p-2 shadow-sm">
