@@ -1162,84 +1162,91 @@ function MacroCard({
                 const totalTarget = bmr + activeCals;
                 const consumed = 1800 + Math.floor(r(1) * 400);
 
-                    return {
-                      dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
-                      dayNumber: date.getDate(),
-                      date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                      diff: consumed - totalTarget,
-                      baseline: 0,
-                      fullDate: dateStr,
-                      consumed: consumed,
-                      protein: 100 + Math.floor(r(2) * 20),
-                      carbs: 180 + Math.floor(r(3) * 40),
-                      fats: 60 + Math.floor(r(4) * 15),
-                      fiber: 25 + Math.floor(r(5) * 10),
-                      processedPercentage: 15 + Math.floor(r(10) * 50),
-                      bmr: bmr,
-                      target: totalTarget,
-                      activeCalories: activeCals
-                    };
-                });
-                setProgressData(formattedData);
-                return;
-              }
-
-              if (!userId) return;
-
-                  try {
-                    const { data: logs } = await supabase
-                      .from('daily_logs')
-                      .select('date, calories, protein, carbs, fats, fiber, target_calories, active_calories, bmr, target_deficit, food_entries(calories, is_processed)')
-                      .eq('user_id', userId)
-                      .in('date', dates);
-
-                  const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('target_calories, bmr, target_deficit')
-                    .eq('telegram_id', userId)
-                    .maybeSingle();
-
-                  const logsMap = new Map(logs?.map(log => [log.date, log]));
-
-                  const formattedData = dates.map((dateStr) => {
-                    const date = new Date(dateStr);
-                    const log = logsMap.get(dateStr) as any;
-                    
-                      const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
-                      const activeCals = log?.active_calories || 0;
-                      const deficit = log?.target_deficit || profile?.target_deficit || 0;
-                      const totalTarget = Math.round(bmrForDay + activeCals - deficit);
-                      const consumed = log?.calories || 0;
-
-                      // Calculate processed percentage
-                      const rawFoods = log?.food_entries || [];
-                      const foodTotals = rawFoods.reduce((acc: any, f: any) => ({
-                        calories: acc.calories + (f.calories || 0),
-                        processedCalories: acc.processedCalories + (f.is_processed ? (f.calories || 0) : 0)
-                      }), { calories: 0, processedCalories: 0 });
-                      
-                      const processedPercentage = foodTotals.calories > 0 
-                        ? (foodTotals.processedCalories / foodTotals.calories) * 100 
-                        : 0;
-
                       return {
                         dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
                         dayNumber: date.getDate(),
                         date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
-                        diff: log ? consumed - totalTarget : null,
+                        diff: consumed - totalTarget,
                         baseline: 0,
                         fullDate: dateStr,
-                        consumed: log ? consumed : null,
-                        protein: log?.protein || 0,
-                        carbs: log?.carbs || 0,
-                        fats: log?.fats || 0,
-                        fiber: log?.fiber || 0,
-                        processedPercentage: log ? processedPercentage : null,
-                        bmr: bmrForDay,
+                        consumed: consumed,
+                        protein: 100 + Math.floor(r(2) * 20),
+                        carbs: 180 + Math.floor(r(3) * 40),
+                        fats: 60 + Math.floor(r(4) * 15),
+                        fiber: 25 + Math.floor(r(5) * 10),
+                        water: 1800 + Math.floor(r(6) * 1000),
+                        targetWater: (ugoProfile?.target_water || 2) * 1000,
+                        processedPercentage: 15 + Math.floor(r(10) * 50),
+                        bmr: bmr,
                         target: totalTarget,
-                        activeCalories: log ? activeCals : null
+                        activeCalories: activeCals
                       };
                   });
+                  setProgressData(formattedData);
+                  return;
+                }
+
+                if (!userId) return;
+
+                    try {
+                      const { data: logs } = await supabase
+                        .from('daily_logs')
+                        .select('date, water, target_water, calories, protein, carbs, fats, fiber, target_calories, active_calories, bmr, target_deficit, food_entries(calories, is_processed)')
+                        .eq('user_id', userId)
+                        .in('date', dates);
+
+                    const { data: profile } = await supabase
+                      .from('profiles')
+                      .select('target_calories, bmr, target_deficit, target_water')
+                      .eq('telegram_id', userId)
+                      .maybeSingle();
+
+                    const logsMap = new Map(logs?.map(log => [log.date, log]));
+
+                    const formattedData = dates.map((dateStr) => {
+                      const date = new Date(dateStr);
+                      const log = logsMap.get(dateStr) as any;
+                      
+                        const bmrForDay = log?.bmr || profile?.bmr || profile?.target_calories || 1600;
+                        const activeCals = log?.active_calories || 0;
+                        const deficit = log?.target_deficit || profile?.target_deficit || 0;
+                        const totalTarget = Math.round(bmrForDay + activeCals - deficit);
+                        const consumed = log?.calories || 0;
+
+                        // Calculate processed percentage
+                        const rawFoods = log?.food_entries || [];
+                        const foodTotals = rawFoods.reduce((acc: any, f: any) => ({
+                          calories: acc.calories + (f.calories || 0),
+                          processedCalories: acc.processedCalories + (f.is_processed ? (f.calories || 0) : 0)
+                        }), { calories: 0, processedCalories: 0 });
+                        
+                        const processedPercentage = foodTotals.calories > 0 
+                          ? (foodTotals.processedCalories / foodTotals.calories) * 100 
+                          : 0;
+
+                        return {
+                          dayName: date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0),
+                          dayNumber: date.getDate(),
+                          date: date.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit' }),
+                          diff: log ? consumed - totalTarget : null,
+                          baseline: 0,
+                          fullDate: dateStr,
+                          consumed: log ? consumed : null,
+                          protein: log?.protein || 0,
+                          carbs: log?.carbs || 0,
+                          fats: log?.fats || 0,
+                          fiber: log?.fiber || 0,
+                          water: log?.water || 0,
+                          targetWater: (() => {
+                            const raw = log?.target_water ?? profile?.target_water ?? (ugoProfile?.target_water || 0);
+                            return (raw && raw > 10) ? raw : (raw * 1000 || 0);
+                          })(),
+                          processedPercentage: log ? processedPercentage : null,
+                          bmr: bmrForDay,
+                          target: totalTarget,
+                          activeCalories: log ? activeCals : null
+                        };
+                    });
 
         setProgressData(formattedData);
       } catch (err) {
