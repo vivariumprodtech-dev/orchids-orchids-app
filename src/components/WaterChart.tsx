@@ -25,7 +25,11 @@ export default function WaterChart({ data, title, type = "bar", subtitle }: Wate
     }));
 
     const maxVal = Math.max(...chartData.map(d => Math.max(d.waterLiters || 0, d.targetWaterLiters || 0)), 0);
-    const yDomainMax = type === "area" ? (maxVal > 0 ? Math.ceil(maxVal * 1.1 * 2) / 2 : 2) : "auto";
+    
+    // Monthly view (area) needs a tighter, proportional baseline
+    const areaLimit = maxVal > 0 ? Math.ceil(maxVal / 0.4) * 0.4 : 2;
+    const yDomain: [number, any] = type === "area" ? [0, areaLimit] : [0, "auto"];
+    const yTicks = type === "area" ? [0, areaLimit * 0.25, areaLimit * 0.5, areaLimit * 0.75, areaLimit] : undefined;
 
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
