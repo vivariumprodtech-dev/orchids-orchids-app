@@ -25,91 +25,98 @@ interface ActiveKcalChartProps {
   type?: "bar" | "area";
 }
 
-export default function ActiveKcalChart({ 
-  data, 
-  title = "Active kcal", 
-  subtitle,
-  type = "bar"
-}: ActiveKcalChartProps) {
-  // Use a default limit of 400 if data is empty or low
-  const validValues = data.map(d => d.activeCalories).filter((v): v is number => v !== null);
-  const maxValue = validValues.length > 0 ? Math.max(...validValues, 400) : 400;
+  export default function ActiveKcalChart({ 
+    data, 
+    title = "Active kcal", 
+    subtitle,
+    type = "bar"
+  }: ActiveKcalChartProps) {
+    const chartData = data.map((d, i) => {
+      if (i === data.length - 1) {
+        return { ...d, activeCalories: null };
+      }
+      return d;
+    });
+
+    // Use a default limit of 400 if data is empty or low
+    const validValues = chartData.map(d => d.activeCalories).filter((v): v is number => v !== null);
+    const maxValue = validValues.length > 0 ? Math.max(...validValues, 400) : 400;
+    
+    // Vertical axis always rounded integers, maintain exactly 5 horizontal lines
+    const limit = Math.ceil(maxValue / 100) * 100;
+    const step = limit / 4;
+    const ticksY = [0, step, step * 2, step * 3, step * 4];
+    const domainY = [0, limit];
   
-  // Vertical axis always rounded integers, maintain exactly 5 horizontal lines
-  const limit = Math.ceil(maxValue / 100) * 100;
-  const step = limit / 4;
-  const ticksY = [0, step, step * 2, step * 3, step * 4];
-  const domainY = [0, limit];
-
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border bg-white p-2 shadow-sm">
-          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
-          <div className="flex flex-col gap-1">
-            {payload.map((item: any, index: number) => {
-              let name = "Active kcal";
-              let color = "#FF9F43";
-              
-              return (
-                <div key={index} className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
-                    <span className="text-xs text-gray-600">{name}</span>
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="rounded-lg border bg-white p-2 shadow-sm">
+            <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+            <div className="flex flex-col gap-1">
+              {payload.map((item: any, index: number) => {
+                let name = "Active kcal";
+                let color = "#FF9F43";
+                
+                return (
+                  <div key={index} className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                      <span className="text-xs text-gray-600">{name}</span>
+                    </div>
+                    <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
                   </div>
-                  <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        );
+      }
+      return null;
+    };
+  
+    // For area chart, we need 5 dates on X-axis
+    const showXAxisDates = type === "area";
+    const xTicks = showXAxisDates 
+      ? Array.from({ length: 5 }, (_, i) => {
+          const idx = Math.floor(i * (chartData.length - 1) / 4);
+          return chartData[idx]?.date;
+        }).filter((v): v is string => !!v)
+      : undefined;
+  
+    return (
+      <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+        <div className="mb-3">
+          <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
+          {subtitle && (
+            <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+          )}
         </div>
-      );
-    }
-    return null;
-  };
-
-  // For area chart, we need 5 dates on X-axis
-  const showXAxisDates = type === "area";
-  const xTicks = showXAxisDates 
-    ? Array.from({ length: 5 }, (_, i) => {
-        const idx = Math.floor(i * (data.length - 1) / 4);
-        return data[idx]?.date;
-      }).filter((v): v is string => !!v)
-    : undefined;
-
-  return (
-    <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
-      <div className="mb-3">
-        <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
-        {subtitle && (
-          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
-        )}
-      </div>
-
-      <div className="h-[200px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={data}
-            margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
-          >
-            <defs>
-              <linearGradient id="activeAreaColor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF9F43" stopOpacity={0.4}/>
-                <stop offset="95%" stopColor="#FF9F43" stopOpacity={0.1}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} stroke="#ECEDF2" />
-            <XAxis
-              dataKey={type === "area" ? "date" : "dayNumber"}
-              axisLine={false}
-              tickLine={false}
-              ticks={xTicks}
-              tick={(props) => {
-                const { x, y, index, payload } = props;
-                if (type === "bar") {
-                  const day = data[index];
-                  if (!day) return null;
-                  const isToday = index === data.length - 1;
+  
+        <div className="h-[200px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart
+              data={chartData}
+              margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+            >
+              <defs>
+                <linearGradient id="activeAreaColor" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FF9F43" stopOpacity={0.4}/>
+                  <stop offset="95%" stopColor="#FF9F43" stopOpacity={0.1}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} stroke="#ECEDF2" />
+              <XAxis
+                dataKey={type === "area" ? "date" : "dayNumber"}
+                axisLine={false}
+                tickLine={false}
+                ticks={xTicks}
+                tick={(props) => {
+                  const { x, y, index, payload } = props;
+                  if (type === "bar") {
+                    const day = chartData[index];
+                    if (!day) return null;
+                    const isToday = index === chartData.length - 1;
                   return (
                     <g transform={`translate(${x},${y + 15})`}>
                       <text
