@@ -1,6 +1,7 @@
 "use client";
 
 import { BarChart3, User2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface HeaderNavProps {
   activeView: "day" | "progress" | "profile";
@@ -8,8 +9,15 @@ interface HeaderNavProps {
 }
 
 export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
   const buttonBase = "flex h-6 items-center justify-center rounded-full transition-colors";
   const labelStyle = "text-caption-custom";
+
+  const handleProfileClick = () => {
+    router.push(`/profile?userId=${userId || ""}`);
+  };
 
   const getButtonStyles = (view: "day" | "progress" | "profile") => {
     const isActive = activeView === view;
