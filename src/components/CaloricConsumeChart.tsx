@@ -28,94 +28,101 @@ interface CaloricConsumeChartProps {
   type?: "bar" | "area";
 }
 
-export default function CaloricConsumeChart({ 
-  data, 
-  title = "Caloric consume", 
-  subtitle,
-  type = "bar"
-}: CaloricConsumeChartProps) {
-  // Use a default limit of 2000 if data is empty or low
-  const validValues = data.flatMap(d => [d.consumed, d.bmr, d.target]).filter((v): v is number => v !== null);
-  const maxValue = validValues.length > 0 ? Math.max(...validValues, 2000) : 2000;
+  export default function CaloricConsumeChart({ 
+    data, 
+    title = "Caloric consume", 
+    subtitle,
+    type = "bar"
+  }: CaloricConsumeChartProps) {
+    const chartData = data.map((d, i) => {
+      if (i === data.length - 1) {
+        return { ...d, consumed: null, bmr: null, target: null };
+      }
+      return d;
+    });
+
+    // Use a default limit of 2000 if data is empty or low
+    const validValues = chartData.flatMap(d => [d.consumed, d.bmr, d.target]).filter((v): v is number => v !== null);
+    const maxValue = validValues.length > 0 ? Math.max(...validValues, 2000) : 2000;
+    
+    // Vertical axis always rounded integers, maintain exactly 5 horizontal lines
+    const limit = Math.ceil(maxValue / 500) * 500;
+    const step = limit / 4;
+    const ticksY = [0, step, step * 2, step * 3, step * 4];
+    const domainY = [0, limit];
   
-  // Vertical axis always rounded integers, maintain exactly 5 horizontal lines
-  const limit = Math.ceil(maxValue / 500) * 500;
-  const step = limit / 4;
-  const ticksY = [0, step, step * 2, step * 3, step * 4];
-  const domainY = [0, limit];
-
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border bg-white p-2 shadow-sm">
-          <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
-          <div className="flex flex-col gap-1">
-            {payload.map((item: any, index: number) => {
-              let name = item.name;
-              let color = item.color || item.fill;
-              if (item.dataKey === "consumed") name = "Consumed";
-              if (item.dataKey === "bmr") name = "BMR";
-              if (item.dataKey === "target") name = "Target";
-              
-              return (
-                <div key={index} className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
-                    <span className="text-xs text-gray-600">{name}</span>
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="rounded-lg border bg-white p-2 shadow-sm">
+            <div className="mb-1 text-[10px] font-bold uppercase text-gray-400">{label}</div>
+            <div className="flex flex-col gap-1">
+              {payload.map((item: any, index: number) => {
+                let name = item.name;
+                let color = item.color || item.fill;
+                if (item.dataKey === "consumed") name = "Consumed";
+                if (item.dataKey === "bmr") name = "BMR";
+                if (item.dataKey === "target") name = "Target";
+                
+                return (
+                  <div key={index} className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+                      <span className="text-xs text-gray-600">{name}</span>
+                    </div>
+                    <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
                   </div>
-                  <span className="text-xs font-bold text-gray-900">{Math.round(item.value)} kcal</span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        );
+      }
+      return null;
+    };
+  
+      // For area chart, we need 5 dates on X-axis
+      const showXAxisDates = type === "area";
+        const xTicks = showXAxisDates 
+          ? Array.from({ length: 5 }, (_, i) => {
+              const idx = Math.floor(i * (chartData.length - 1) / 4);
+              return chartData[idx]?.date;
+            }).filter((v): v is string => !!v)
+          : undefined;
+  
+    return (
+      <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
+        <div className="mb-3">
+          <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
+          {subtitle && (
+            <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
+          )}
         </div>
-      );
-    }
-    return null;
-  };
-
-    // For area chart, we need 5 dates on X-axis
-    const showXAxisDates = type === "area";
-      const xTicks = showXAxisDates 
-        ? Array.from({ length: 5 }, (_, i) => {
-            const idx = Math.floor(i * (data.length - 1) / 4);
-            return data[idx]?.date;
-          }).filter((v): v is string => !!v)
-        : undefined;
-
-  return (
-    <div className="rounded-2xl bg-white pl-4 py-4 pr-2 shadow-sm">
-      <div className="mb-3">
-        <h2 className="text-title-custom font-bold text-[#262C44]" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>{title}</h2>
-        {subtitle && (
-          <p className="text-body-sm-custom mt-1" style={{ fontFamily: "var(--font-dm-sans), sans-serif", color: "#757FA0" }}>{subtitle}</p>
-        )}
-      </div>
-
-      <div className="h-[200px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={data}
-                margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
-            >
-            <defs>
-              <linearGradient id="areaColor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#6ACFD5" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#6ACFD5" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} stroke="#ECEDF2" />
-            <XAxis
-              dataKey={type === "area" ? "date" : "dayNumber"}
-              axisLine={false}
-              tickLine={false}
-              ticks={xTicks}
-              tick={(props) => {
-                const { x, y, index, payload } = props;
-                if (type === "bar") {
-                  const day = data[index];
-                  if (!day) return null;
-                  const isToday = index === data.length - 1;
+  
+        <div className="h-[200px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart
+                data={chartData}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+              >
+              <defs>
+                <linearGradient id="areaColor" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#6ACFD5" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#6ACFD5" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} stroke="#ECEDF2" />
+              <XAxis
+                dataKey={type === "area" ? "date" : "dayNumber"}
+                axisLine={false}
+                tickLine={false}
+                ticks={xTicks}
+                tick={(props) => {
+                  const { x, y, index, payload } = props;
+                  if (type === "bar") {
+                    const day = chartData[index];
+                    if (!day) return null;
+                    const isToday = index === chartData.length - 1;
                   return (
                     <g transform={`translate(${x},${y + 15})`}>
                       <text
