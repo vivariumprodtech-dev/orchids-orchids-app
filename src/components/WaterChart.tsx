@@ -130,11 +130,12 @@ export default function WaterChart({ data, title, type = "bar", subtitle }: Wate
               }}
             />
             <YAxis
-              domain={[0, yDomainMax]}
+              domain={yDomain}
+              ticks={yTicks}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
-              tickFormatter={(value) => `${value}L`}
+              tickFormatter={(value) => `${parseFloat(value.toFixed(1))}L`}
             />
             <Tooltip content={<CustomTooltip />} />
             
