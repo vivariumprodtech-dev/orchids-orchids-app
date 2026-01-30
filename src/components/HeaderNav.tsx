@@ -53,7 +53,7 @@ export default function HeaderNav({ activeView, onViewChange }: HeaderNavProps) 
       </button>
 
       <button
-        onClick={() => onViewChange("profile")}
+        onClick={handleProfileClick}
         className={`flex w-6 h-6 p-1 justify-center items-center rounded-full transition-colors ${getButtonStyles("profile")}`}
       >
         <User2 size={16} color={getIconColor("profile")} />
