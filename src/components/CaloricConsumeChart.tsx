@@ -9,6 +9,7 @@ import {
   ComposedChart,
   Area,
   Line,
+  Tooltip,
 } from "recharts";
 
 interface CaloricData {
