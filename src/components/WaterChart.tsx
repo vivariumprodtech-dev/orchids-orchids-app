@@ -126,6 +126,7 @@ export default function WaterChart({ data, title, type = "bar", subtitle }: Wate
               }}
             />
             <YAxis
+              domain={[0, yDomainMax]}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#757FA0", fontSize: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}
