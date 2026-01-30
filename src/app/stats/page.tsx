@@ -434,7 +434,7 @@ function MacroCard({
                             {icon}
                           </div>
                         )}
-                        <span className="text-body-md-custom">{name}</span>
+                          <span className="text-title-custom">{name}</span>
                       </div>
                       <div className="mb-2">
                         <span className="text-subtitle-1-custom">{Math.round(value)}</span>
