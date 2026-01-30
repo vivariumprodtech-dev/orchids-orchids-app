@@ -68,8 +68,8 @@ export function BadgeIconSm({ semantic }: BadgeIconSmProps) {
   return (
     <div
       style={{
-        width: "20px",
-        height: "20px",
+        width: "24px",
+        height: "24px",
         borderRadius: "9999px",
         backgroundColor: bg,
         display: "flex",
@@ -78,7 +78,7 @@ export function BadgeIconSm({ semantic }: BadgeIconSmProps) {
         flexShrink: 0,
       }}
     >
-      <Icon size={12} color="#FFFFFF" strokeWidth={2.5} />
+      <Icon size={16} color="#FFFFFF" strokeWidth={2.5} />
     </div>
   );
 }
