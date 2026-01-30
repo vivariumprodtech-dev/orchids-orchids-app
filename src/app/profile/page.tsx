@@ -40,7 +40,7 @@ function ProfileContent() {
     {
       title: "Frequent foods",
       icon: <Utensils size={20} className="text-[#5A658D]" />,
-      onClick: () => {},
+      onClick: () => router.push(`/frequent-foods?userId=${userId}`),
     },
     {
       title: "Set your goals",
