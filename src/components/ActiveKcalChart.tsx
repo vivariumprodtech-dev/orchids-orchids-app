@@ -165,10 +165,12 @@ export default function ActiveKcalChart({
               domain={domainY}
               ticks={ticksY}
               allowDataOverflow={true}
-              tickFormatter={(value) => Math.round(value).toString()}
-            />
-            
-            {type === "bar" ? (
+                tickFormatter={(value) => Math.round(value).toString()}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              
+              {type === "bar" ? (
+
               <Bar dataKey="activeCalories" radius={[4, 4, 0, 0]} barSize={32} fill="#FF9F43" />
             ) : (
               <Area
