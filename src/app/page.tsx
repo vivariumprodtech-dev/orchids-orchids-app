@@ -116,21 +116,7 @@ export default function Home() {
           📊 Demo Statistiche
         </Link>
 
-        <Link
-          href="/upload"
-          className="rounded-full border-2 border-teal-400 bg-white px-8 py-3 text-center font-semibold text-teal-500 transition-all hover:bg-teal-50"
-        >
-          📤 Upload Dati CSV
-        </Link>
-
-        <Link
-          href="/stats"
-          className="rounded-full border-2 border-gray-200 bg-white px-8 py-3 text-center font-semibold text-gray-500 transition-all hover:bg-gray-50"
-        >
-          📱 Mini App (vuota)
-        </Link>
-
-        <div className="mt-4 flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-2">
           <button
             onClick={handleSync}
             disabled={syncing}
@@ -162,6 +148,13 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        <Link
+          href="/stats"
+          className="rounded-full border-2 border-gray-200 bg-white px-8 py-3 text-center font-semibold text-gray-500 transition-all hover:bg-gray-50"
+        >
+          📱 Mini App (vuota)
+        </Link>
       </div>
 
       <div className="mt-12 rounded-xl bg-white/80 p-6 shadow-sm backdrop-blur">
