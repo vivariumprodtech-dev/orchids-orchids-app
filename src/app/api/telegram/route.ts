@@ -130,6 +130,17 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ ok: true });
         }
 
+        if (text === '/sync') {
+          await sendMessage(chatId, "🔄 *Sincronizzazione Airtable in corso...*", { reply_markup: mainKeyboard });
+          try {
+            await syncAirtableToSupabase();
+            await sendMessage(chatId, "✅ *Sincronizzazione completata con successo!*", { reply_markup: mainKeyboard });
+          } catch (err: any) {
+            await sendMessage(chatId, `❌ *Errore durante la sincronizzazione:*\n${err.message}`, { reply_markup: mainKeyboard });
+          }
+          return NextResponse.json({ ok: true });
+        }
+
       if (userData.awaitingWater) {
           const ml = parseInt(text);
           if (isNaN(ml) || ml <= 0) {
