@@ -160,46 +160,9 @@ export default function UploadPage() {
             </p>
           </div>
 
-          <div className="p-8">
-            {/* Airtable Sync Section */}
-            <div className="mb-10 rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 p-6 text-white shadow-lg">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-4 text-center md:text-left">
-                  <div className="rounded-full bg-white/20 p-3">
-                    <CheckCircle2 size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">Sincronizzazione Airtable</h3>
-                    <p className="text-sm opacity-80">Recupera automaticamente i dati dalle tue tabelle AirTable.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={handleSync}
-                  disabled={syncing}
-                  className="w-full md:w-auto flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3 font-bold text-teal-600 shadow-xl transition-all hover:bg-teal-50 active:scale-95 disabled:opacity-50"
-                >
-                  {syncing ? (
-                    <>
-                      <Loader2 className="animate-spin" size={18} />
-                      <span>Sincronizzazione in corso...</span>
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 size={18} />
-                      <span>Sincronizza Ora</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
+            <div className="p-8">
+              <div className="mb-8 flex flex-col sm:flex-row gap-4">
 
-            <div className="mb-6 flex items-center gap-4">
-              <div className="h-px flex-1 bg-gray-100"></div>
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Oppure carica un file CSV</span>
-              <div className="h-px flex-1 bg-gray-100"></div>
-            </div>
-
-            <div className="mb-8 flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => setType("logs")}
                 className={`flex flex-1 items-center justify-center gap-3 rounded-2xl border-2 p-4 transition-all ${
