@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadUserFromSupabase, syncUserToSupabase, resetUser, resetActiveCalories, FOODS, ACTIVITIES, type UserData } from '@/lib/user-store';
+import { syncAirtableToSupabase } from '@/lib/airtable';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const WEBAPP_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || 'http://localhost:3001';
