@@ -129,6 +129,39 @@ export default function Home() {
         >
           📱 Mini App (vuota)
         </Link>
+
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-8 py-4 font-bold text-white shadow-lg transition-all hover:from-teal-600 hover:to-teal-700 active:scale-95 disabled:opacity-50"
+          >
+            {syncing ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>Sincronizzazione in corso...</span>
+              </>
+            ) : (
+              <>
+                <CheckCircle2 size={20} />
+                <span>Sincronizza dati Airtable</span>
+              </>
+            )}
+          </button>
+          
+          {message && (
+            <div
+              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold animate-in fade-in slide-in-from-top-2 ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-700"
+                  : "bg-red-50 text-red-700"
+              }`}
+            >
+              {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+              {message.text}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mt-12 rounded-xl bg-white/80 p-6 shadow-sm backdrop-blur">
