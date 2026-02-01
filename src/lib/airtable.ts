@@ -1,0 +1,157 @@
+import { createClient } from "@supabase/supabase-js";
+
+const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const AIRTABLE_PAT = process.env.AIRTABLE_PAT;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+async function fetchAirtable(table: string) {
+  let allRecords: any[] = [];
+  let offset = "";
+
+  do {
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${table}${offset ? `?offset=${offset}` : ""}`;
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_PAT}`,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(`Airtable error (${table}): ${error}`);
+    }
+
+    const data = await res.json();
+    allRecords = [...allRecords, ...data.records];
+    offset = data.offset;
+  } while (offset);
+
+  return allRecords.map((r: any) => ({ ...r.fields, airtable_id: r.id }));
+}
+
+export async function syncAirtableToSupabase() {
+  console.log("Starting Airtable Sync...");
+
+  // 1. Fetch Daily Summaries
+  const dailySummaries = await fetchAirtable("Export_Daily_Summary");
+  console.log(`Fetched ${dailySummaries.length} daily summaries.`);
+
+  // 2. Fetch Meal Details
+  const mealDetails = await fetchAirtable("Export_Meal_Details");
+  console.log(`Fetched ${mealDetails.length} meal details.`);
+
+  // 3. Sync Daily Logs
+  for (const summary of dailySummaries) {
+    const getValue = (keys: string[]) => {
+      for (const key of keys) {
+        if (summary[key] !== undefined) return summary[key];
+      }
+      return undefined;
+    };
+
+    const user_id = getValue(["user_id", "User ID", "UserId"]);
+    const date = getValue(["date", "Date"]);
+    const water = getValue(["water", "Water"]);
+    const active_calories = getValue(["active_calories", "Active Calories", "active_kcal"]);
+    const alcohol = getValue(["alcohol", "Alcohol"]);
+    
+    const target_calories = getValue(["target_calories", "Target Calories", "target_kcal"]);
+    const target_protein = getValue(["target_protein", "Target Protein", "target_pro"]);
+    const target_carbs = getValue(["target_carbs", "Target Carbs", "target_carb"]);
+    const target_fats = getValue(["target_fats", "Target Fats", "target_fat"]);
+    const target_fiber = getValue(["target_fiber", "Target Fiber", "target_fib"]);
+    const target_water = getValue(["target_water", "Target Water"]);
+    const target_deficit = getValue(["target_deficit", "Target Deficit"]);
+    const bmr = getValue(["bmr", "BMR"]);
+    
+    if (!user_id || !date) continue;
+
+    // Upsert daily log
+    const { data: log, error: logError } = await supabase
+      .from("daily_logs")
+      .upsert(
+        {
+          user_id: String(user_id),
+          date,
+          water: Number(water) || 0,
+          active_calories: Number(active_calories) || 0,
+          alcohol: Number(alcohol) || 0,
+          target_calories: target_calories ? Number(target_calories) : null,
+          target_protein: target_protein ? Number(target_protein) : null,
+          target_carbs: target_carbs ? Number(target_carbs) : null,
+          target_fats: target_fats ? Number(target_fats) : null,
+          target_fiber: target_fiber ? Number(target_fiber) : null,
+          target_water: target_water ? Number(target_water) : null,
+          target_deficit: target_deficit ? Number(target_deficit) : null,
+          bmr: bmr ? Number(bmr) : null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,date" }
+      )
+      .select()
+      .single();
+
+    if (logError) {
+      console.error(`Error upserting log for ${user_id} on ${date}:`, logError);
+      continue;
+    }
+
+    // 4. Sync Food Entries for this log
+    const mealsForDay = mealDetails.filter(
+      (m: any) => String(m.user_id) === String(user_id) && m.date === date
+    );
+
+    if (mealsForDay.length > 0) {
+      await supabase.from("food_entries").delete().eq("log_id", log.id);
+
+      const foodEntries = mealsForDay.map((m: any) => ({
+        log_id: log.id,
+        name: m.name,
+        meal: m.meal,
+        grams: Number(m.grams) || 0,
+        calories: Number(m.calories) || 0,
+        protein: Number(m.protein) || 0,
+        carbs: Number(m.carbs) || 0,
+        fats: Number(m.fats) || 0,
+        fiber: Number(m.fiber) || 0,
+        alcohol: Number(m.alcohol) || 0,
+        is_processed: m.is_processed === "Sì" || m.is_processed === true,
+        intake_time: m.intake_time || null,
+      }));
+
+      const { error: foodError } = await supabase.from("food_entries").insert(foodEntries);
+      if (foodError) {
+        console.error(`Error inserting food entries for ${user_id} on ${date}:`, foodError);
+      }
+
+      const totals = foodEntries.reduce(
+        (acc, curr) => ({
+          calories: acc.calories + curr.calories,
+          protein: acc.protein + curr.protein,
+          carbs: acc.carbs + curr.carbs,
+          fats: acc.fats + curr.fats,
+          fiber: acc.fiber + curr.fiber,
+          alcohol: acc.alcohol + curr.alcohol,
+        }),
+        { calories: 0, protein: 0, carbs: 0, fats: 0, fiber: 0, alcohol: 0 }
+      );
+
+      await supabase
+        .from("daily_logs")
+        .update({
+          calories: totals.calories,
+          protein: totals.protein,
+          carbs: totals.carbs,
+          fats: totals.fats,
+          fiber: totals.fiber,
+          alcohol: totals.alcohol,
+        })
+        .eq("id", log.id);
+    }
+  }
+
+  return { success: true, message: "Sync completed successfully" };
+}
