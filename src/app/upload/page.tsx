@@ -9,9 +9,9 @@ import Link from "next/link";
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [type, setType] = useState<"logs" | "foods">("logs");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
-  const [syncing, setSyncing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
