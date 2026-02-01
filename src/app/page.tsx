@@ -3,14 +3,37 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function Home() {
   const [chatId, setChatId] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
 
   const handleViewStats = () => {
     if (chatId) {
       router.push(`/stats?userId=${chatId}`);
+    }
+  };
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch("/api/sync-airtable", { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Errore durante la sincronizzazione");
+
+      setMessage({ text: "Sincronizzazione completata!", type: "success" });
+      setTimeout(() => setMessage(null), 5000);
+    } catch (err: any) {
+      console.error(err);
+      setMessage({ text: `Errore: ${err.message}`, type: "error" });
+    } finally {
+      setSyncing(false);
     }
   };
 
