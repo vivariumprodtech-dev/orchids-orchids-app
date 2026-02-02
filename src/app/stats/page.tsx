@@ -526,30 +526,30 @@ function MacroCard({
               <MoveRight size={16} className="text-body-sm-custom" />
               <span className="text-subtitle-1-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-body-sm-custom">Kcal</span></span>
             </div>
-            <div className="flex flex-wrap gap-x-4">
-              <div className="flex items-center gap-1 text-helper-custom">
-                <BadgeIconSm semantic="Protein" />
-                <span>{Math.round(totals.pro)}g</span>
-              </div>
-              <div className="flex items-center gap-1 text-helper-custom">
-                <BadgeIconSm semantic="Fiber" />
-                <span>{Math.round(totals.fiber)}g</span>
-              </div>
-              <div className="flex items-center gap-1 text-helper-custom">
-                <BadgeIconSm semantic="Carbo" />
-                <span>{Math.round(totals.carb)}g</span>
-              </div>
-              <div className="flex items-center gap-1 text-helper-custom">
-                <BadgeIconSm semantic="Fat" />
-                <span>{Math.round(totals.fat)}g</span>
-              </div>
-              {totals.alcohol > 0 && (
+              <div className="flex flex-wrap gap-x-4">
                 <div className="flex items-center gap-1 text-helper-custom">
-                  <BadgeIconSm semantic="Alcohol" />
-                  <span>{Math.round(totals.alcohol)}g</span>
+                  <BadgeIconSm semantic="Protein" />
+                  <span className="text-body-sm-custom">{Math.round(totals.pro)}g</span>
                 </div>
-              )}
-            </div>
+                <div className="flex items-center gap-1 text-helper-custom">
+                  <BadgeIconSm semantic="Fiber" />
+                  <span className="text-body-sm-custom">{Math.round(totals.fiber)}g</span>
+                </div>
+                <div className="flex items-center gap-1 text-helper-custom">
+                  <BadgeIconSm semantic="Carbo" />
+                  <span className="text-body-sm-custom">{Math.round(totals.carb)}g</span>
+                </div>
+                <div className="flex items-center gap-1 text-helper-custom">
+                  <BadgeIconSm semantic="Fat" />
+                  <span className="text-body-sm-custom">{Math.round(totals.fat)}g</span>
+                </div>
+                {totals.alcohol > 0 && (
+                  <div className="flex items-center gap-1 text-helper-custom">
+                    <BadgeIconSm semantic="Alcohol" />
+                    <span className="text-body-sm-custom">{Math.round(totals.alcohol)}g</span>
+                  </div>
+                )}
+              </div>
           </div>
         <div className="text-body-sm-custom">
           {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
