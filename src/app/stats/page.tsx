@@ -607,11 +607,23 @@ function MacroCard({
     }
 
     const isSpecial = type === "water" || type === "processed" || type === "alcohol";
+    const isOver = value > target;
+    const isOk = badge.text.toLowerCase().includes("good") || badge.text.toLowerCase().includes("great") || (badge.text.toLowerCase() === "on track" && !isOver);
 
-      return (
-        <div className={`relative rounded-2xl bg-white pl-4 ${type === "water" ? "py-3" : "py-4"} pr-2 shadow-sm`}>
-          <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
-            <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[84px]" : ""}`}>
+    // Badge styling for Processed and Alcohol
+    const badgeStyles = {
+      over: { bg: "#FEF5F7", color: "#C10127", icon: <ArrowUp size={18} color="#C10127" strokeWidth={3} /> },
+      good: { bg: "#F5FAF8", color: "#199761", icon: <Check size={18} color="#199761" strokeWidth={3} /> },
+      great: { bg: "#F5FAF8", color: "#199761", icon: <span style={{ fontSize: '18px' }}>🏆</span> }
+    };
+
+    let activeBadgeStyle = isOver ? badgeStyles.over : badgeStyles.good;
+    if (badge.text.toLowerCase().includes("great")) activeBadgeStyle = badgeStyles.great;
+
+    return (
+      <div className={`relative rounded-2xl bg-white pl-4 ${type === "water" ? "py-3" : "py-4"} pr-2 shadow-sm`}>
+        <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+          <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[84px]" : ""}`}>
             {isSpecial ? (
               <div className="flex flex-col gap-[8px]">
                 <div className="flex items-center gap-1.5">
@@ -619,80 +631,104 @@ function MacroCard({
                     {icon}
                   </div>
                   <div className="flex items-baseline gap-1">
-                      {type === "alcohol" ? (
-                        <>
-                          <span className="text-subtitle-1-custom">{Math.round(value)}g</span>
-                          <span className="text-body-sm-custom">→ <span className="text-subtitle-1-custom">{Math.round(value * 7)}</span> Kcal</span>
-                          <span className="ml-0.5 text-title-custom">{name}</span>
-                        </>
-                      ) : (
-                        <>
-                            <span className="text-subtitle-1-custom">
-                              {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
-                            </span>
-<span className="text-body-sm-custom">
-                                  /{type === "processed" ? "100" : Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} <span className="text-title-custom">{name}</span>
-                                </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-helper-custom">{helpText}</span>
-                      <StatusBadge text={badge.text} connotation={badge.connotation} />
-                    </div>
+                    {type === "alcohol" ? (
+                      <>
+                        <span className="text-subtitle-1-custom">{Math.round(value)}g</span>
+                        <span className="text-body-sm-custom">→ <span className="text-subtitle-1-custom">{Math.round(value * 7)}</span> Kcal</span>
+                        <span className="ml-0.5 text-title-custom">{name}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-subtitle-1-custom">
+                          {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
+                        </span>
+                        <span className="text-body-sm-custom">
+                          /{type === "processed" ? "100" : Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} <span className="text-title-custom">{name}</span>
+                        </span>
+                      </>
+                    )}
                   </div>
-                ) : (
-                  <>
-                      <div className="mb-1 flex items-center gap-1">
-                        {iconBg ? (
-                          <div
-                            className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
-                            style={{ background: iconBg }}
-                          >
-                            {icon}
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center">
-                            {icon}
-                          </div>
-                        )}
-                          <span className="text-title-custom">{name}</span>
-                      </div>
-                      <div className="mb-2">
-                        <span className="text-subtitle-1-custom">{Math.round(value)}</span>
-                        <span className="text-body-sm-custom">/{Math.round(target)}g</span>
-                      </div>
-                    <StatusBadge text={badge.text} connotation={badge.connotation} />
-                  </>
-                )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-helper-custom">{helpText}</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="mb-1 flex items-center gap-1">
+                  {iconBg ? (
+                    <div
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-sm"
+                      style={{ background: iconBg }}
+                    >
+                      {icon}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      {icon}
+                    </div>
+                  )}
+                  <span className="text-title-custom">{name}</span>
+                </div>
+                <div className="mb-2">
+                  <span className="text-subtitle-1-custom">{Math.round(value)}</span>
+                  <span className="text-body-sm-custom">/{Math.round(target)}g</span>
+                </div>
+              </>
+            )}
           </div>
+
+          {/* Processed Food & Alcohol Badge */}
+          {(type === "processed" || type === "alcohol") && (
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-full"
+              style={{ backgroundColor: activeBadgeStyle.bg }}
+            >
+              {activeBadgeStyle.icon}
+            </div>
+          )}
+
+          {/* Macros & Water Donuts */}
           {(type === "water" || (!isSpecial && !centered)) && (
             <div className={centered || type === "water" ? "flex-shrink-0" : "absolute top-[16px] right-2"}>
-                <ShadcnRadialProgress 
-                  value={value} 
-                  max={target} 
-                    size={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? 77 : 72} 
-                    color={color}
-                    innerRadius={(type === "protein" || type === "carbs" || type === "fat" || type === "fiber" || type === "water") ? "78.2%" : "80%"}
-                >
-                      <div
-                        className="text-caption-custom font-bold"
-                        style={{ 
-                          color: badge.text.toLowerCase().includes("over") ? "#C10127" : "#262C44" 
-                        }}
-                      >
-                        {circleText}
-                      </div>
-                      {circleLabel && <div className="text-helper-custom">{circleLabel}</div>}
-
+              <ShadcnRadialProgress 
+                value={value} 
+                max={target} 
+                size={77} 
+                color={color}
+                innerRadius="78.2%"
+              >
+                {isOk ? (
+                  <Check size={18} color="#199761" strokeWidth={3} />
+                ) : (
+                  <div 
+                    className="flex items-center justify-center gap-0.5" 
+                    style={{ 
+                      color: isOver ? "#C10127" : "#262C44",
+                      fontSize: "14px", // Existing font size for macros is usually small
+                      fontWeight: "700"
+                    }}
+                  >
+                    {isOver ? (
+                      <>
+                        <ArrowUp size={16} color="#C10127" strokeWidth={3} />
+                        <span>{Math.round(Math.abs(target - value))}</span>
+                      </>
+                    ) : (
+                      <>
+                        <ArrowDown size={16} color="#262C44" strokeWidth={3} />
+                        <span>{Math.round(Math.abs(target - value))}</span>
+                      </>
+                    )}
+                  </div>
+                )}
               </ShadcnRadialProgress>
             </div>
           )}
         </div>
       </div>
     );
-  }
+}
 
   function MealMomentCard({
     meal,
