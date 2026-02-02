@@ -1414,7 +1414,7 @@ function MacroCard({
   }, [searchParams, selectedDate, userId]);
 
   useEffect(() => {
-    if (activeView !== "progress") return;
+    if (activeView === "profile") return;
 
     const fetchProgressData = async () => {
       const today = new Date();
