@@ -507,30 +507,30 @@ function getFoodEmoji(name: string): string {
             )}
           </div>
 
-          <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
-            <div className="flex items-center gap-1">
-              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO {Math.round(food.pro)}g</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB {Math.round(food.fiber)}g</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR {Math.round(food.carb)}g</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT {Math.round(food.fat)}g</span>
-            </div>
-            {food.alcohol > 0 && (
+            <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
               <div className="flex items-center gap-1">
-                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>ALC {Math.round(food.alcohol)}g</span>
+                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                <span className="text-body-sm-custom">PRO {Math.round(food.pro)}g</span>
               </div>
-            )}
-          </div>
+              <div className="flex items-center gap-1">
+                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                <span className="text-body-sm-custom">FIB {Math.round(food.fiber)}g</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                <span className="text-body-sm-custom">CAR {Math.round(food.carb)}g</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                <span className="text-body-sm-custom">FAT {Math.round(food.fat)}g</span>
+              </div>
+              {food.alcohol > 0 && (
+                <div className="flex items-center gap-1">
+                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>ALC {Math.round(food.alcohol)}g</span>
+                </div>
+              )}
+            </div>
 
           <div className="flex items-center justify-end gap-3">
             <div className="flex items-baseline gap-1">
