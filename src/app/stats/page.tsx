@@ -358,9 +358,106 @@ function getFoodEmoji(name: string): string {
 }
 
   function FoodEntryCard({ food }: { food: FoodEntry }) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingGrams, setEditingGrams] = useState(food.grams);
+
+    const ratio = food.grams > 0 ? editingGrams / food.grams : 0;
+    const displayCalories = Math.round(food.calories * ratio);
+    const displayPro = Math.round(food.pro * ratio);
+    const displayFiber = Math.round(food.fiber * ratio);
+    const displayCarb = Math.round(food.carb * ratio);
+    const displayFat = Math.round(food.fat * ratio);
+
+    if (isEditing) {
+      return (
+        <div className="relative rounded-2xl bg-white p-3 shadow-sm">
+          <div className="flex gap-3">
+            <div 
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
+              style={{ background: "#F9F9FB" }}
+            >
+              <span style={{ fontSize: "18px" }}>{getFoodEmoji(food.name)}</span>
+            </div>
+            <div className="flex-1">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-title-custom">{food.name}</span>
+                {food.time && (
+                  <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
+                    {food.time}
+                  </div>
+                )}
+              </div>
+              <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex items-center gap-1">
+                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO {displayPro}g</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB {displayFiber}g</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR {displayCarb}g</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT {displayFat}g</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 mb-4">
+                <span className="text-body-sm-custom text-[#757FA0]">{displayCalories} Kcal estimated</span>
+                <div className="flex items-center gap-1 rounded-lg border-2 px-2 py-1" style={{ borderColor: "#009EAB" }}>
+                  <input 
+                    type="number" 
+                    value={editingGrams} 
+                    onChange={(e) => setEditingGrams(Number(e.target.value))}
+                    className="w-10 text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="text-body-sm-custom">g</span>
+                  <div className="flex flex-col ml-1">
+                    <button onClick={() => setEditingGrams(prev => prev + 1)} className="text-[#009EAB]"><ChevronUp size={14} /></button>
+                    <button onClick={() => setEditingGrams(prev => Math.max(0, prev - 1))} className="text-[#009EAB]"><ChevronDown size={14} /></button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <button 
+                  className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+                  style={{ backgroundColor: "#ED5070" }}
+                >
+                  <Trash size={18} color="#FFFFFF" />
+                </button>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditingGrams(food.grams);
+                    }}
+                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+                    style={{ backgroundColor: "#F9F9FB" }}
+                  >
+                    <X size={20} color="#3B4361" />
+                  </button>
+                  <button 
+                    onClick={() => setIsEditing(false)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+                    style={{ backgroundColor: "#009EAB" }}
+                  >
+                    <Check size={20} color="#FFFFFF" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="relative rounded-2xl bg-white p-3 shadow-sm flex gap-3">
-        {/* Badge Emoji */}
         <div 
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
           style={{ background: "#F9F9FB" }}
@@ -369,7 +466,6 @@ function getFoodEmoji(name: string): string {
         </div>
 
         <div className="flex-1">
-          {/* Header: Title + Badges */}
           <div className="mb-1 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-title-custom">{food.name}</span>
@@ -386,38 +482,31 @@ function getFoodEmoji(name: string): string {
             )}
           </div>
 
-          {/* Macros aligned with title */}
           <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
             <div className="flex items-center gap-1">
               <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO</span>
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{Math.round(food.pro)}g</span>
+              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO {Math.round(food.pro)}g</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB</span>
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{Math.round(food.fiber)}g</span>
+              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB {Math.round(food.fiber)}g</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR</span>
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{Math.round(food.carb)}g</span>
+              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR {Math.round(food.carb)}g</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT</span>
-              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{Math.round(food.fat)}g</span>
+              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT {Math.round(food.fat)}g</span>
             </div>
             {food.alcohol > 0 && (
               <div className="flex items-center gap-1">
                 <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>ALC</span>
-                <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{Math.round(food.alcohol)}g</span>
+                <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>ALC {Math.round(food.alcohol)}g</span>
               </div>
             )}
           </div>
 
-          {/* Bottom Row */}
           <div className="flex items-center justify-end gap-3">
             <div className="flex items-baseline gap-1">
               <span className="text-body-sm-custom">{Math.round(food.calories)}</span>
@@ -428,7 +517,8 @@ function getFoodEmoji(name: string): string {
               <span className="text-body-sm-custom">g</span>
             </div>
             <button 
-              className="flex h-8 w-8 items-center justify-center rounded-full"
+              onClick={() => setIsEditing(true)}
+              className="flex h-8 w-8 items-center justify-center rounded-full transition-colors active:opacity-80"
               style={{ backgroundColor: "#009EAB" }}
             >
               <Pen size={16} color="#FFFFFF" />
