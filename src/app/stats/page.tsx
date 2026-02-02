@@ -212,47 +212,60 @@ function ShadcnRadialProgress({
   outerRadius?: string;
   children?: React.ReactNode;
 }) {
-  const chartData = [
-    { name: "progress", value: value, fill: color },
-  ];
+  const isOver = value > max;
+  
+  // Background circle data
+  const bgData = [{ value: 1 }];
 
-  const chartConfig = {
-    progress: {
-      label: "Progress",
-      color: color,
-    },
-  } satisfies ChartConfig;
+  // Progress segments
+  const chartData = isOver 
+    ? [
+        { name: "base", value: max, fill: color },
+        { name: "exceeding", value: value - max, fill: "#C10127" }
+      ]
+    : [
+        { name: "progress", value: value, fill: color },
+        { name: "remaining", value: Math.max(0, max - value), fill: "transparent" }
+      ];
 
   return (
     <div className="relative p-0" style={{ width: size, height: size }}>
-      <ChartContainer
-        config={chartConfig}
-        className="aspect-square h-full w-full p-0"
-      >
-        <RadialBarChart
-          data={chartData}
-          startAngle={90}
-          endAngle={-270}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+      <PieChart width={size} height={size}>
+        {/* Background ring */}
+        <Pie
+          data={bgData}
+          dataKey="value"
           cx="50%"
           cy="50%"
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={90}
+          endAngle={450}
+          stroke="none"
+          isAnimationActive={false}
         >
-          <PolarAngleAxis
-            type="number"
-            domain={[0, max]}
-            angleAxisId={0}
-            tick={false}
-          />
-          <RadialBar
-            background={{ fill: "#E5E7EB" }}
-            dataKey="value"
-            cornerRadius={10}
-            fill="var(--color-progress)"
-          />
-        </RadialBarChart>
-      </ChartContainer>
+          <Cell fill="#E5E7EB" />
+        </Pie>
+        {/* Progress ring */}
+        <Pie
+          data={chartData}
+          dataKey="value"
+          cx="50%"
+          cy="50%"
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={90}
+          endAngle={isOver ? 90 - (value / max * 360) : 450} // Adjust end angle if over to continue the same ring
+          stroke="none"
+          cornerRadius={10}
+          paddingAngle={0}
+          isAnimationActive={false}
+        >
+          {chartData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill} />
+          ))}
+        </Pie>
+      </PieChart>
       <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
         {children}
       </div>
