@@ -522,7 +522,7 @@ function MacroCard({
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <BadgeIconSm semantic={semantic} />
-              <span className="text-subtitle-1-custom font-bold">{displayName}</span>
+              <span className="text-title-custom">{displayName}</span>
               <MoveRight size={16} className="text-body-sm-custom" />
               <span className="text-subtitle-1-custom font-bold">{Math.round(meal.totalCalories)} <span className="font-normal text-body-sm-custom">Kcal</span></span>
             </div>
