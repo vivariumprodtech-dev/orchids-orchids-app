@@ -1726,102 +1726,118 @@ function MacroCard({
                 <MacroCard icon={<BadgeIconSm semantic="Alcohol" />} name="Alcohol intake" value={data.alcohol?.grams || 0} target={30} color={BadgeIconColors.Alcohol} isToday={isToday} type="alcohol" centered />
             </div>
 
-          <div>
-            <h2 className="mb-4 text-title-custom">Food log → <span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
-            <div className="space-y-3">
-              {data.meals && data.meals.length > 0 && !isToday ? (
-                data.meals.map((meal, mealIdx) => (
-                  <div key={mealIdx} className="space-y-2">
-                    <MealMomentCard 
-                      meal={meal} 
-                      isOpen={!!openMeals[meal.meal]} 
-                      onToggle={() => toggleMeal(meal.meal)} 
-                    />
-                      {openMeals[meal.meal] && (
-                            <div className="mt-3 space-y-3">
-                              {meal.foods.map((food, i) => (
-                                <FoodEntryCard key={i} food={food} />
-                              ))}
-                            </div>
+            <div>
+              <h2 className="mb-4 text-title-custom">Food log → <span className="text-subtitle-1-custom">{data.calories.toLocaleString("it-IT")}</span> Kcal total</h2>
+              <div className="space-y-3">
+                {data.meals && data.meals.length > 0 && !isToday ? (
+                  data.meals.map((meal, mealIdx) => (
+                    <div key={mealIdx} className="space-y-2">
+                      <MealMomentCard 
+                        meal={meal} 
+                        isOpen={!!openMeals[meal.meal]} 
+                        onToggle={() => toggleMeal(meal.meal)} 
+                      />
+                        {openMeals[meal.meal] && (
+                              <div className="mt-3 space-y-3">
+                                {meal.foods.map((food, i) => (
+                                  <div key={i} className="ml-3">
+                                    <FoodEntryCard 
+                                      food={food} 
+                                      onAction={(type) => showToast(type === "updated" ? "Food updated." : "Food excluded.")}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                        )}
+                    </div>
+                  ))
+                  ) : data.foods.length === 0 ? (
+                    <div className="rounded-2xl bg-white p-8 text-center text-helper-custom shadow-sm">No food logged for this day</div>
+                    ) : (
+                        [...data.foods].reverse().map((food, i) => (
+                          <div key={i} className="ml-3">
+                            <FoodEntryCard 
+                              food={food} 
+                              onAction={(type) => showToast(type === "updated" ? "Food updated." : "Food excluded.")}
+                            />
+                          </div>
+                        ))
                       )}
-                  </div>
-                ))
-                ) : data.foods.length === 0 ? (
-                  <div className="rounded-2xl bg-white p-8 text-center text-helper-custom shadow-sm">No food logged for this day</div>
-                  ) : (
-                      [...data.foods].reverse().map((food, i) => (
-                        <FoodEntryCard key={i} food={food} />
-                      ))
-                    )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-          {activeView === "progress" && (
-            <div className="space-y-4">
-                {progressTab === "kcal" && (
-                    <>
-                      <BalanceChart 
-                        data={progressData} 
-                        title="Balance"
-                        type={timeRange === "7d" ? "bar" : "area"}
-                        subtitle={progressSubtitle}
-                      />
-                      <CaloricConsumeChart 
-                        data={progressData}
-                        title="Caloric consume"
-                        type={timeRange === "7d" ? "bar" : "area"}
-                        subtitle={progressSubtitle}
-                      />
-                        <KcalAveragesCard 
-                          consumeAvg={consumeAvg}
-                          cumulativeBalance={cumulativeBalance}
-                          dailyAvg={dailyAvg}
-                          subtitle={progressSubtitle}
-                        />
-                          <ActiveKcalChart 
-                            data={progressData}
-                            title="Active kcal"
-                            type={timeRange === "7d" ? "bar" : "area"}
-                            subtitle={progressSubtitle}
-                          />
-                        </>
-                    )}
-                    {progressTab === "macros" && (
+          </>
+        )}
+            {activeView === "progress" && (
+              <div className="space-y-4">
+                  {progressTab === "kcal" && (
                       <>
-                        <MacrosChart 
-                          data={progressData}
-                          title="Macros"
+                        <BalanceChart 
+                          data={progressData} 
+                          title="Balance"
                           type={timeRange === "7d" ? "bar" : "area"}
                           subtitle={progressSubtitle}
                         />
-                          <MacrosAveragesCard 
-                            proteinAvg={proteinAvg}
-                            carbsAvg={carbsAvg}
-                            fatsAvg={fatsAvg}
-                            fiberAvg={fiberAvg}
-                            targets={data.targets}
+                        <CaloricConsumeChart 
+                          data={progressData}
+                          title="Caloric consume"
+                          type={timeRange === "7d" ? "bar" : "area"}
+                          subtitle={progressSubtitle}
+                        />
+                          <KcalAveragesCard 
+                            consumeAvg={consumeAvg}
+                            cumulativeBalance={cumulativeBalance}
+                            dailyAvg={dailyAvg}
                             subtitle={progressSubtitle}
                           />
-                            <ProcessedFoodChart 
+                            <ActiveKcalChart 
                               data={progressData}
-                              title="Processed food"
-                              type={timeRange === "7d" ? "bar" : "area"}
-                              subtitle={progressSubtitle}
-                            />
-                            <WaterChart 
-                              data={progressData}
-                              title="Water"
+                              title="Active kcal"
                               type={timeRange === "7d" ? "bar" : "area"}
                               subtitle={progressSubtitle}
                             />
                           </>
-                    )}
-              </div>
-            )}
-
+                      )}
+                      {progressTab === "macros" && (
+                        <>
+                          <MacrosChart 
+                            data={progressData}
+                            title="Macros"
+                            type={timeRange === "7d" ? "bar" : "area"}
+                            subtitle={progressSubtitle}
+                          />
+                            <MacrosAveragesCard 
+                              proteinAvg={proteinAvg}
+                              carbsAvg={carbsAvg}
+                              fatsAvg={fatsAvg}
+                              fiberAvg={fiberAvg}
+                              targets={data.targets}
+                              subtitle={progressSubtitle}
+                            />
+                              <ProcessedFoodChart 
+                                data={progressData}
+                                title="Processed food"
+                                type={timeRange === "7d" ? "bar" : "area"}
+                                subtitle={progressSubtitle}
+                              />
+                              <WaterChart 
+                                data={progressData}
+                                title="Water"
+                                type={timeRange === "7d" ? "bar" : "area"}
+                                subtitle={progressSubtitle}
+                              />
+                            </>
+                      )}
+                </div>
+              )}
+  
+      </div>
+      <Toast 
+        message={toast.message} 
+        visible={toast.visible} 
+        onClose={() => setToast(prev => ({ ...prev, visible: false }))} 
+      />
     </div>
-  </div>
+
   );
 };
 
