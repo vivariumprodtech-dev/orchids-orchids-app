@@ -1615,59 +1615,11 @@ function MacroCard({
                       onToggle={() => toggleMeal(meal.meal)} 
                     />
                       {openMeals[meal.meal] && (
-                          <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
-                            {meal.foods.map((food, i) => (
-                              <div key={i} className="relative rounded-2xl bg-white p-4 shadow-sm">
-                                  <div className="absolute top-3 right-3 flex items-center gap-1">
-                                    {food.is_processed && (
-                                      <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#DB74ED]">
-                                        P
-                                      </div>
-                                    )}
-                                  {food.time && (
-                                    <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
-                                      {food.time}
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="mb-2 flex items-center justify-between pr-24">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-body-md-custom">{food.name}</span>
-                                  </div>
-                                </div>
-                                  <div className="mb-2 flex items-center gap-1.5">
-                                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#2BB0BB" }} />
-                                    <span className="text-subtitle-1-custom font-bold">{Math.round(food.calories)}</span>
-                                    <span className="text-body-sm-custom">kcal</span>
-                                  </div>
-
-                                  <div className="flex flex-wrap gap-x-3 gap-y-1">
-                                    <div className="flex items-center gap-1 text-helper-custom">
-                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                                      <i>Protein <span className="text-body-sm-custom">{Math.round(food.pro)}g</span></i>
-                                    </div>
-                                    <div className="flex items-center gap-1 text-helper-custom">
-                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                                      <i>Fiber <span className="text-body-sm-custom">{Math.round(food.fiber)}g</span></i>
-                                    </div>
-                                    <div className="flex items-center gap-1 text-helper-custom">
-                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                                      <i>Carbo <span className="text-body-sm-custom">{Math.round(food.carb)}g</span></i>
-                                    </div>
-                                      <div className="flex items-center gap-1 text-helper-custom">
-                                        <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                                        <i>Fat <span className="text-body-sm-custom">{Math.round(food.fat)}g</span></i>
-                                      </div>
-                                      {food.alcohol > 0 && (
-                                        <div className="flex items-center gap-1 text-helper-custom">
-                                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                                          <i>Alcohol <span className="text-body-sm-custom">{Math.round(food.alcohol)}g</span></i>
-                                        </div>
-                                      )}
-                                    </div>
+                            <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
+                              {meal.foods.map((food, i) => (
+                                <FoodEntryCard key={i} food={food} />
+                              ))}
                             </div>
-                          ))}
-                        </div>
                       )}
                   </div>
                 ))
