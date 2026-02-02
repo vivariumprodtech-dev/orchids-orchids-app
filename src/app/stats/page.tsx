@@ -1703,7 +1703,7 @@ function MacroCard({
                       onToggle={() => toggleMeal(meal.meal)} 
                     />
                       {openMeals[meal.meal] && (
-                            <div className="ml-4 space-y-3 border-l-2 border-dashed border-teal-100 pl-4 py-2">
+                            <div className="mt-3 space-y-3">
                               {meal.foods.map((food, i) => (
                                 <FoodEntryCard key={i} food={food} />
                               ))}
