@@ -400,7 +400,7 @@ function MacroCard({
                         <>
                           <span className="text-subtitle-1-custom">{Math.round(value)}g</span>
                           <span className="text-body-sm-custom">→ <span className="text-subtitle-1-custom">{Math.round(value * 7)}</span> Kcal</span>
-                          <span className="ml-0.5 text-body-sm-custom">{name}</span>
+                          <span className="ml-0.5 text-title-custom">{name}</span>
                         </>
                       ) : (
                         <>
