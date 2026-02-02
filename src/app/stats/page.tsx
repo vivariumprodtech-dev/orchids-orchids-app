@@ -1751,11 +1751,11 @@ function MacroCard({
                             </div>
                                 <div className="flex items-start gap-1 text-body-sm-custom">
                                   <BadgeIconSm semantic="Goal" />
-                                  <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">{BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit</span></span>
-                                </div>
-                      <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
-                    </div>
-                          <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                                    <span><span className="text-subtitle-1-custom">{(BMR - deficit).toLocaleString("it-IT")}</span> target <span className="text-helper-custom">{BMR.toLocaleString("it-IT")} BMR - {deficit.toLocaleString("it-IT")} deficit</span></span>
+                                  </div>
+                      </div>
+                            <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+
                             {calorieBadge.text.toLowerCase().includes("🎯") || calorieBadge.text.toLowerCase() === "calories on target" || calorieBadge.text.toLowerCase() === "calories on track" && !isOver ? (
                               <Check size={24} color="#199761" strokeWidth={3} />
                             ) : (
