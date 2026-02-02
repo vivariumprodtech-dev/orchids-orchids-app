@@ -952,8 +952,29 @@ function MacroCard({
       );
     }
 
+    function Toast({ message, visible, onClose }: { message: string; visible: boolean; onClose: () => void }) {
+      if (!visible) return null;
+      return (
+        <div 
+          className="fixed bottom-10 left-5 right-5 z-[100] flex h-[64px] items-center gap-3 rounded-full px-4 shadow-lg animate-in fade-in slide-in-from-bottom-5 duration-300"
+          style={{ 
+            backgroundColor: "rgba(38, 44, 68, 0.88)",
+            backdropFilter: "blur(8px)"
+          }}
+        >
+          <div 
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: "#2BB0BB" }}
+          >
+            <Check size={16} color="#FFFFFF" strokeWidth={3} />
+          </div>
+          <span className="text-white font-medium text-body-md-custom">{message}</span>
+        </div>
+      );
+    }
 
     const StatsContent = () => {
+
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
     const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
