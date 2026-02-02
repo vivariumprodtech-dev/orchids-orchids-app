@@ -609,7 +609,7 @@ function MacroCard({
 
     const isSpecial = type === "water" || type === "processed" || type === "alcohol";
     const isOver = value > target;
-    const isOk = badge.text.toLowerCase().includes("good") || badge.text.toLowerCase().includes("great") || (badge.text.toLowerCase() === "on track" && !isOver);
+    const isOk = badge.text.toLowerCase().includes("good") || badge.text.toLowerCase().includes("great") || (!isToday && badge.text.toLowerCase() === "on track" && !isOver);
 
     // Badge styling for Processed and Alcohol
     const badgeStyles = {
