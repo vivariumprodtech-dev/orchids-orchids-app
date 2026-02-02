@@ -1638,24 +1638,27 @@ function MacroCard({
                       else if (isTodayDay) textColor = "#088D98";
 
                       return (
-                        <div
-                          key={i}
-                          onClick={() => setSelectedDate(dateStr)}
-                          className="flex-1 rounded-[1.5rem] py-3 text-center transition-all relative"
-                          style={{ 
-                            backgroundColor: bgColor,
-                            cursor: "pointer",
-                            fontFamily: '"DM Sans", sans-serif',
-                            minWidth: "40px",
-                            maxWidth: "48px"
-                          }}
-                        >
-                          {hasAlert && (
-                            <div className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#C10127]" />
-                          )}
-                          <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                          <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                        </div>
+                          <div
+                            key={i}
+                            onClick={() => setSelectedDate(dateStr)}
+                            className="flex-1 rounded-[1.5rem] py-3 text-center transition-all relative"
+                            style={{ 
+                              backgroundColor: bgColor,
+                              cursor: "pointer",
+                              fontFamily: '"DM Sans", sans-serif',
+                              minWidth: "40px",
+                              maxWidth: "48px"
+                            }}
+                          >
+                            {hasAlert && (
+                              <div 
+                                className="absolute bottom-[6px] left-1/2 -translate-x-1/2 h-[6px] w-[6px] rounded-full" 
+                                style={{ backgroundColor: "#ED5070" }} 
+                              />
+                            )}
+                            <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                            <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                          </div>
                       );
                     })}
                 </div>
