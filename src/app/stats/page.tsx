@@ -692,7 +692,7 @@ function MacroCard({
 
           {/* Macros & Water Donuts */}
           {(type === "water" || (!isSpecial && !centered)) && (
-            <div className={centered || type === "water" ? "flex-shrink-0" : "absolute top-[16px] right-2"}>
+            <div className="flex-shrink-0 ml-2">
               <ShadcnRadialProgress 
                 value={value} 
                 max={target} 
