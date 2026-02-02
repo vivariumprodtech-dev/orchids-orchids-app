@@ -1530,30 +1530,30 @@ function MacroCard({
                                     <span className="text-body-sm-custom">kcal</span>
                                   </div>
 
-                                <div className="flex flex-wrap gap-x-3 gap-y-1">
-                                  <div className="flex items-center gap-1 text-helper-custom">
-                                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                                    <i>Protein {Math.round(food.pro)}g</i>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-helper-custom">
-                                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                                    <i>Fiber {Math.round(food.fiber)}g</i>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-helper-custom">
-                                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                                    <i>Carbo {Math.round(food.carb)}g</i>
-                                  </div>
+                                  <div className="flex flex-wrap gap-x-3 gap-y-1">
                                     <div className="flex items-center gap-1 text-helper-custom">
-                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                                      <i>Fat {Math.round(food.fat)}g</i>
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                                      <i>Protein <span className="text-body-sm-custom">{Math.round(food.pro)}g</span></i>
                                     </div>
-                                    {food.alcohol > 0 && (
+                                    <div className="flex items-center gap-1 text-helper-custom">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                                      <i>Fiber <span className="text-body-sm-custom">{Math.round(food.fiber)}g</span></i>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-helper-custom">
+                                      <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                                      <i>Carbo <span className="text-body-sm-custom">{Math.round(food.carb)}g</span></i>
+                                    </div>
                                       <div className="flex items-center gap-1 text-helper-custom">
-                                        <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
-                                        <i>Alcohol {Math.round(food.alcohol)}g</i>
+                                        <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                                        <i>Fat <span className="text-body-sm-custom">{Math.round(food.fat)}g</span></i>
                                       </div>
-                                    )}
-                                  </div>
+                                      {food.alcohol > 0 && (
+                                        <div className="flex items-center gap-1 text-helper-custom">
+                                          <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+                                          <i>Alcohol <span className="text-body-sm-custom">{Math.round(food.alcohol)}g</span></i>
+                                        </div>
+                                      )}
+                                    </div>
                             </div>
                           ))}
                         </div>
