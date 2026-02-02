@@ -594,7 +594,7 @@ function MacroCard({
         const displayVal = Math.round(Math.abs(diff) * 10) / 10;
         circleText = value > target ? `+${displayVal}L` : `${displayVal}L`;
         circleLabel = value > target ? "over" : "left";
-        helpText = "(Count in liters)";
+        helpText = "";
 
     } else if (type === "alcohol") {
       badge = getAlcoholBadge(value * 7, target * 7);
