@@ -640,14 +640,14 @@ function MacroCard({
                         <span className="ml-0.5 text-title-custom">{name}</span>
                       </>
                     ) : (
-                      <>
-                        <span className="text-subtitle-1-custom">
-                          {type === "water" ? value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : Math.round(value)}
-                        </span>
-                        <span className="text-body-sm-custom">
-                          /{type === "processed" ? "100" : Math.round(target)}{type === "water" ? "" : type === "processed" ? "%" : "g"} <span className="text-title-custom">{name}</span>
-                        </span>
-                      </>
+                        <>
+                          <span className="text-subtitle-1-custom">
+                            {type === "water" ? (value === 0 ? "0" : value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })) : Math.round(value)}
+                          </span>
+                          <span className="text-body-sm-custom">
+                            /{type === "processed" ? "100" : Math.round(target)}{type === "water" ? " liters" : type === "processed" ? "%" : "g"} <span className="text-title-custom">{name}</span>
+                          </span>
+                        </>
                     )}
                   </div>
                 </div>
