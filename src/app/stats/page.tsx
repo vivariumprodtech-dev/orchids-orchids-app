@@ -330,6 +330,117 @@ function getAlcoholBadge(alcoholKcal: number, totalTarget: number) {
   return { text: "Over limit", connotation: "danger" as const };
 }
 
+function getFoodEmoji(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes("skyr") || n.includes("yogurt") || n.includes("greco")) return "🍦";
+  if (n.includes("pane") || n.includes("bread") || n.includes("focaccia") || n.includes("crackers") || n.includes("gallette")) return "🍞";
+  if (n.includes("cioccolato") || n.includes("chocolate") || n.includes("fondente") || n.includes("cacao")) return "🍫";
+  if (n.includes("pasta") || n.includes("spaghetti") || n.includes("fusilli") || n.includes("penne")) return "🍝";
+  if (n.includes("pollo") || n.includes("chicken") || n.includes("tacchino") || n.includes("fesa")) return "🍗";
+  if (n.includes("mela") || n.includes("apple") || n.includes("pera") || n.includes("pesca")) return "🍎";
+  if (n.includes("insalata") || n.includes("salad") || n.includes("lattuga") || n.includes("pomodori")) return "🥗";
+  if (n.includes("salmone") || n.includes("salmon") || n.includes("tonno") || n.includes("merluzzo") || n.includes("pesce")) return "🐟";
+  if (n.includes("verdure") || n.includes("vegetables") || n.includes("broccoli") || n.includes("zucchine") || n.includes("spinaci")) return "🥦";
+  if (n.includes("uova") || n.includes("egg") || n.includes("uovo")) return "🥚";
+  if (n.includes("carne") || n.includes("meat") || n.includes("manzo") || n.includes("bistecca") || n.includes("hamburger")) return "🥩";
+  if (n.includes("riso") || n.includes("rice")) return "🍚";
+  if (n.includes("latte") || n.includes("milk")) return "🥛";
+  if (n.includes("caffè") || n.includes("coffee")) return "☕";
+  if (n.includes("banana")) return "🍌";
+  if (n.includes("pizza")) return "🍕";
+  if (n.includes("frutta") || n.includes("fruit") || n.includes("fragole") || n.includes("mirtilli")) return "🍓";
+  if (n.includes("mandorle") || n.includes("nuts") || n.includes("noci") || n.includes("nocciole") || n.includes("burro d'arachidi")) return "🥜";
+  if (n.includes("formaggio") || n.includes("cheese") || n.includes("mozzarella") || n.includes("parmigiano") || n.includes("ricotta")) return "🧀";
+  if (n.includes("biscotti") || n.includes("cookies")) return "🍪";
+  if (n.includes("birra") || n.includes("beer")) return "🍺";
+  if (n.includes("vino") || n.includes("wine")) return "🍷";
+  return "🍲";
+}
+
+function FoodEntryCard({ food }: { food: FoodEntry }) {
+  return (
+    <div className="relative rounded-2xl bg-white p-4 shadow-sm flex gap-3">
+      {/* Badge Emoji */}
+      <div 
+        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
+        style={{ background: "#F9F9FB" }}
+      >
+        <span style={{ fontSize: "18px" }}>{getFoodEmoji(food.name)}</span>
+      </div>
+
+      <div className="flex-1">
+        {/* Header: Title + Badges */}
+        <div className="mb-1 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-body-md-custom">{food.name}</span>
+            {food.is_processed && (
+              <div className="text-caption-custom rounded-full bg-[#FCE8FF] px-2 py-0.5 text-[#D14FE8]">
+                P
+              </div>
+            )}
+          </div>
+          {food.time && (
+            <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
+              {food.time}
+            </div>
+          )}
+        </div>
+
+        {/* Macros aligned with title */}
+        <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
+          <div className="flex items-center gap-1">
+            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+            <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO</span>
+            <span className="text-body-sm-custom">{Math.round(food.pro)}g</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+            <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB</span>
+            <span className="text-body-sm-custom">{Math.round(food.fiber)}g</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+            <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR</span>
+            <span className="text-body-sm-custom">{Math.round(food.carb)}g</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+            <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT</span>
+            <span className="text-body-sm-custom">{Math.round(food.fat)}g</span>
+          </div>
+          {food.alcohol > 0 && (
+            <div className="flex items-center gap-1">
+              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Alcohol }} />
+              <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>ALC</span>
+              <span className="text-body-sm-custom">{Math.round(food.alcohol)}g</span>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom Row */}
+        <div className="flex items-end justify-between">
+          <div className="flex items-baseline gap-0.5">
+            <span className="text-subtitle-1-custom">{food.grams}</span>
+            <span className="text-body-sm-custom">g</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-baseline gap-1">
+              <span className="text-body-sm-custom font-bold">{Math.round(food.calories)}</span>
+              <span className="text-body-sm-custom">kcal</span>
+            </div>
+            <button 
+              className="flex h-8 w-8 items-center justify-center rounded-full"
+              style={{ backgroundColor: "#009EAB" }}
+            >
+              <Edit size={16} color="#FFFFFF" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MacroCard({
   icon,
   iconBg,
