@@ -404,24 +404,24 @@ function getFoodEmoji(name: string): string {
                   </div>
                 )}
               </div>
-              <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
-                <div className="flex items-center gap-1">
-                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>PRO {displayPro}g</span>
+                <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
+                  <div className="flex items-center gap-1">
+                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+                    <span className="text-body-sm-custom">PRO {displayPro}g</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+                    <span className="text-body-sm-custom">FIB {displayFiber}g</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+                    <span className="text-body-sm-custom">CAR {displayCarb}g</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+                    <span className="text-body-sm-custom">FAT {displayFat}g</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FIB {displayFiber}g</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>CAR {displayCarb}g</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>FAT {displayFat}g</span>
-                </div>
-              </div>
 
               <div className="flex items-center justify-end gap-3 mb-4">
                 <span className="text-body-sm-custom text-[#757FA0]">{displayCalories} Kcal estimated</span>
