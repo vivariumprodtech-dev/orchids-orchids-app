@@ -1718,12 +1718,32 @@ function MacroCard({
                                 </div>
                       <StatusBadge text={calorieBadge.text} connotation={calorieBadge.connotation} />
                     </div>
-                        <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
-                          <div className="text-center text-title-custom font-bold" style={{ color: calorieBadge.text === "Calories over target" ? "#C10127" : "#262C44" }}>
-                            {isOver ? `+${surplus.toLocaleString("it-IT")}` : caloriesLeft.toLocaleString("it-IT")}
-                          </div>
-                            <div className="text-helper-custom">{isOver ? "over" : "left"}</div>
-                        </ShadcnRadialProgress>
+                          <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
+                            {calorieBadge.text.toLowerCase().includes("🎯") || calorieBadge.text.toLowerCase() === "calories on target" || calorieBadge.text.toLowerCase() === "calories on track" && !isOver ? (
+                              <Check size={24} color="#199761" strokeWidth={3} />
+                            ) : (
+                              <div 
+                                className="flex items-center justify-center gap-0.5" 
+                                style={{ 
+                                  color: isOver ? "#C10127" : "#262C44",
+                                  fontSize: "20px",
+                                  fontWeight: "700"
+                                }}
+                              >
+                                {isOver ? (
+                                  <>
+                                    <ArrowUp size={20} color="#C10127" strokeWidth={3} />
+                                    <span>{surplus.toLocaleString("it-IT")}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ArrowDown size={20} color="#262C44" strokeWidth={3} />
+                                    <span>{caloriesLeft.toLocaleString("it-IT")}</span>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </ShadcnRadialProgress>
 
                 </div>
               </div>
