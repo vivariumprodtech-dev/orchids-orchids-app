@@ -974,7 +974,6 @@ function MacroCard({
     }
 
     const StatsContent = () => {
-
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
     const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
@@ -983,8 +982,15 @@ function MacroCard({
       const [progressTab, setProgressTab] = useState<"kcal" | "macros">("kcal");
       const [timeRange, setTimeRange] = useState<"7d" | "1m" | "3m" | "6m">("7d");
       const [progressData, setProgressData] = useState<any[]>([]);
+      const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
+
+      const showToast = (message: string) => {
+        setToast({ message, visible: true });
+        setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 3000);
+      };
 
       const toggleMeal = (mealName: string) => {
+
         setOpenMeals(prev => ({ ...prev, [mealName]: !prev[mealName] }));
       };
 
