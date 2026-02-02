@@ -621,9 +621,10 @@ function MacroCard({
     let activeBadgeStyle = isOver ? badgeStyles.over : badgeStyles.good;
     if (badge.text.toLowerCase().includes("great")) activeBadgeStyle = badgeStyles.great;
 
-    return (
-      <div className={`relative rounded-2xl bg-white pl-4 ${type === "water" ? "py-3" : "py-4"} pr-2 shadow-sm`}>
-        <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+      return (
+        <div className={`relative rounded-2xl bg-white pl-4 ${type === "water" ? "py-3" : "py-4"} ${(type === "processed" || type === "alcohol") ? "pr-[12px]" : "pr-2"} shadow-sm`}>
+          <div className={`flex ${centered ? "items-center" : "items-start"} justify-between`}>
+
           <div className={`flex-1 ${(!centered && !isSpecial) ? "pr-[84px]" : ""}`}>
             {isSpecial ? (
               <div className="flex flex-col gap-[8px]">
