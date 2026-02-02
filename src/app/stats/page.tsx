@@ -1619,39 +1619,45 @@ function MacroCard({
             <div className="flex flex-col">
               {activeView === "day" ? (
                 <div className="flex justify-between gap-2 pb-2">
-                  {last7Days.map((date, i) => {
-                    const dateStr = date.toISOString().split('T')[0];
-                    const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
-                    const isSelected = selectedDate === dateStr;
-                    const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
-                    const dayNum = date.getDate();
-                    
-                    let bgColor = "#FFFFFF";
-                    if (isSelected) bgColor = "#9EDDE2";
-                    else if (isTodayDay) bgColor = "#E2F7F9";
+                    {last7Days.map((date, i) => {
+                      const dateStr = date.toISOString().split('T')[0];
+                      const isTodayDay = dateStr === new Date().toISOString().split('T')[0];
+                      const isSelected = selectedDate === dateStr;
+                      const dayName = date.toLocaleDateString("en-GB", { weekday: 'short' }).charAt(0);
+                      const dayNum = date.getDate();
+                      
+                      const dayProgress = progressData.find(d => d.fullDate === dateStr);
+                      const hasAlert = !isTodayDay && dayProgress && dayProgress.consumed !== null && dayProgress.consumed < (dayProgress.target * 0.5);
 
-                    let textColor = "#5A658D";
-                    if (isSelected) textColor = "#262C44";
-                    else if (isTodayDay) textColor = "#088D98";
+                      let bgColor = "#FFFFFF";
+                      if (isSelected) bgColor = "#9EDDE2";
+                      else if (isTodayDay) bgColor = "#E2F7F9";
 
-                    return (
-                      <div
-                        key={i}
-                        onClick={() => setSelectedDate(dateStr)}
-                        className="flex-1 rounded-[1.5rem] py-3 text-center transition-all"
-                        style={{ 
-                          backgroundColor: bgColor,
-                          cursor: "pointer",
-                          fontFamily: '"DM Sans", sans-serif',
-                          minWidth: "40px",
-                          maxWidth: "48px"
-                        }}
-                      >
-                        <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
-                        <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
-                      </div>
-                    );
-                  })}
+                      let textColor = "#5A658D";
+                      if (isSelected) textColor = "#262C44";
+                      else if (isTodayDay) textColor = "#088D98";
+
+                      return (
+                        <div
+                          key={i}
+                          onClick={() => setSelectedDate(dateStr)}
+                          className="flex-1 rounded-[1.5rem] py-3 text-center transition-all relative"
+                          style={{ 
+                            backgroundColor: bgColor,
+                            cursor: "pointer",
+                            fontFamily: '"DM Sans", sans-serif',
+                            minWidth: "40px",
+                            maxWidth: "48px"
+                          }}
+                        >
+                          {hasAlert && (
+                            <div className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#C10127]" />
+                          )}
+                          <div style={{ fontSize: "0.875rem", fontWeight: 700, color: textColor }}>{dayName}</div>
+                          <div style={{ fontSize: "0.875rem", fontWeight: (isTodayDay || isSelected) ? 700 : 400, color: textColor, marginTop: "0.25rem" }}>{dayNum}</div>
+                        </div>
+                      );
+                    })}
                 </div>
               ) : activeView === "progress" ? (
                     <div className="flex flex-col w-full gap-3 pb-2">
