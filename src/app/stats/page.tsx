@@ -753,17 +753,17 @@ function MacroCard({
       "other": "Other"
     };
 
-    const mealNameIconMap: Record<string, BadgeIconSemantic> = {
-      "breakfast": "Breakfast",
-      "lunch": "Lunch",
-      "dinner": "Dinner",
-      "pre_breakfast": "Breakfast",
-      "morning": "Morning",
-      "afternoon": "Afternoon",
-      "night": "Night",
-      "snack": "Afternoon",
-      "other": "Lunch"
-    };
+      const mealNameIconMap: Record<string, BadgeIconSemantic> = {
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "pre_breakfast": "Breakfast",
+        "morning": "Afternoon",
+        "afternoon": "Afternoon",
+        "night": "Night",
+        "snack": "Afternoon",
+        "other": "Lunch"
+      };
 
     const semantic = mealNameIconMap[meal.meal] || "Lunch";
     const displayName = mealNameDisplayMap[meal.meal] || meal.meal;
