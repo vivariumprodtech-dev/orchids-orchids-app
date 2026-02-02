@@ -1757,7 +1757,7 @@ function MacroCard({
                       </div>
                             <ShadcnRadialProgress value={data.calories} max={totalTarget} size={122} color={BadgeIconColors.Lunch} innerRadius="77%">
 
-                            {calorieBadge.text.toLowerCase().includes("🎯") || calorieBadge.text.toLowerCase() === "calories on target" || calorieBadge.text.toLowerCase() === "calories on track" && !isOver ? (
+                            {(calorieBadge.text.toLowerCase().includes("🎯") || calorieBadge.text.toLowerCase() === "calories on target") || (!isToday && calorieBadge.text.toLowerCase() === "calories on track" && !isOver) ? (
                               <Check size={24} color="#199761" strokeWidth={3} />
                             ) : (
                               <div 
