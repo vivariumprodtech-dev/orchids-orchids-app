@@ -357,7 +357,7 @@ function getFoodEmoji(name: string): string {
   return "🍲";
 }
 
-  function FoodEntryCard({ food }: { food: FoodEntry }) {
+  function FoodEntryCard({ food, onAction }: { food: FoodEntry; onAction?: (type: "updated" | "excluded") => void }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editingGrams, setEditingGrams] = useState(food.grams);
 
@@ -425,6 +425,10 @@ function getFoodEmoji(name: string): string {
 
               <div className="flex items-center justify-between">
                 <button 
+                  onClick={() => {
+                    setIsEditing(false);
+                    onAction?.("excluded");
+                  }}
                   className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
                   style={{ backgroundColor: "#ED5070" }}
                 >
@@ -442,7 +446,10 @@ function getFoodEmoji(name: string): string {
                     <X size={20} color="#3B4361" />
                   </button>
                   <button 
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => {
+                      setIsEditing(false);
+                      onAction?.("updated");
+                    }}
                     className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
                     style={{ backgroundColor: "#009EAB" }}
                   >
@@ -455,6 +462,7 @@ function getFoodEmoji(name: string): string {
         </div>
       );
     }
+
 
     return (
       <div className="relative rounded-2xl bg-white p-3 shadow-sm flex gap-3">
