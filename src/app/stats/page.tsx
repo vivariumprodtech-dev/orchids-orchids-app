@@ -625,7 +625,7 @@ function MacroCard({
           <div className={`relative rounded-2xl bg-white pl-4 ${type === "water" ? "py-3" : "py-4"} ${(type === "processed" || type === "alcohol") ? "pr-[12px]" : "pr-2"} shadow-sm`}>
             <div className={`flex items-center justify-between`}>
 
-            <div className={`flex-1 ${(!isSpecial) ? "pr-[84px]" : ""}`}>
+            <div className="flex-1">
             {isSpecial ? (
               <div className="flex flex-col gap-[8px]">
                 <div className="flex items-center gap-1.5">
