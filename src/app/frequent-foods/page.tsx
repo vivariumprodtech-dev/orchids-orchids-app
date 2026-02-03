@@ -262,7 +262,7 @@ function FrequentFoodsContent() {
   };
 
     return (
-      <div className="min-h-screen bg-[#F9F9FB] font-sans text-gray-900 overflow-y-auto scrollbar-hide">
+      <div className="min-h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
         <style jsx global>{`
           .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -274,7 +274,7 @@ function FrequentFoodsContent() {
         `}</style>
 
         {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9F9FB] px-5 pt-5 border-b-2 border-[#ECEDF2]">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 border-b-2 border-[#ECEDF2]">
           <div className="mb-3 flex items-center justify-between">
             {/* Logo */}
             <div
