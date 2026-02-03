@@ -338,43 +338,46 @@ function FrequentFoodsContent() {
                   <ChevronDown size={16} className="text-[var(--text-secondary)]" />
                 </button>
 
-                {showMomentPicker && (
-                  <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-white p-3 shadow-lg border border-gray-100">
-                    {/* Date selector */}
-                    <div className="mb-3">
-                      <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Data</label>
-                      <input
-                        type="date"
-                        value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
-                      />
-                    </div>
-                    
-                    {/* Moment selector */}
-                    <div>
-                      <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Momento</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {(["breakfast", "lunch", "dinner", "snack"] as MealMoment[]).map(moment => (
-                          <button
-                            key={moment}
-                            onClick={() => {
-                              setSelectedMoment(moment);
-                              setShowMomentPicker(false);
-                            }}
-                            className={`rounded-lg px-3 py-2 text-body-sm-custom transition-colors ${
-                              selectedMoment === moment
-                                ? "bg-[#009EAB] text-white"
-                                : "bg-[#F9F9FB] text-[#5A658D] hover:bg-gray-200"
-                            }`}
-                          >
-                            {momentLabels[moment]}
-                          </button>
-                        ))}
+                  {showMomentPicker && (
+                    <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl bg-white p-3 shadow-lg border border-gray-100">
+                      {/* Date selector */}
+                      <div className="mb-3">
+                        <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Date</label>
+                        <div className="relative">
+                          <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                          <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            className="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Moment selector */}
+                      <div>
+                        <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Moment</label>
+                        <div className="flex flex-wrap gap-2">
+                          {(["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner"] as MealMoment[]).map(moment => (
+                            <button
+                              key={moment}
+                              onClick={() => {
+                                setSelectedMoment(moment);
+                                setShowMomentPicker(false);
+                              }}
+                              className={`rounded-full px-3 py-2 text-body-sm-custom transition-colors ${
+                                selectedMoment === moment
+                                  ? "bg-[#009EAB] text-white"
+                                  : "bg-[#F9F9FB] text-[var(--text-tertiary)] hover:bg-gray-200"
+                              }`}
+                            >
+                              {momentLabels[moment]}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
 
               {/* Profile Button */}
