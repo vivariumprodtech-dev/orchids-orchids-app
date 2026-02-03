@@ -590,28 +590,30 @@ function FrequentFoodsContent() {
                           </div>
                         </div>
                         
-                        {/* Moment selector */}
-                        <div>
-                          <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Moment</label>
-                          <div className="flex flex-wrap gap-2">
-                            {(["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner"] as MealMoment[]).map(moment => (
-                              <button
-                                key={moment}
-                                onClick={() => {
-                                  setSelectedMoment(moment);
-                                  setShowMomentPicker(false);
-                                }}
-                                className={`rounded-full px-3 py-2 text-body-sm-custom transition-colors ${
-                                  selectedMoment === moment
-                                    ? "bg-[#009EAB] text-white"
-                                    : "bg-[#F9F9FB] text-[var(--text-tertiary)] hover:bg-gray-200"
-                                }`}
-                              >
-                                {momentLabels[moment]}
-                              </button>
-                            ))}
+                        {/* Moment selector - only for food tab */}
+                        {activeTab === "food" && (
+                          <div>
+                            <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Moment</label>
+                            <div className="flex flex-wrap gap-2">
+                              {(["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner"] as MealMoment[]).map(moment => (
+                                <button
+                                  key={moment}
+                                  onClick={() => {
+                                    setSelectedMoment(moment);
+                                    setShowMomentPicker(false);
+                                  }}
+                                  className={`rounded-full px-3 py-2 text-body-sm-custom transition-colors ${
+                                    selectedMoment === moment
+                                      ? "bg-[#009EAB] text-white"
+                                      : "bg-[#F9F9FB] text-[var(--text-tertiary)] hover:bg-gray-200"
+                                  }`}
+                                >
+                                  {momentLabels[moment]}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     )}
               </div>
