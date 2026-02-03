@@ -403,46 +403,96 @@ function FrequentFoodsContent() {
                 </button>
 
                   {showMomentPicker && (
-                    <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl bg-white p-3 shadow-lg border border-gray-100">
-                      {/* Date selector */}
-                      <div className="mb-3">
-                        <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Date</label>
-                        <div className="relative">
-                          <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-                            <input
-                              type="date"
-                              value={selectedDate}
-                              onChange={(e) => setSelectedDate(e.target.value)}
-                              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                              className="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
-                            />
-                        </div>
-                      </div>
-                      
-                      {/* Moment selector */}
-                      <div>
-                        <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Moment</label>
-                        <div className="flex flex-wrap gap-2">
-                          {(["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner"] as MealMoment[]).map(moment => (
+                      <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-2xl bg-white p-4 shadow-lg border border-gray-100">
+                        {/* Date selector - Custom Calendar */}
+                        <div className="mb-4">
+                          <label className="mb-2 block text-caption-custom text-[var(--text-tertiary)]">Date</label>
+                          
+                          {/* Calendar Header */}
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-body-sm-custom text-[var(--text-secondary)] font-medium">{formatMonthYear(calendarMonth)}</span>
+                            <div className="flex gap-1">
+                              <button
+                                onClick={handlePrevMonth}
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F9F9FB] text-[var(--text-secondary)] hover:bg-gray-200 transition-colors"
+                              >
+                                <ChevronLeft size={16} />
+                              </button>
+                              <button
+                                onClick={handleNextMonth}
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F9F9FB] text-[var(--text-secondary)] hover:bg-gray-200 transition-colors"
+                              >
+                                <ChevronRight size={16} />
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {/* Day Labels */}
+                          <div className="grid grid-cols-7 gap-1 mb-2">
+                            {["M", "T", "W", "T", "F", "S", "S"].map((day, i) => (
+                              <div key={i} className="text-center text-caption-custom text-[var(--text-tertiary)]">
+                                {day}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Calendar Days */}
+                          <div className="grid grid-cols-7 gap-1">
+                            {getDaysInMonth(calendarMonth).map((day, i) => (
+                              <div key={i} className="aspect-square">
+                                {day && (
+                                  <button
+                                    onClick={() => handleSelectDay(day)}
+                                    className={`w-full h-full flex items-center justify-center rounded-full text-body-sm-custom transition-colors ${
+                                      isSelectedDay(day)
+                                        ? "bg-[#009EAB] text-white"
+                                        : isToday(day)
+                                        ? "bg-[#9EDDE2] text-[#262C44]"
+                                        : "text-[var(--text-secondary)] hover:bg-[#F9F9FB]"
+                                    }`}
+                                  >
+                                    {day}
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Today Button */}
+                          <div className="flex justify-end mt-3">
                             <button
-                              key={moment}
-                              onClick={() => {
-                                setSelectedMoment(moment);
-                                setShowMomentPicker(false);
-                              }}
-                              className={`rounded-full px-3 py-2 text-body-sm-custom transition-colors ${
-                                selectedMoment === moment
-                                  ? "bg-[#009EAB] text-white"
-                                  : "bg-[#F9F9FB] text-[var(--text-tertiary)] hover:bg-gray-200"
-                              }`}
+                              onClick={handleToday}
+                              className="text-body-sm-custom text-[#009EAB] font-medium hover:underline"
                             >
-                              {momentLabels[moment]}
+                              Today
                             </button>
-                          ))}
+                          </div>
+                        </div>
+                        
+                        {/* Moment selector */}
+                        <div>
+                          <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Moment</label>
+                          <div className="flex flex-wrap gap-2">
+                            {(["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner"] as MealMoment[]).map(moment => (
+                              <button
+                                key={moment}
+                                onClick={() => {
+                                  setSelectedMoment(moment);
+                                  setShowMomentPicker(false);
+                                }}
+                                className={`rounded-full px-3 py-2 text-body-sm-custom transition-colors ${
+                                  selectedMoment === moment
+                                    ? "bg-[#009EAB] text-white"
+                                    : "bg-[#F9F9FB] text-[var(--text-tertiary)] hover:bg-gray-200"
+                                }`}
+                              >
+                                {momentLabels[moment]}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
               </div>
 
               {/* Profile Button */}
