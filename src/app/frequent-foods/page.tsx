@@ -6,7 +6,7 @@ import { User2, ChevronDown, Search, Plus, Utensils, GlassWater, Footprints, Sal
 import { supabase } from "@/lib/supabase";
 import BadgeIconSm, { BadgeIconColors } from "@/components/BadgeIconSm";
 
-type MealMoment = "breakfast" | "lunch" | "dinner" | "snack";
+type MealMoment = "breakfast" | "morning_snack" | "lunch" | "afternoon_snack" | "dinner";
 
 interface FrequentFood {
   name: string;
