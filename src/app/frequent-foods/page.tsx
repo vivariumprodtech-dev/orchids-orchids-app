@@ -338,6 +338,108 @@ function FrequentFoodsContent() {
     }
   };
 
+  // Add water to log
+  const handleAddWater = async (ml: number) => {
+    if (!userId) return;
+
+    try {
+      let { data: log, error: logError } = await supabase
+        .from("daily_logs")
+        .select("id, water_ml")
+        .eq("user_id", userId)
+        .eq("date", selectedDate)
+        .maybeSingle();
+
+      if (logError) throw logError;
+
+      let logId = log?.id;
+      const currentWater = log?.water_ml || 0;
+
+      if (!logId) {
+        const { data: newLog, error: createError } = await supabase
+          .from("daily_logs")
+          .insert({ user_id: userId, date: selectedDate, water_ml: ml })
+          .select("id")
+          .single();
+
+        if (createError) throw createError;
+        logId = newLog.id;
+      } else {
+        const { error: updateError } = await supabase
+          .from("daily_logs")
+          .update({ water_ml: currentWater + ml })
+          .eq("id", logId);
+
+        if (updateError) throw updateError;
+      }
+
+      showToast(`${ml}ml of water added`);
+    } catch (err) {
+      console.error("Error adding water:", err);
+      showToast("Error adding water");
+    }
+  };
+
+  // Add activity to log
+  const handleAddActivity = async (activityId: string, value: number, unit: string) => {
+    if (!userId) return;
+
+    try {
+      let { data: log, error: logError } = await supabase
+        .from("daily_logs")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("date", selectedDate)
+        .maybeSingle();
+
+      if (logError) throw logError;
+
+      let logId = log?.id;
+
+      if (!logId) {
+        const { data: newLog, error: createError } = await supabase
+          .from("daily_logs")
+          .insert({ user_id: userId, date: selectedDate })
+          .select("id")
+          .single();
+
+        if (createError) throw createError;
+        logId = newLog.id;
+      }
+
+      // Update specific activity field based on activityId
+      const updateData: Record<string, number> = {};
+      if (activityId === "active_kcal") updateData.active_kcal = value;
+      else if (activityId === "steps") updateData.steps = value;
+      else if (activityId === "walking") updateData.walking_minutes = unit === "hour" ? value : Math.round(value / 60);
+      else if (activityId === "running") updateData.running_minutes = value;
+      else if (activityId === "biking") updateData.biking_minutes = value;
+      else if (activityId === "training") updateData.training_minutes = unit === "hour" ? value : Math.round(value / 60);
+
+      if (Object.keys(updateData).length > 0) {
+        const { error: updateError } = await supabase
+          .from("daily_logs")
+          .update(updateData)
+          .eq("id", logId);
+
+        if (updateError) throw updateError;
+      }
+
+      const activity = activityItems.find(a => a.id === activityId);
+      showToast(`${activity?.name || "Activity"} added: ${value} ${unit}`);
+    } catch (err) {
+      console.error("Error adding activity:", err);
+      showToast("Error adding activity");
+    }
+  };
+
+  // Filter activities based on search
+  const filteredActivities = useMemo(() => {
+    if (!activitySearchQuery.trim()) return activityItems;
+    const query = activitySearchQuery.toLowerCase();
+    return activityItems.filter(a => a.name.toLowerCase().includes(query));
+  }, [activitySearchQuery]);
+
   const handleProfileClick = () => {
     router.push(`/profile?userId=${userId || ""}`);
   };
