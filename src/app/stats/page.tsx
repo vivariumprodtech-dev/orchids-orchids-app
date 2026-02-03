@@ -240,7 +240,7 @@ function MissingAlert() {
             innerRadius={innerRadius}
             outerRadius={outerRadius}
             startAngle={90}
-            endAngle={450}
+            endAngle={-270}
             stroke="none"
             isAnimationActive={false}
           >
@@ -255,7 +255,7 @@ function MissingAlert() {
             innerRadius={innerRadius}
             outerRadius={outerRadius}
             startAngle={90}
-            endAngle={450}
+            endAngle={-270}
             stroke="none"
             cornerRadius={10}
             paddingAngle={0}
