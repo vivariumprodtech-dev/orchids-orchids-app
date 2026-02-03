@@ -261,130 +261,143 @@ function FrequentFoodsContent() {
     router.push(`/profile?userId=${userId || ""}`);
   };
 
-  return (
-    <div className="min-h-screen bg-[#F9F9FB] font-sans text-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white px-5 pb-3 pt-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div
-            className="text-2xl font-bold"
-            style={{
-              background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Giada.
-          </div>
+    return (
+      <div className="min-h-screen bg-[#F9F9FB] font-sans text-gray-900 overflow-y-auto scrollbar-hide">
+        <style jsx global>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
 
-          <div className="flex items-center gap-2">
-            {/* Date & Moment Picker */}
-            <div className="relative">
-              <button
-                onClick={() => setShowMomentPicker(!showMomentPicker)}
-                className="flex items-center gap-1.5 rounded-full bg-[#F9F9FB] px-3 py-1.5 text-caption-custom text-[#5A658D] transition-colors active:bg-gray-200"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M10.6667 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5.33333 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 6.66667H14" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <span>{formatDateDisplay(selectedDate)} - {momentLabels[selectedMoment]}</span>
-                <ChevronDown size={14} className="text-[#5A658D]" />
-              </button>
-
-              {showMomentPicker && (
-                <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-white p-3 shadow-lg border border-gray-100">
-                  {/* Date selector */}
-                  <div className="mb-3">
-                    <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Data</label>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
-                    />
-                  </div>
-                  
-                  {/* Moment selector */}
-                  <div>
-                    <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Momento</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {(["breakfast", "lunch", "dinner", "snack"] as MealMoment[]).map(moment => (
-                        <button
-                          key={moment}
-                          onClick={() => {
-                            setSelectedMoment(moment);
-                            setShowMomentPicker(false);
-                          }}
-                          className={`rounded-lg px-3 py-2 text-body-sm-custom transition-colors ${
-                            selectedMoment === moment
-                              ? "bg-[#009EAB] text-white"
-                              : "bg-[#F9F9FB] text-[#5A658D] hover:bg-gray-200"
-                          }`}
-                        >
-                          {momentLabels[moment]}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9F9FB] px-5 pt-5 border-b-2 border-[#ECEDF2]">
+          <div className="mb-3 flex items-center justify-between">
+            {/* Logo */}
+            <div
+              className="text-3xl font-bold"
+              style={{
+                background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Giada.
             </div>
 
-            {/* Profile Button */}
+            <div className="flex items-center gap-2">
+              {/* Date & Moment Picker */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowMomentPicker(!showMomentPicker)}
+                  className="flex h-8 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-caption-custom text-[#5A658D] transition-colors active:bg-gray-200"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10.6667 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.33333 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 6.66667H14" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>{formatDateDisplay(selectedDate)} - {momentLabels[selectedMoment]}</span>
+                  <ChevronDown size={14} className="text-[#5A658D]" />
+                </button>
+
+                {showMomentPicker && (
+                  <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl bg-white p-3 shadow-lg border border-gray-100">
+                    {/* Date selector */}
+                    <div className="mb-3">
+                      <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Data</label>
+                      <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
+                      />
+                    </div>
+                    
+                    {/* Moment selector */}
+                    <div>
+                      <label className="mb-1.5 block text-caption-custom text-[#757FA0]">Momento</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {(["breakfast", "lunch", "dinner", "snack"] as MealMoment[]).map(moment => (
+                          <button
+                            key={moment}
+                            onClick={() => {
+                              setSelectedMoment(moment);
+                              setShowMomentPicker(false);
+                            }}
+                            className={`rounded-lg px-3 py-2 text-body-sm-custom transition-colors ${
+                              selectedMoment === moment
+                                ? "bg-[#009EAB] text-white"
+                                : "bg-[#F9F9FB] text-[#5A658D] hover:bg-gray-200"
+                            }`}
+                          >
+                            {momentLabels[moment]}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profile Button */}
+              <button
+                onClick={handleProfileClick}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#5A658D] transition-all active:scale-95 active:bg-[#5A658D]/20"
+              >
+                <User2 size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="mb-3 flex gap-2">
             <button
-              onClick={handleProfileClick}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F9F9FB] text-[#5A658D] transition-all active:scale-95 active:bg-[#5A658D]/20"
+              onClick={() => setActiveTab("food")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+                activeTab === "food"
+                  ? "bg-[#9EDDE2] text-[#262C44]"
+                  : "bg-white text-[var(--text-secondary)]"
+              }`}
+              style={{ height: "32px" }}
             >
-              <User2 size={16} />
+              <Utensils size={16} />
+              <span>Frequent food</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("water")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+                activeTab === "water"
+                  ? "bg-[#9EDDE2] text-[#262C44]"
+                  : "bg-white text-[var(--text-secondary)]"
+              }`}
+              style={{ height: "32px" }}
+            >
+              <GlassWater size={16} />
+              <span>Water</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("activity")}
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+                activeTab === "activity"
+                  ? "bg-[#9EDDE2] text-[#262C44]"
+                  : "bg-white text-[var(--text-secondary)]"
+              }`}
+              style={{ height: "32px" }}
+            >
+              <Footprints size={16} />
+              <span>Activity</span>
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="px-5 pb-20 pt-4">
-        {/* Tabs */}
-        <div className="mb-4 flex gap-2">
-          <button
-            onClick={() => setActiveTab("food")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-medium transition-colors ${
-              activeTab === "food"
-                ? "bg-[#5A658D] text-white"
-                : "bg-white text-[#5A658D] border border-gray-200"
-            }`}
-          >
-            <Utensils size={16} />
-            <span>Frequent food</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("water")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-medium transition-colors ${
-              activeTab === "water"
-                ? "bg-[#5A658D] text-white"
-                : "bg-white text-[#5A658D] border border-gray-200"
-            }`}
-          >
-            <GlassWater size={16} />
-            <span>Water</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("activity")}
-            className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-medium transition-colors ${
-              activeTab === "activity"
-                ? "bg-[#5A658D] text-white"
-                : "bg-white text-[#5A658D] border border-gray-200"
-            }`}
-          >
-            <Footprints size={16} />
-            <span>Activity</span>
-          </button>
-        </div>
-
-        {activeTab === "food" && (
+        <div className="px-5 pb-20 space-y-4" style={{ paddingTop: "140px" }}>
+          {activeTab === "food" && (
           <>
             {/* Search Input */}
             <div className="mb-4">
