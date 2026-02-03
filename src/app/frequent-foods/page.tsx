@@ -686,6 +686,26 @@ function FrequentFoodsContent() {
               </div>
             )}
 
+          {/* Search Row (only if tab is activity) */}
+            {activeTab === "activity" && (
+              <div className="pb-3">
+                <div
+                  className="flex items-center gap-2 rounded-full px-4"
+                  style={{ backgroundColor: "#ECEDF2", height: "40px" }}
+                >
+                  <Search size={16} className="text-[var(--text-secondary)]" />
+                  <input
+                    type="text"
+                    placeholder="Search for activity..."
+                    value={activitySearchQuery}
+                    onChange={(e) => setActivitySearchQuery(e.target.value)}
+                    className="flex-1 bg-transparent text-body-sm-custom placeholder:text-[var(--text-secondary)] focus:outline-none"
+                    style={{ color: "var(--text-secondary)" }}
+                  />
+                </div>
+              </div>
+            )}
+
           {/* Filters Row (only if tab is food) */}
           {activeTab === "food" && (
             <div className="pb-3 flex gap-2 overflow-x-auto scrollbar-hide flex-nowrap">
