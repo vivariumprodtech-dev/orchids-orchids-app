@@ -264,14 +264,31 @@ function FrequentFoodsContent() {
     return (
       <div className="min-h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
         <style jsx global>{`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-        `}</style>
+            .scrollbar-hide::-webkit-scrollbar {
+              display: none;
+            }
+            .scrollbar-hide {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 16px;
+              height: 16px;
+              border-radius: 50%;
+              background: #5A658D;
+              cursor: pointer;
+            }
+            input[type="range"]::-moz-range-thumb {
+              width: 16px;
+              height: 16px;
+              border-radius: 50%;
+              background: #5A658D;
+              cursor: pointer;
+              border: none;
+            }
+          `}</style>
 
         {/* Header */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-gray-100 px-5 pt-5 border-b-2 border-[#ECEDF2]">
