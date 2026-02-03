@@ -86,11 +86,12 @@ function FrequentFoodsContent() {
   };
 
   const momentLabels: Record<MealMoment, string> = {
-    breakfast: "Breakfast",
-    lunch: "Lunch", 
-    dinner: "Dinner",
-    snack: "Snack"
-  };
+      breakfast: "Breakfast",
+      morning_snack: "Morning snack",
+      lunch: "Lunch", 
+      afternoon_snack: "Afternoon snack",
+      dinner: "Dinner"
+    };
 
   // Load frequent foods from user's food logs
   useEffect(() => {
