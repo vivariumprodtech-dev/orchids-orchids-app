@@ -50,6 +50,27 @@ function getFoodEmoji(name: string): string {
   return "🍲";
 }
 
+// Activity types with their properties
+interface ActivityItem {
+  id: string;
+  name: string;
+  emoji: string;
+  unit: string;
+  min: number;
+  max: number;
+  defaultValue: number;
+  step: number;
+}
+
+const activityItems: ActivityItem[] = [
+  { id: "active_kcal", name: "Active kcal", emoji: "🏃", unit: "kcal", min: 50, max: 1000, defaultValue: 250, step: 10 },
+  { id: "steps", name: "Steps", emoji: "👣", unit: "steps", min: 1000, max: 30000, defaultValue: 5000, step: 500 },
+  { id: "walking", name: "Walking", emoji: "🚶", unit: "hour", min: 0, max: 180, defaultValue: 60, step: 15 },
+  { id: "running", name: "Running", emoji: "🏃", unit: "min", min: 0, max: 120, defaultValue: 30, step: 5 },
+  { id: "biking", name: "Biking", emoji: "🚴", unit: "min", min: 0, max: 180, defaultValue: 30, step: 5 },
+  { id: "training", name: "Training", emoji: "🏋️", unit: "hour", min: 0, max: 180, defaultValue: 60, step: 15 },
+];
+
 function FrequentFoodsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -57,6 +78,7 @@ function FrequentFoodsContent() {
 
   const [activeTab, setActiveTab] = useState<TabType>("food");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activitySearchQuery, setActivitySearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [frequentFoods, setFrequentFoods] = useState<FrequentFood[]>([]);
   const [loading, setLoading] = useState(true);
