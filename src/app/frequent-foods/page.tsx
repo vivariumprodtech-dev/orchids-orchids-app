@@ -356,12 +356,13 @@ function FrequentFoodsContent() {
                         <label className="mb-1.5 block text-caption-custom text-[var(--text-tertiary)]">Date</label>
                         <div className="relative">
                           <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
-                          <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value)}
-                            className="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
-                          />
+                            <input
+                              type="date"
+                              value={selectedDate}
+                              onChange={(e) => setSelectedDate(e.target.value)}
+                              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                              className="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2 text-body-sm-custom focus:border-[#009EAB] focus:outline-none"
+                            />
                         </div>
                       </div>
                       
