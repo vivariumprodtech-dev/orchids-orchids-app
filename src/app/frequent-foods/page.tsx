@@ -399,8 +399,8 @@ function FrequentFoodsContent() {
           {activeTab === "food" && (
             <div className="pb-3">
               <div
-                className="flex items-center gap-2 rounded-full px-4 py-1.5"
-                style={{ backgroundColor: "#ECEDF2" }}
+                className="flex items-center gap-2 rounded-full px-4"
+                style={{ backgroundColor: "#ECEDF2", height: "32px" }}
               >
                 <Search size={16} className="text-[var(--text-secondary)]" />
                 <input
