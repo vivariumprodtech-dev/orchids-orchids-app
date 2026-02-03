@@ -733,7 +733,10 @@ function FrequentFoodsContent() {
           )}
         </header>
 
-        <div className="px-5 pb-20 space-y-4" style={{ paddingTop: "230px" }}>
+        <div 
+          className="px-5 pb-20 space-y-4" 
+          style={{ paddingTop: activeTab === "food" ? "230px" : activeTab === "activity" ? "190px" : "150px" }}
+        >
           {activeTab === "food" && (
           <>
             {/* Food List */}
