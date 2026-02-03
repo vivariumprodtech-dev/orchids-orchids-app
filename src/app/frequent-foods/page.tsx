@@ -77,10 +77,7 @@ function FrequentFoodsContent() {
 
   const formatDateDisplay = (dateStr: string) => {
     const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    
     if (dateStr === today) return "Today";
-    if (dateStr === yesterday) return "Yesterday";
     
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -88,9 +85,9 @@ function FrequentFoodsContent() {
 
   const momentLabels: Record<MealMoment, string> = {
       breakfast: "Breakfast",
-      morning_snack: "Morning snack",
+      morning_snack: "Morning S.",
       lunch: "Lunch", 
-      afternoon_snack: "Afternoon snack",
+      afternoon_snack: "Afternoon S.",
       dinner: "Dinner"
     };
 
@@ -126,6 +123,7 @@ function FrequentFoodsContent() {
   };
 
   const handleSelectDay = (day: number) => {
+    if (isFuture(day)) return;
     const newDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
     setSelectedDate(newDate.toISOString().split('T')[0]);
   };
@@ -144,6 +142,13 @@ function FrequentFoodsContent() {
   const isToday = (day: number) => {
     const checkDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
     return checkDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+  };
+
+  const isFuture = (day: number) => {
+    const checkDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return checkDate > today;
   };
 
   // Load frequent foods from user's food logs
@@ -432,11 +437,14 @@ function FrequentFoodsContent() {
                                 {day && (
                                   <button
                                     onClick={() => handleSelectDay(day)}
+                                    disabled={isFuture(day)}
                                     className={`w-full h-full flex items-center justify-center rounded-full text-body-sm-custom transition-colors ${
                                       isSelectedDay(day)
                                         ? "bg-[#009EAB] text-white"
                                         : isToday(day)
                                         ? "bg-[#9EDDE2] text-[#262C44]"
+                                        : isFuture(day)
+                                        ? "text-gray-300 cursor-not-allowed"
                                         : "text-[var(--text-secondary)] hover:bg-[#F9F9FB]"
                                     }`}
                                   >
