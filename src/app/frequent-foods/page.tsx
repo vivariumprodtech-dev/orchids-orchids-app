@@ -875,25 +875,142 @@ function FoodCard({ food, onAdd }: { food: FrequentFood; onAdd: () => void }) {
             />
           </div>
 
-          {/* Calories and grams with + button */}
-          <div className="flex items-center justify-end gap-3">
-            <div className="flex items-baseline gap-1">
-              <span className="text-body-sm-custom">{displayCalories}</span>
-              <span className="text-body-sm-custom">Kcal</span>
+            {/* Calories and grams with + button */}
+            <div className="flex items-center justify-end gap-3">
+              <div className="flex items-baseline gap-1">
+                <span className="text-body-sm-custom">{displayCalories}</span>
+                <span className="text-body-sm-custom">Kcal</span>
+              </div>
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-subtitle-1-custom">{sliderValue}</span>
+                <span className="text-body-sm-custom">g</span>
+              </div>
+              <button
+                onClick={onAdd}
+                className="flex h-8 w-8 items-center justify-center rounded-full transition-colors active:opacity-80"
+                style={{ backgroundColor: "#009EAB" }}
+              >
+                <Plus size={16} color="#FFFFFF" />
+              </button>
             </div>
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-subtitle-1-custom">{sliderValue}</span>
-              <span className="text-body-sm-custom">g</span>
-            </div>
-            <button
-              onClick={onAdd}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition-colors active:opacity-80"
-              style={{ backgroundColor: "#009EAB" }}
-            >
-              <Plus size={16} color="#FFFFFF" />
-            </button>
           </div>
         </div>
+      </div>
+    );
+}
+
+function WaterCard({ onAdd }: { onAdd: (ml: number) => void }) {
+  const [sliderValue, setSliderValue] = useState(250);
+  const min = 50;
+  const max = 1000;
+
+  return (
+    <div className="relative rounded-2xl bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3 mb-4">
+        {/* Water emoji */}
+        <div
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
+          style={{ background: "#F9F9FB" }}
+        >
+          <span style={{ fontSize: "18px" }}>💧</span>
+        </div>
+        <span className="text-title-custom">Water</span>
+      </div>
+
+      {/* Slider */}
+      <div className="mb-4">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={50}
+          value={sliderValue}
+          onChange={(e) => setSliderValue(Number(e.target.value))}
+          className="w-full h-1 rounded-full appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, #5A658D 0%, #5A658D ${((sliderValue - min) / (max - min)) * 100}%, #E5E7EB ${((sliderValue - min) / (max - min)) * 100}%, #E5E7EB 100%)`
+          }}
+        />
+      </div>
+
+      {/* Value and add button */}
+      <div className="flex items-center justify-end gap-3">
+        <div className="flex items-baseline gap-0.5">
+          <span className="text-subtitle-1-custom">{sliderValue}</span>
+          <span className="text-body-sm-custom">ml</span>
+        </div>
+        <button
+          onClick={() => onAdd(sliderValue)}
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors active:opacity-80"
+          style={{ backgroundColor: "#009EAB" }}
+        >
+          <Plus size={16} color="#FFFFFF" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ActivityCard({ activity, onAdd }: { activity: ActivityItem; onAdd: (value: number) => void }) {
+  const [sliderValue, setSliderValue] = useState(activity.defaultValue);
+
+  // Format display value based on unit
+  const formatValue = () => {
+    if (activity.unit === "hour") {
+      return sliderValue >= 60 ? Math.round(sliderValue / 60) : sliderValue;
+    }
+    return sliderValue;
+  };
+
+  const formatUnit = () => {
+    if (activity.unit === "hour") {
+      return sliderValue >= 60 ? "hour" : "min";
+    }
+    return activity.unit;
+  };
+
+  return (
+    <div className="relative rounded-2xl bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3 mb-4">
+        {/* Activity emoji */}
+        <div
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
+          style={{ background: "#F9F9FB" }}
+        >
+          <span style={{ fontSize: "18px" }}>{activity.emoji}</span>
+        </div>
+        <span className="text-title-custom">{activity.name}</span>
+      </div>
+
+      {/* Slider */}
+      <div className="mb-4">
+        <input
+          type="range"
+          min={activity.min}
+          max={activity.max}
+          step={activity.step}
+          value={sliderValue}
+          onChange={(e) => setSliderValue(Number(e.target.value))}
+          className="w-full h-1 rounded-full appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, #5A658D 0%, #5A658D ${((sliderValue - activity.min) / (activity.max - activity.min)) * 100}%, #E5E7EB ${((sliderValue - activity.min) / (activity.max - activity.min)) * 100}%, #E5E7EB 100%)`
+          }}
+        />
+      </div>
+
+      {/* Value and add button */}
+      <div className="flex items-center justify-end gap-3">
+        <div className="flex items-baseline gap-0.5">
+          <span className="text-subtitle-1-custom">{formatValue()}</span>
+          <span className="text-body-sm-custom">{formatUnit()}</span>
+        </div>
+        <button
+          onClick={() => onAdd(sliderValue)}
+          className="flex h-8 w-8 items-center justify-center rounded-full transition-colors active:opacity-80"
+          style={{ backgroundColor: "#009EAB" }}
+        >
+          <Plus size={16} color="#FFFFFF" />
+        </button>
       </div>
     </div>
   );
