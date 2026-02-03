@@ -264,6 +264,20 @@ function FrequentFoodsContent() {
     return (
       <div className="min-h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
         <style jsx global>{`
+            :root {
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            }
+            :root::-webkit-scrollbar {
+              display: none;
+            }
+            body {
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            }
+            body::-webkit-scrollbar {
+              display: none;
+            }
             .scrollbar-hide::-webkit-scrollbar {
               display: none;
             }
