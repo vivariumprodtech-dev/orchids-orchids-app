@@ -294,16 +294,16 @@ function FrequentFoodsContent() {
               <div className="relative">
                 <button
                   onClick={() => setShowMomentPicker(!showMomentPicker)}
-                  className="flex h-8 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-caption-custom text-[#5A658D] transition-colors active:bg-gray-200"
+                  className="flex h-8 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-caption-custom text-[var(--text-secondary)] transition-colors active:bg-gray-200"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M10.6667 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M5.33333 1.33333V4" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 6.66667H14" stroke="#5A658D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12.6667 2.66667H3.33333C2.59695 2.66667 2 3.26362 2 4V13.3333C2 14.0697 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0697 14 13.3333V4C14 3.26362 13.403 2.66667 12.6667 2.66667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10.6667 1.33333V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.33333 1.33333V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M2 6.66667H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   <span>{formatDateDisplay(selectedDate)} - {momentLabels[selectedMoment]}</span>
-                  <ChevronDown size={14} className="text-[#5A658D]" />
+                  <ChevronDown size={16} className="text-[var(--text-secondary)]" />
                 </button>
 
                 {showMomentPicker && (
@@ -348,7 +348,7 @@ function FrequentFoodsContent() {
               {/* Profile Button */}
               <button
                 onClick={handleProfileClick}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#5A658D] transition-all active:scale-95 active:bg-[#5A658D]/20"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[var(--text-secondary)] transition-all active:scale-95 active:bg-[#5A658D]/20"
               >
                 <User2 size={16} />
               </button>
@@ -356,10 +356,10 @@ function FrequentFoodsContent() {
           </div>
 
           {/* Tabs */}
-          <div className="pb-2 flex gap-2">
+          <div className="pb-3 flex gap-2 overflow-x-auto scrollbar-hide flex-nowrap">
             <button
               onClick={() => setActiveTab("food")}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all whitespace-nowrap flex-shrink-0 ${
                 activeTab === "food"
                   ? "bg-[#9EDDE2] text-[#262C44]"
                   : "bg-white text-[var(--text-secondary)]"
@@ -371,7 +371,7 @@ function FrequentFoodsContent() {
             </button>
             <button
               onClick={() => setActiveTab("water")}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all whitespace-nowrap flex-shrink-0 ${
                 activeTab === "water"
                   ? "bg-[#9EDDE2] text-[#262C44]"
                   : "bg-white text-[var(--text-secondary)]"
@@ -383,7 +383,7 @@ function FrequentFoodsContent() {
             </button>
             <button
               onClick={() => setActiveTab("activity")}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all whitespace-nowrap flex-shrink-0 ${
                 activeTab === "activity"
                   ? "bg-[#9EDDE2] text-[#262C44]"
                   : "bg-white text-[var(--text-secondary)]"
@@ -394,15 +394,12 @@ function FrequentFoodsContent() {
               <span>Activity</span>
             </button>
           </div>
-        </header>
 
-        <div className="px-5 pb-20 space-y-4" style={{ paddingTop: "140px" }}>
+          {/* Search Row (only if tab is food) */}
           {activeTab === "food" && (
-          <>
-            {/* Search Input */}
-            <div className="mb-4">
+            <div className="pb-3">
               <div
-                className="flex items-center gap-2 rounded-full px-4 py-2.5"
+                className="flex items-center gap-2 rounded-full px-4 py-1.5"
                 style={{ backgroundColor: "#ECEDF2" }}
               >
                 <Search size={16} className="text-[var(--text-secondary)]" />
@@ -416,29 +413,38 @@ function FrequentFoodsContent() {
                 />
               </div>
             </div>
+          )}
 
-            {/* Filter Chips */}
-            <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+          {/* Filters Row (only if tab is food) */}
+          {activeTab === "food" && (
+            <div className="pb-3 flex gap-2 overflow-x-auto scrollbar-hide flex-nowrap">
               {[
-                { key: "all" as FilterType, label: "All" },
-                { key: "fullmeal" as FilterType, label: "Full meal" },
-                { key: "single" as FilterType, label: "Single" },
-                { key: "snack" as FilterType, label: "Snack" },
+                { key: "all" as FilterType, label: "All", icon: null },
+                { key: "fullmeal" as FilterType, label: "Full meal", icon: <Salad size={16} /> },
+                { key: "single" as FilterType, label: "Single", icon: <Apple size={16} /> },
+                { key: "snack" as FilterType, label: "Snack", icon: <Cookie size={16} /> },
               ].map(filter => (
                 <button
                   key={filter.key}
                   onClick={() => setActiveFilter(filter.key)}
-                  className={`whitespace-nowrap rounded-full px-4 py-2 text-caption-custom font-medium transition-colors ${
+                  className={`flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-caption-custom font-medium transition-colors flex-shrink-0 ${
                     activeFilter === filter.key
-                      ? "bg-[#262C44] text-white"
-                      : "bg-white text-[#5A658D] border border-gray-200"
+                      ? "bg-[var(--text-secondary)] text-[var(--text-invert)]"
+                      : "bg-white text-[var(--text-secondary)]"
                   }`}
+                  style={{ height: "32px" }}
                 >
-                  {filter.label}
+                  {filter.icon}
+                  <span>{filter.label}</span>
                 </button>
               ))}
             </div>
+          )}
+        </header>
 
+        <div className="px-5 pb-20 space-y-4" style={{ paddingTop: "230px" }}>
+          {activeTab === "food" && (
+          <>
             {/* Food List */}
             <div className="space-y-3">
               {loading ? (
