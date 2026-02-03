@@ -46,7 +46,11 @@ import {
       Alcohol: "#CE6194",
     };
   
-  const mapping = {
+  interface BadgeIconSmProps {
+  semantic: BadgeIconSemantic;
+}
+
+const mapping = {
     Lunch: { icon: Utensils, bg: BadgeIconColors.Lunch },
     Breakfast: { icon: Croissant, bg: BadgeIconColors.Breakfast },
     Afternoon: { icon: Cookie, bg: BadgeIconColors.Afternoon },
