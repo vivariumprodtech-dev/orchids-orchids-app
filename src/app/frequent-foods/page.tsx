@@ -387,44 +387,44 @@ function FrequentFoodsContent() {
           </div>
 
           {/* Tabs */}
-        <div className="pb-3 flex gap-2 overflow-x-auto scrollbar-hide flex-nowrap">
-                <button
-                  onClick={() => setActiveTab("food")}
-                  className={`flex items-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap flex-shrink-0 ${
-                    activeTab === "food"
-                      ? "bg-[#9EDDE2] text-[#262C44]"
-                      : "bg-white text-[var(--text-secondary)]"
-                  }`}
-                  style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
-                >
-                  <Utensils size={16} />
-                  <span>Frequent food</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("water")}
-                  className={`flex items-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap flex-shrink-0 ${
-                    activeTab === "water"
-                      ? "bg-[#9EDDE2] text-[#262C44]"
-                      : "bg-white text-[var(--text-secondary)]"
-                  }`}
-                  style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
-                >
-                  <GlassWater size={16} />
-                  <span>Water</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("activity")}
-                  className={`flex items-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap flex-shrink-0 ${
-                    activeTab === "activity"
-                      ? "bg-[#9EDDE2] text-[#262C44]"
-                      : "bg-white text-[var(--text-secondary)]"
-                  }`}
-                  style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
-                >
-                  <Footprints size={16} />
-                  <span>Activity</span>
-                </button>
-            </div>
+          <div className="pb-3 flex gap-2">
+                  <button
+                    onClick={() => setActiveTab("food")}
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap ${
+                      activeTab === "food"
+                        ? "bg-[#9EDDE2] text-[#262C44]"
+                        : "bg-white text-[var(--text-secondary)]"
+                    }`}
+                    style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
+                  >
+                    <Utensils size={16} />
+                    <span>Frequent food</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("water")}
+                    className={`flex items-center justify-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap flex-shrink-0 ${
+                      activeTab === "water"
+                        ? "bg-[#9EDDE2] text-[#262C44]"
+                        : "bg-white text-[var(--text-secondary)]"
+                    }`}
+                    style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
+                  >
+                    <GlassWater size={16} />
+                    <span>Water</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("activity")}
+                    className={`flex items-center justify-center gap-2 rounded-full text-caption-custom transition-all whitespace-nowrap flex-shrink-0 ${
+                      activeTab === "activity"
+                        ? "bg-[#9EDDE2] text-[#262C44]"
+                        : "bg-white text-[var(--text-secondary)]"
+                    }`}
+                    style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
+                  >
+                    <Footprints size={16} />
+                    <span>Activity</span>
+                  </button>
+              </div>
 
           {/* Search Row (only if tab is food) */}
             {activeTab === "food" && (
