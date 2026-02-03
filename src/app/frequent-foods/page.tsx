@@ -264,26 +264,26 @@ function FrequentFoodsContent() {
     return (
       <div className="min-h-screen bg-gray-100 font-sans text-gray-900 overflow-y-auto scrollbar-hide">
         <style jsx global>{`
-            :root {
-              scrollbar-width: none;
-              -ms-overflow-style: none;
+            html, body {
+              scrollbar-width: none !important;
+              -ms-overflow-style: none !important;
             }
-            :root::-webkit-scrollbar {
-              display: none;
-            }
-            body {
-              scrollbar-width: none;
-              -ms-overflow-style: none;
-            }
-            body::-webkit-scrollbar {
-              display: none;
+            html::-webkit-scrollbar, body::-webkit-scrollbar {
+              display: none !important;
             }
             .scrollbar-hide::-webkit-scrollbar {
-              display: none;
+              display: none !important;
             }
             .scrollbar-hide {
-              -ms-overflow-style: none;
-              scrollbar-width: none;
+              -ms-overflow-style: none !important;
+              scrollbar-width: none !important;
+            }
+            * {
+              scrollbar-width: none !important;
+              -ms-overflow-style: none !important;
+            }
+            *::-webkit-scrollbar {
+              display: none !important;
             }
             input[type="range"]::-webkit-slider-thumb {
               -webkit-appearance: none;
