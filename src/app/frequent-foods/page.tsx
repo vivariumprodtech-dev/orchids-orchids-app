@@ -286,6 +286,17 @@ function FrequentFoodsContent() {
             *::-webkit-scrollbar {
               display: none !important;
             }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              margin: 0;
+              padding: 0;
+              cursor: pointer;
+              opacity: 0;
+            }
             input[type="range"]::-webkit-slider-thumb {
               -webkit-appearance: none;
               appearance: none;
