@@ -1665,68 +1665,68 @@ function MacroCard({
               ) : activeView === "progress" ? (
                     <div className="flex flex-col w-full gap-3 pb-2">
                         <div className="flex gap-2">
-                          <button
-                            onClick={() => setProgressTab("kcal")}
-                            className="flex-1 rounded-full text-center transition-all flex items-center justify-center px-3"
-                            style={{
-                              height: "32px",
-                              backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
-                              color: progressTab === "kcal" ? "#262C44" : "#5A658D",
-                              fontSize: "0.875rem",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Kcal & goals
-                          </button>
-                          <button
-                            onClick={() => setProgressTab("macros")}
-                            className="flex-1 rounded-full text-center transition-all flex items-center justify-center px-3"
-                            style={{
-                              height: "32px",
-                              backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
-                              color: progressTab === "macros" ? "#262C44" : "#5A658D",
-                              fontSize: "0.875rem",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Macros
-                          </button>
-                        </div>
-                          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide w-full pb-1">
-                            {(["7d", "1m", "3m", "6m"] as const).map((range) => (
                             <button
-                              key={range}
-                              onClick={() => setTimeRange(range)}
-                              className="text-caption-custom transition-all whitespace-nowrap"
+                              onClick={() => setProgressTab("kcal")}
+                              className="flex-1 rounded-full text-center transition-all flex items-center justify-center px-3"
                               style={{
-                                display: "flex",
                                 height: "32px",
-                                padding: "0 12px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "10px",
-                                borderRadius: "100px",
-                                backgroundColor: timeRange === range ? "#5A658D" : "#FFFFFF",
-                                color: timeRange === range ? "#FFFFFF" : "#5A658D",
+                                backgroundColor: progressTab === "kcal" ? "#9EDDE2" : "#FFFFFF",
+                                color: progressTab === "kcal" ? "#262C44" : "var(--text-secondary)",
+                                fontSize: "0.875rem",
+                                fontWeight: 700,
                               }}
                             >
-                              {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                              Kcal & goals
                             </button>
-                          ))}
-                          <button 
-                            className="flex-shrink-0"
-                            style={{
-                              display: "flex",
-                              width: "32px",
-                              height: "32px",
-                              padding: "8px",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              backgroundColor: "#FFFFFF",
-                              color: "#5A658D",
-                              borderRadius: "100px",
-                            }}
-                          >
+                            <button
+                              onClick={() => setProgressTab("macros")}
+                              className="flex-1 rounded-full text-center transition-all flex items-center justify-center px-3"
+                              style={{
+                                height: "32px",
+                                backgroundColor: progressTab === "macros" ? "#9EDDE2" : "#FFFFFF",
+                                color: progressTab === "macros" ? "#262C44" : "var(--text-secondary)",
+                                fontSize: "0.875rem",
+                                fontWeight: 700,
+                              }}
+                            >
+                              Macros
+                            </button>
+                          </div>
+                            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide w-full pb-1">
+                              {(["7d", "1m", "3m", "6m"] as const).map((range) => (
+                              <button
+                                key={range}
+                                onClick={() => setTimeRange(range)}
+                                className="text-caption-custom transition-all whitespace-nowrap"
+                                style={{
+                                  display: "flex",
+                                  height: "32px",
+                                  padding: "0 12px",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  gap: "10px",
+                                  borderRadius: "100px",
+                                  backgroundColor: timeRange === range ? "var(--text-secondary)" : "#FFFFFF",
+                                  color: timeRange === range ? "#FFFFFF" : "var(--text-secondary)",
+                                }}
+                              >
+                                {range === "7d" ? "7 days" : range === "1m" ? "1 month" : range === "3m" ? "3 months" : "6 months"}
+                              </button>
+                            ))}
+                            <button 
+                              className="flex-shrink-0"
+                              style={{
+                                display: "flex",
+                                width: "32px",
+                                height: "32px",
+                                padding: "8px",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: "#FFFFFF",
+                                color: "var(--text-secondary)",
+                                borderRadius: "100px",
+                              }}
+                            >
                             <Calendar size={16} />
                           </button>
                         </div>
