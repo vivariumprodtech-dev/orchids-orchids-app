@@ -441,16 +441,16 @@ function FrequentFoodsContent() {
                 { key: "single" as FilterType, label: "Single", icon: <Apple size={16} /> },
                 { key: "snack" as FilterType, label: "Snack", icon: <Cookie size={16} /> },
               ].map(filter => (
-                <button
-                  key={filter.key}
-                  onClick={() => setActiveFilter(filter.key)}
-                  className={`flex items-center gap-2 whitespace-nowrap rounded-full text-caption-custom font-medium transition-colors flex-shrink-0 ${
-                    activeFilter === filter.key
-                      ? "bg-[var(--text-secondary)] text-[var(--text-invert)]"
-                      : "bg-white text-[var(--text-secondary)]"
-                  }`}
-                  style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
-                >
+                  <button
+                    key={filter.key}
+                    onClick={() => setActiveFilter(filter.key)}
+                    className={`flex items-center gap-2 whitespace-nowrap rounded-full text-caption-custom transition-colors flex-shrink-0 ${
+                      activeFilter === filter.key
+                        ? "bg-[var(--text-secondary)] text-[var(--text-invert)]"
+                        : "bg-white text-[var(--text-secondary)]"
+                    }`}
+                    style={{ height: "32px", paddingLeft: "12px", paddingRight: "12px" }}
+                  >
                   {filter.icon}
                   <span>{filter.label}</span>
                 </button>
