@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState, useMemo } from "react";
-import { User2, ChevronDown, Search, Plus, Utensils, GlassWater, Footprints } from "lucide-react";
+import { User2, ChevronDown, Search, Plus, Utensils, GlassWater, Footprints, Salad, Apple, Cookie } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import BadgeIconSm, { BadgeIconColors } from "@/components/BadgeIconSm";
 
