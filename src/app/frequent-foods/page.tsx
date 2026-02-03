@@ -65,6 +65,7 @@ function FrequentFoodsContent() {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedMoment, setSelectedMoment] = useState<MealMoment>("lunch");
   const [showMomentPicker, setShowMomentPicker] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(new Date());
   
   // Toast for feedback
   const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
