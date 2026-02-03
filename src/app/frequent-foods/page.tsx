@@ -356,7 +356,7 @@ function FrequentFoodsContent() {
           </div>
 
           {/* Tabs */}
-          <div className="mb-3 flex gap-2">
+          <div className="pb-2 flex gap-2">
             <button
               onClick={() => setActiveTab("food")}
               className={`flex items-center gap-2 rounded-full px-4 py-2 text-caption-custom font-bold transition-all ${
