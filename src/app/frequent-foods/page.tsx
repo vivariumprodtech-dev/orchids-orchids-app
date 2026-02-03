@@ -763,18 +763,22 @@ function FrequentFoodsContent() {
         )}
 
         {activeTab === "water" && (
-          <div className="flex flex-col items-center justify-center rounded-2xl bg-white p-10 text-center shadow-sm">
-            <GlassWater size={48} className="mb-4 text-[#73B0FF]" />
-            <p className="text-[#5A658D]">Water tracking coming soon</p>
-          </div>
-        )}
+            <div className="space-y-3">
+              <WaterCard onAdd={handleAddWater} />
+            </div>
+          )}
 
-        {activeTab === "activity" && (
-          <div className="flex flex-col items-center justify-center rounded-2xl bg-white p-10 text-center shadow-sm">
-            <Footprints size={48} className="mb-4 text-[#FF9D52]" />
-            <p className="text-[#5A658D]">Activity tracking coming soon</p>
-          </div>
-        )}
+          {activeTab === "activity" && (
+            <div className="space-y-3">
+              {filteredActivities.map(activity => (
+                <ActivityCard
+                  key={activity.id}
+                  activity={activity}
+                  onAdd={(value) => handleAddActivity(activity.id, value, activity.unit)}
+                />
+              ))}
+            </div>
+          )}
       </div>
 
       {/* Toast */}
