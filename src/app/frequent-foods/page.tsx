@@ -94,6 +94,58 @@ function FrequentFoodsContent() {
       dinner: "Dinner"
     };
 
+  // Calendar helper functions
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Monday = 0
+    
+    const days: (number | null)[] = [];
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i);
+    }
+    return days;
+  };
+
+  const formatMonthYear = (date: Date) => {
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  };
+
+  const handlePrevMonth = () => {
+    setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const handleSelectDay = (day: number) => {
+    const newDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+    setSelectedDate(newDate.toISOString().split('T')[0]);
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    setCalendarMonth(today);
+    setSelectedDate(today.toISOString().split('T')[0]);
+  };
+
+  const isSelectedDay = (day: number) => {
+    const checkDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+    return checkDate.toISOString().split('T')[0] === selectedDate;
+  };
+
+  const isToday = (day: number) => {
+    const checkDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+    return checkDate.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+  };
+
   // Load frequent foods from user's food logs
   useEffect(() => {
     const fetchFrequentFoods = async () => {
