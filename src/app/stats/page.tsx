@@ -418,35 +418,35 @@ function getFoodEmoji(name: string): string {
             </div>
           </div>
 
-          {/* Gram input — full width with restore button */}
-          <div 
-            className="flex items-center justify-between w-full rounded-xl border-2 px-3 py-2 mb-3"
-            style={{ borderColor: "#009EAB" }}
-          >
-            <div className="flex items-baseline gap-1 flex-1">
-              <input 
-                type="number" 
-                value={editingGrams} 
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  if (!isNaN(v) && v >= 0) setEditingGrams(v);
-                }}
-                className="text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
-                style={{ width: "4ch", minWidth: "2rem" }}
-              />
-              <span className="text-subtitle-1-custom">g</span>
-            </div>
-            <button 
-              onClick={() => setEditingGrams(food.grams)}
-              className="flex items-center justify-center active:opacity-60 transition-opacity"
-              style={{ color: "#009EAB" }}
+            {/* Gram input — full width with restore button */}
+            <div 
+              className="flex items-center justify-between w-full rounded-xl border-2 px-3 py-3 mb-5"
+              style={{ borderColor: "#009EAB" }}
             >
-              <RotateCcw size={18} />
-            </button>
-          </div>
+              <div className="flex items-baseline gap-2 flex-1">
+                <input 
+                  type="number" 
+                  value={editingGrams} 
+                  onChange={(e) => {
+                    const v = Number(e.target.value);
+                    if (!isNaN(v) && v >= 0) setEditingGrams(v);
+                  }}
+                  className="text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
+                  style={{ width: "4ch", minWidth: "2rem" }}
+                />
+                <span className="text-subtitle-1-custom">g</span>
+              </div>
+              <button 
+                onClick={() => setEditingGrams(food.grams)}
+                className="flex items-center justify-center w-10 h-10 -mr-1 active:opacity-60 transition-opacity"
+                style={{ color: "#009EAB" }}
+              >
+                <RotateCcw size={22} />
+              </button>
+            </div>
 
-          {/* Slider */}
-          <div className="mb-4">
+            {/* Slider */}
+            <div className="mb-5">
             <div className="flex items-center gap-2">
               <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "1.5rem" }}>{sliderMin}g</span>
               <input
