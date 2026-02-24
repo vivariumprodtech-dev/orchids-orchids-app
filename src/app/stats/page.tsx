@@ -1864,11 +1864,12 @@ function MacroCard({
                           </div>
                         ))
                       )}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-            {activeView === "progress" && (
+              <div className="h-16" />
+            </>
+          )}
+              {activeView === "progress" && (
               <div className="space-y-4">
                   {progressTab === "kcal" && (
                       <>
