@@ -420,7 +420,7 @@ function getFoodEmoji(name: string): string {
 
             {/* Gram input — full width with restore button */}
             <div 
-              className="flex items-center justify-between w-full rounded-xl border-2 px-3 py-3 mb-5"
+              className="flex items-center justify-between w-full rounded-xl border-2 px-3 py-2.5 mb-5"
               style={{ borderColor: "#009EAB" }}
             >
               <div className="flex items-baseline gap-2 flex-1">
