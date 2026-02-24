@@ -378,6 +378,9 @@ function getFoodEmoji(name: string): string {
     const [isEditing, setIsEditing] = useState(false);
     const [editingGrams, setEditingGrams] = useState(food.grams);
 
+    const sliderMin = 1;
+    const sliderMax = Math.max(food.grams * 2, 2);
+
     const ratio = food.grams > 0 ? editingGrams / food.grams : 0;
     const displayCalories = Math.round(food.calories * ratio);
     const displayPro = Math.round(food.pro * ratio);
@@ -388,92 +391,125 @@ function getFoodEmoji(name: string): string {
     if (isEditing) {
       return (
         <div className="relative rounded-2xl bg-white p-3 shadow-sm">
-          <div className="flex gap-3">
+          {/* Header: emoji + name */}
+          <div className="flex gap-3 mb-3">
             <div 
               className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
               style={{ background: "#F9F9FB" }}
             >
               <span style={{ fontSize: "18px" }}>{getFoodEmoji(food.name)}</span>
             </div>
-            <div className="flex-1">
-              <div className="mb-1 flex items-center justify-between">
-                <span className="text-title-custom">{food.name}</span>
-                {food.time && (
-                  <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
-                    {food.time}
-                  </div>
-                )}
-              </div>
-                <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
-                  <div className="flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
-                    <span className="text-body-sm-custom">PRO {displayPro}g</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
-                    <span className="text-body-sm-custom">FIB {displayFiber}g</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
-                    <span className="text-body-sm-custom">CAR {displayCarb}g</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
-                    <span className="text-body-sm-custom">FAT {displayFat}g</span>
-                  </div>
+            <div className="flex-1 flex items-start justify-between">
+              <span className="text-title-custom">{food.name}</span>
+              {food.time && (
+                <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
+                  {food.time}
                 </div>
+              )}
+            </div>
+          </div>
 
-              <div className="flex items-center justify-end gap-3 mb-4">
-                <span className="text-body-sm-custom text-[#757FA0]">{displayCalories} Kcal estimated</span>
-                <div className="flex items-center gap-1 rounded-lg border-2 px-2 py-1" style={{ borderColor: "#009EAB" }}>
-                  <input 
-                    type="number" 
-                    value={editingGrams} 
-                    onChange={(e) => setEditingGrams(Number(e.target.value))}
-                    className="w-10 text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="text-body-sm-custom">g</span>
-                  <div className="flex flex-col ml-1">
-                    <button onClick={() => setEditingGrams(prev => prev + 1)} className="text-[#009EAB]"><ChevronUp size={14} /></button>
-                    <button onClick={() => setEditingGrams(prev => Math.max(0, prev - 1))} className="text-[#009EAB]"><ChevronDown size={14} /></button>
-                  </div>
-                </div>
-              </div>
+          {/* Macros row */}
+          <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
+            <div className="flex items-center gap-1">
+              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Protein }} />
+              <span className="text-body-sm-custom">PRO {displayPro}g</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fiber }} />
+              <span className="text-body-sm-custom">FIB {displayFiber}g</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Carbo }} />
+              <span className="text-body-sm-custom">CAR {displayCarb}g</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: BadgeIconColors.Fat }} />
+              <span className="text-body-sm-custom">FAT {displayFat}g</span>
+            </div>
+          </div>
 
-              <div className="flex items-center justify-between">
-                <button 
-                  onClick={() => {
-                    setIsEditing(false);
-                    onAction?.("excluded");
-                  }}
-                  className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
-                  style={{ backgroundColor: "#ED5070" }}
-                >
-                  <Trash size={18} color="#FFFFFF" />
-                </button>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => {
-                      setIsEditing(false);
-                      setEditingGrams(food.grams);
-                    }}
-                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
-                    style={{ backgroundColor: "#F9F9FB" }}
-                  >
-                    <X size={20} color="#3B4361" />
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setIsEditing(false);
-                      onAction?.("updated");
-                    }}
-                    className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
-                    style={{ backgroundColor: "#009EAB" }}
-                  >
-                    <Check size={20} color="#FFFFFF" />
-                  </button>
-                </div>
-              </div>
+          {/* Gram input — full width with restore button */}
+          <div 
+            className="flex items-center justify-between w-full rounded-xl border-2 px-3 py-2 mb-3"
+            style={{ borderColor: "#009EAB" }}
+          >
+            <div className="flex items-baseline gap-1 flex-1">
+              <input 
+                type="number" 
+                value={editingGrams} 
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (!isNaN(v) && v >= 0) setEditingGrams(v);
+                }}
+                className="text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
+                style={{ width: "4ch", minWidth: "2rem" }}
+              />
+              <span className="text-subtitle-1-custom">g</span>
+            </div>
+            <button 
+              onClick={() => setEditingGrams(food.grams)}
+              className="flex items-center justify-center active:opacity-60 transition-opacity"
+              style={{ color: "#009EAB" }}
+            >
+              <RotateCcw size={18} />
+            </button>
+          </div>
+
+          {/* Slider */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "1.5rem" }}>{sliderMin}g</span>
+              <input
+                type="range"
+                min={sliderMin}
+                max={sliderMax}
+                step={1}
+                value={editingGrams}
+                onChange={(e) => setEditingGrams(Number(e.target.value))}
+                className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
+                style={{
+                  accentColor: "#3B4361",
+                  background: `linear-gradient(to right, #3B4361 0%, #3B4361 ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB 100%)`
+                }}
+              />
+              <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "2.5rem", textAlign: "right" }}>{sliderMax}g</span>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center justify-between">
+            <button 
+              onClick={() => {
+                setIsEditing(false);
+                onAction?.("excluded");
+              }}
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+              style={{ backgroundColor: "#ED5070" }}
+            >
+              <Trash size={18} color="#FFFFFF" />
+            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditingGrams(food.grams);
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+                style={{ backgroundColor: "#F9F9FB" }}
+              >
+                <X size={20} color="#3B4361" />
+              </button>
+              <button 
+                onClick={() => {
+                  setIsEditing(false);
+                  onAction?.("updated");
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full transition-colors active:opacity-80"
+                style={{ backgroundColor: "#009EAB" }}
+              >
+                <Check size={20} color="#FFFFFF" />
+              </button>
             </div>
           </div>
         </div>
