@@ -506,16 +506,9 @@ function getFoodEmoji(name: string): string {
     }
 
 
-    return (
-      <div className="relative rounded-2xl bg-white p-3 shadow-sm flex gap-3">
-        <div 
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
-          style={{ background: "#F9F9FB" }}
-        >
-          <span style={{ fontSize: "18px" }}>{getFoodEmoji(food.name)}</span>
-        </div>
-
-        <div className="flex-1">
+      return (
+        <div className="relative rounded-2xl bg-white p-3 shadow-sm">
+          <div className="flex-1">
           <div className="mb-1 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-title-custom">{food.name}</span>
