@@ -390,24 +390,13 @@ function getFoodEmoji(name: string): string {
 
     if (isEditing) {
       return (
-        <div className="relative rounded-2xl bg-white p-3 shadow-sm">
-          {/* Header: emoji + name */}
-          <div className="flex gap-3 mb-3">
-            <div 
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full"
-              style={{ background: "#F9F9FB" }}
-            >
-              <span style={{ fontSize: "18px" }}>{getFoodEmoji(food.name)}</span>
+          <div className="relative rounded-2xl bg-white p-3 shadow-sm">
+            {/* Header: name only */}
+            <div className="flex mb-3">
+              <div className="flex-1 flex items-start">
+                <span className="text-title-custom">{food.name}</span>
+              </div>
             </div>
-            <div className="flex-1 flex items-start justify-between">
-              <span className="text-title-custom">{food.name}</span>
-              {food.time && (
-                <div className="text-caption-custom rounded-lg bg-[#F9F9FB] px-2 py-0.5 text-[#757FA0]">
-                  {food.time}
-                </div>
-              )}
-            </div>
-          </div>
 
           {/* Macros row */}
           <div className="mb-4 flex flex-wrap gap-x-3 gap-y-1">
