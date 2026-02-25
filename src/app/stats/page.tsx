@@ -382,6 +382,8 @@ function getFoodEmoji(name: string): string {
     const sliderMax = Math.max(food.grams * 2, 2);
 
     const ratio = food.grams > 0 ? editingGrams / food.grams : 0;
+    const pctDiff = food.grams > 0 ? Math.round(((editingGrams - food.grams) / food.grams) * 100) : 0;
+    const pctLabel = pctDiff === 0 ? "0%" : pctDiff > 0 ? `+${pctDiff}%` : `${pctDiff}%`;
     const displayCalories = Math.round(food.calories * ratio);
     const displayPro = Math.round(food.pro * ratio);
     const displayFiber = Math.round(food.fiber * ratio);
