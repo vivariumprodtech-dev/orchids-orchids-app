@@ -426,25 +426,27 @@ function getFoodEmoji(name: string): string {
               style={{ borderColor: "#009EAB" }}
             >
               <div className="flex items-baseline gap-2 flex-1">
-                <input 
-                  type="number" 
-                  value={editingGrams} 
-                  onChange={(e) => {
-                    const v = Number(e.target.value);
-                    if (!isNaN(v) && v >= 0) setEditingGrams(v);
-                  }}
-                  className="text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
-                  style={{ width: "4ch", minWidth: "2rem" }}
-                />
-                <span className="text-subtitle-1-custom">g</span>
-              </div>
-              <button 
-                onClick={() => setEditingGrams(food.grams)}
-                className="flex items-center justify-center w-10 h-10 -mr-1 active:opacity-60 transition-opacity"
-                style={{ color: "#009EAB" }}
-              >
-                <RotateCcw size={22} />
-              </button>
+                  <input 
+                    type="number" 
+                    value={editingGrams} 
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      if (!isNaN(v) && v >= 0) setEditingGrams(v);
+                    }}
+                    className="text-subtitle-1-custom focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-transparent"
+                    style={{ width: "4ch", minWidth: "2rem" }}
+                  />
+                  <span className="text-subtitle-1-custom">g</span>
+                  <span className="text-body-sm-custom" style={{ color: "#757FA0" }}>{pctLabel}</span>
+                </div>
+                <button 
+                  onClick={() => setEditingGrams(food.grams)}
+                  className="flex items-center gap-1 px-2 py-2 -mr-1 rounded-full active:opacity-60 transition-opacity"
+                  style={{ color: "#009EAB" }}
+                >
+                  <span className="text-body-sm-custom font-medium" style={{ color: "#009EAB" }}>Ripristina</span>
+                  <RotateCcw size={18} />
+                </button>
             </div>
 
             {/* Slider */}
