@@ -452,23 +452,25 @@ function getFoodEmoji(name: string): string {
             {/* Slider */}
             <div className="mb-5">
             <div className="flex items-center gap-2">
-              <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "1.5rem" }}>{sliderMin}g</span>
-              <input
-                type="range"
-                min={sliderMin}
-                max={sliderMax}
-                step={1}
-                value={editingGrams}
-                onChange={(e) => setEditingGrams(Number(e.target.value))}
-                className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
-                style={{
-                  accentColor: "#3B4361",
-                  background: `linear-gradient(to right, #3B4361 0%, #3B4361 ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB 100%)`
-                }}
-              />
-              <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "2.5rem", textAlign: "right" }}>{sliderMax}g</span>
+                <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "1.5rem" }}>{sliderMin}g</span>
+                <div className="flex-1 relative flex items-center">
+                  <input
+                    type="range"
+                    min={sliderMin}
+                    max={sliderMax}
+                    step={1}
+                    value={editingGrams}
+                    onChange={(e) => setEditingGrams(Number(e.target.value))}
+                    className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#3B4361] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_0_0px_rgba(58,67,97,0)] [&::-webkit-slider-thumb]:hover:shadow-[0_0_0_10px_rgba(58,67,97,0.12)] [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-150 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#3B4361] [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                    style={{
+                      accentColor: "#3B4361",
+                      background: `linear-gradient(to right, #3B4361 0%, #3B4361 ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB ${((editingGrams - sliderMin) / (sliderMax - sliderMin)) * 100}%, #E5E7EB 100%)`
+                    }}
+                  />
+                </div>
+                <span className="text-body-sm-custom text-[#757FA0]" style={{ minWidth: "2.5rem", textAlign: "right" }}>{sliderMax}g</span>
+              </div>
             </div>
-          </div>
 
           {/* Action buttons */}
           <div className="flex items-center justify-between">
