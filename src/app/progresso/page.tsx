@@ -288,37 +288,52 @@ function ProgressoContent() {
         </Button>
       </div>
 
-      {/* Tabs — two separate buttons, no card */}
-      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-        <Button
-          variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
-          size="sm"
-          fullWidth
-          style={{ flex: 1 }}
-          onClick={() => setTab("obiettivo")}
-        >
-          Obiettivo
-        </Button>
-        <Button
-          variant={tab === "macros" ? "neutral" : "neutral-invert"}
-          size="sm"
-          fullWidth
-          style={{ flex: 1 }}
-          onClick={() => setTab("macros")}
-        >
-          Macros
-        </Button>
-      </div>
+      {/* Tabs + period row, with divider underneath */}
+      <div
+        style={{
+          display:       "flex",
+          flexDirection: "column",
+          gap:           "var(--spacing-3)",
+          paddingBottom: "var(--spacing-3)",
+          borderBottom:  "var(--border-1) solid var(--border)",
+          marginLeft:    "calc(-1 * var(--spacing-4))",
+          marginRight:   "calc(-1 * var(--spacing-4))",
+          paddingLeft:   "var(--spacing-4)",
+          paddingRight:  "var(--spacing-4)",
+        }}
+      >
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+          <Button
+            variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
+            size="sm"
+            fullWidth
+            style={{ flex: 1 }}
+            onClick={() => setTab("obiettivo")}
+          >
+            Obiettivo
+          </Button>
+          <Button
+            variant={tab === "macros" ? "neutral" : "neutral-invert"}
+            size="sm"
+            fullWidth
+            style={{ flex: 1 }}
+            onClick={() => setTab("macros")}
+          >
+            Macros
+          </Button>
+        </div>
 
-      {/* Period selector row — no card */}
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-        <PeriodSelect value={period} onChange={handlePeriodChange} />
-        <PeriodNavigator
-          endDate={endDate}
-          period={period}
-          onPrev={handlePrev}
-          onNext={handleNext}
-        />
+        {/* Period selector row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+          <PeriodSelect value={period} onChange={handlePeriodChange} />
+          <PeriodNavigator
+            endDate={endDate}
+            period={period}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        </div>
       </div>
 
       {/* Page title */}
