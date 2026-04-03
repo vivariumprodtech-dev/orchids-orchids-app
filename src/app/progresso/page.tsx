@@ -292,6 +292,8 @@ function ProgressoContent() {
         <Button
           variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
           size="sm"
+          fullWidth
+          style={{ flex: 1 }}
           onClick={() => setTab("obiettivo")}
         >
           Obiettivo
@@ -299,6 +301,8 @@ function ProgressoContent() {
         <Button
           variant={tab === "macros" ? "neutral" : "neutral-invert"}
           size="sm"
+          fullWidth
+          style={{ flex: 1 }}
           onClick={() => setTab("macros")}
         >
           Macros
