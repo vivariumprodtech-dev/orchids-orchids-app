@@ -1,5 +1,6 @@
 "use client";
 
+import "./Button.css";
 import React from "react";
 import type { LucideIcon } from "lucide-react";
 
