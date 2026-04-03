@@ -423,15 +423,15 @@
   .body-md { font-family: var(--font-dm-sans), sans-serif; font-size: 1rem;     font-weight: 400; line-height: 1.5rem; }
   .body-sm { font-family: var(--font-dm-sans), sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.25rem; }
 
-  /* Semantic usage aliases */
-  .page-title         { @apply heading-6;  color: var(--subtitle-1); }
-  .card-main-title    { @apply heading-6;  color: var(--subtitle-1); }
-  .card-secondary-title { @apply label-lg; color: var(--subtitle-2); }
-  .card-number-md     { @apply heading-3;  color: var(--heading); }
-  .card-number-sm     { @apply heading-5;  color: var(--heading); }
-  .card-text          { @apply body-md;    color: var(--subtitle-1); }
-  .help-text          { @apply body-sm;    color: var(--placeholder); }
-  .caption-small      { @apply label-sm;   color: var(--subtitle-2); }
+  /* Semantic usage aliases — properties inlined to avoid @apply cross-reference */
+  .page-title           { font-family: var(--font-dm-sans), sans-serif; font-size: 1.125rem; font-weight: 700; line-height: 1.75rem; color: var(--subtitle-1); }
+  .card-main-title      { font-family: var(--font-dm-sans), sans-serif; font-size: 1.125rem; font-weight: 700; line-height: 1.75rem; color: var(--subtitle-1); }
+  .card-secondary-title { font-family: var(--font-dm-sans), sans-serif; font-size: 1.125rem; font-weight: 600; line-height: 1.75rem; color: var(--subtitle-2); }
+  .card-number-md       { font-family: var(--font-dm-sans), sans-serif; font-size: 2rem;     font-weight: 700; line-height: 2.5rem;  color: var(--heading); }
+  .card-number-sm       { font-family: var(--font-dm-sans), sans-serif; font-size: 1.25rem;  font-weight: 700; line-height: 1.75rem; color: var(--heading); }
+  .card-text            { font-family: var(--font-dm-sans), sans-serif; font-size: 1rem;     font-weight: 400; line-height: 1.5rem;  color: var(--subtitle-1); }
+  .help-text            { font-family: var(--font-dm-sans), sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.25rem; color: var(--placeholder); }
+  .caption-small        { font-family: var(--font-dm-sans), sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1.25rem; color: var(--subtitle-2); }
 }
 
 /* ─── Base ─────────────────────────────────────────────────────── */
