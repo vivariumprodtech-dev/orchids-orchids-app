@@ -191,8 +191,7 @@ function PeriodNavigator({
         alignItems:      "center",
         flex:            1,
         minWidth:        0,
-        paddingTop:      "var(--spacing-1-5)",
-        paddingBottom:   "var(--spacing-1-5)",
+        height:          "calc(var(--spacing-1-5) * 2 + 1.25rem + 2 * var(--border-1))",
         paddingLeft:     "var(--spacing-1)",
         paddingRight:    "var(--spacing-1)",
         borderRadius:    "var(--rounded-full)",
@@ -201,6 +200,7 @@ function PeriodNavigator({
         border:          "var(--aila-button-border-width) solid transparent",
         gap:             "var(--spacing-1)",
         overflow:        "hidden",
+        boxSizing:       "border-box",
       }}
     >
       {/* prev */}
@@ -210,12 +210,10 @@ function PeriodNavigator({
 
       {/* range label */}
       <span
+        className="body-sm"
         style={{
           flex:         1,
           textAlign:    "center",
-          fontSize:     "0.7rem",
-          fontWeight:   500,
-          lineHeight:   "1rem",
           color:        "var(--subtitle-1)",
           whiteSpace:   "nowrap",
           overflow:     "hidden",
