@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
+import { Button } from "@/components/Button";
 
 const BOOKMARKS = [
   { label: "Alex",       id: "6217569048" },
@@ -42,19 +43,17 @@ export default function Home() {
       style={{ backgroundColor: "var(--neutral-bg)" }}
     >
       {/* Logo */}
-      <div>
-        <span
-          className="heading-2"
-          style={{
-            background: "linear-gradient(90deg, var(--color-ciano-400) 0%, var(--color-blue-400) 50%, var(--color-fucsia-400) 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          Giada.
-        </span>
-      </div>
+      <span
+        className="heading-2"
+        style={{
+          background: "linear-gradient(90deg, var(--color-ciano-400) 0%, var(--color-blue-400) 50%, var(--color-fucsia-400) 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        Giada.
+      </span>
 
       {/* Subtitle */}
       <p className="body-md text-center max-w-xs" style={{ color: "var(--placeholder)" }}>
@@ -64,16 +63,13 @@ export default function Home() {
       {/* User lookup card */}
       <div
         className="w-full max-w-sm rounded-[var(--rounded-6)] p-6 flex flex-col gap-4"
-        style={{
-          backgroundColor: "var(--color-white)",
-          boxShadow: "var(--shadow-md)",
-        }}
+        style={{ backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-md)" }}
       >
         <span className="label-md" style={{ color: "var(--subtitle-1)" }}>
           Open user profile
         </span>
 
-        {/* Input row */}
+        {/* Input + Go */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -90,55 +86,45 @@ export default function Home() {
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary-action)")}
             onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}
           />
-          <button
+          <Button
+            variant="primary"
+            size="sm"
             onClick={handleGo}
             disabled={!chatId.trim()}
-            className="rounded-[var(--rounded-4)] px-5 py-2.5 label-md transition-all active:scale-95 disabled:opacity-40"
-            style={{
-              backgroundColor: "var(--primary-action)",
-              color: "var(--invert)",
-            }}
+            style={{ borderRadius: "var(--rounded-4)" }}
           >
             Go
-          </button>
+          </Button>
         </div>
 
         {/* Bookmarks */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className="body-sm" style={{ color: "var(--placeholder)" }}>Quick:</span>
           {BOOKMARKS.map((b) => (
-            <button
+            <Button
               key={b.id}
+              variant="primary-tonal"
+              size="sm"
               onClick={() => setChatId(b.id)}
-              className="rounded-[var(--rounded-full)] px-3 py-1 label-sm transition-colors"
-              style={{
-                backgroundColor: "var(--primary-bg)",
-                color: "var(--primary-action)",
-                border: "var(--border-1) solid var(--color-ciano-200)",
-              }}
             >
               {b.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
       {/* Sync button */}
       <div className="w-full max-w-sm flex flex-col gap-3">
-        <button
+        <Button
+          variant="primary"
+          size="lg"
           onClick={handleSync}
           disabled={syncing}
-          className="w-full flex items-center justify-center gap-2 rounded-[var(--rounded-full)] py-3.5 label-md transition-all active:scale-95 disabled:opacity-50"
-          style={{
-            backgroundColor: "var(--primary-action)",
-            color: "var(--invert)",
-            boxShadow: "var(--shadow-md)",
-          }}
+          fullWidth
+          iconStart={syncing ? Loader2 : RefreshCw}
         >
-          {syncing
-            ? <><Loader2 size={18} className="animate-spin" /> Syncing…</>
-            : <><RefreshCw size={18} /> Sync Airtable data</>}
-        </button>
+          {syncing ? "Syncing…" : "Sync Airtable data"}
+        </Button>
 
         {message && (
           <div
@@ -148,9 +134,7 @@ export default function Home() {
               color:           message.type === "success" ? "var(--success-text)" : "var(--danger-text)",
             }}
           >
-            {message.type === "success"
-              ? <CheckCircle2 size={16} />
-              : <AlertCircle  size={16} />}
+            {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
             {message.text}
           </div>
         )}

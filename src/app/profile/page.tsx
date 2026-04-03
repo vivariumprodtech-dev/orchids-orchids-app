@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { ChevronRight, ChevronLeft, Flag, Settings2 } from "lucide-react";
+import { Button } from "@/components/Button";
 
 interface ProfileData {
   name: string;
@@ -24,8 +25,8 @@ function ProfileContent() {
   }, [userId]);
 
   const menuItems = [
-    { label: "Set your goals",  icon: Flag,      onClick: () => {} },
-    { label: "Giada settings",  icon: Settings2, onClick: () => {} },
+    { label: "Set your goals", icon: Flag,      onClick: () => {} },
+    { label: "Giada settings", icon: Settings2, onClick: () => {} },
   ];
 
   return (
@@ -35,32 +36,25 @@ function ProfileContent() {
     >
       {/* Back button */}
       <div className="flex items-center -ml-1 mb-1">
-        <button
+        <Button
+          variant="primary-link"
+          size="sm"
+          iconStart={ChevronLeft}
           onClick={() => router.back()}
-          className="flex items-center gap-1 rounded-[var(--rounded-full)] py-1.5 pr-3 pl-1.5 transition-all active:scale-95"
-          style={{ color: "var(--primary-action)" }}
         >
-          <ChevronLeft size={20} />
-          <span className="label-sm">Back</span>
-        </button>
+          Back
+        </Button>
       </div>
 
       {/* Profile card */}
       <div
         className="rounded-[var(--rounded-6)] p-4 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98]"
-        style={{
-          backgroundColor: "var(--color-white)",
-          boxShadow: "var(--shadow-sm)",
-        }}
+        style={{ backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}
       >
         <div className="flex items-center gap-3">
-          {/* Avatar */}
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center label-lg shrink-0"
-            style={{
-              backgroundColor: "var(--primary-surface)",
-              color: "var(--invert)",
-            }}
+            style={{ backgroundColor: "var(--primary-surface)", color: "var(--invert)" }}
           >
             {profile.initials}
           </div>
@@ -80,10 +74,7 @@ function ProfileContent() {
             key={i}
             onClick={item.onClick}
             className="rounded-[var(--rounded-6)] p-4 flex items-center justify-between cursor-pointer transition-all active:scale-[0.98]"
-            style={{
-              backgroundColor: "var(--color-white)",
-              boxShadow: "var(--shadow-sm)",
-            }}
+            style={{ backgroundColor: "var(--color-white)", boxShadow: "var(--shadow-sm)" }}
           >
             <div className="flex items-center gap-3">
               <div
