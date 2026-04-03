@@ -7,8 +7,8 @@ import { Button } from "@/components/Button";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab     = "obiettivo" | "macros";
-type Period  = "settimana" | "1mese" | "2mesi" | "3mesi";
+type Tab    = "obiettivo" | "macros";
+type Period = "settimana" | "1mese" | "2mesi" | "3mesi";
 
 const PERIOD_OPTIONS: { value: Period; label: string }[] = [
   { value: "settimana", label: "Settimana" },
@@ -17,7 +17,6 @@ const PERIOD_OPTIONS: { value: Period; label: string }[] = [
   { value: "3mesi",     label: "3 Mesi"    },
 ];
 
-// How many days each period spans
 const PERIOD_DAYS: Record<Period, number> = {
   settimana: 7,
   "1mese":   30,
@@ -25,7 +24,7 @@ const PERIOD_DAYS: Record<Period, number> = {
   "3mesi":   90,
 };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function startOfDay(d: Date) {
   const c = new Date(d);
@@ -39,7 +38,6 @@ function addDays(d: Date, n: number) {
   return c;
 }
 
-/** "22 Gen 2026" */
 function formatDate(d: Date) {
   return d.toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" });
 }
@@ -57,7 +55,8 @@ function PeriodSelect({
   const label = PERIOD_OPTIONS.find((o) => o.value === value)?.label ?? "";
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", flexShrink: 0 }}>
+      {/* Trigger — styled as neutral-invert button */}
       <button
         onClick={() => setOpen((v) => !v)}
         style={{
@@ -69,12 +68,22 @@ function PeriodSelect({
           paddingLeft:     "var(--spacing-3)",
           paddingRight:    "var(--spacing-2-5)",
           borderRadius:    "var(--rounded-full)",
-          backgroundColor: "var(--primary-tonal)",
-          color:           "var(--primary-text)",
-          border:          "var(--border-1) solid var(--primary-surface-light)",
+          backgroundColor: "var(--aila-button-neutral-invert-bg-default)",
+          color:           "var(--aila-button-neutral-invert-text-default)",
+          border:          "var(--aila-button-border-width) solid transparent",
           cursor:          "pointer",
           outline:         "none",
           userSelect:      "none",
+          boxShadow:       "var(--shadow-xs)",
+          transition:      "var(--aila-button-transition)",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+            "var(--aila-button-neutral-invert-bg-hover)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+            "var(--aila-button-neutral-invert-bg-default)";
         }}
       >
         <span className="label-sm">{label}</span>
@@ -83,7 +92,6 @@ function PeriodSelect({
 
       {open && (
         <>
-          {/* backdrop */}
           <div
             style={{ position: "fixed", inset: 0, zIndex: 10 }}
             onClick={() => setOpen(false)}
@@ -111,19 +119,21 @@ function PeriodSelect({
                   width:           "100%",
                   textAlign:       "left",
                   padding:         "var(--spacing-2-5) var(--spacing-4)",
-                  backgroundColor: opt.value === value ? "var(--primary-tonal)" : "transparent",
-                  color:           opt.value === value ? "var(--primary-text)" : "var(--body)",
+                  backgroundColor: opt.value === value ? "var(--neutral-tonal)" : "transparent",
+                  color:           opt.value === value ? "var(--neutral-action)" : "var(--body)",
                   cursor:          "pointer",
                   border:          "none",
                   outline:         "none",
+                  transition:      "background-color 0.15s",
                 }}
                 onMouseEnter={(e) => {
                   if (opt.value !== value)
-                    (e.currentTarget as HTMLButtonElement).style.backgroundColor = "var(--neutral-tonal-hover)";
+                    (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                      "var(--neutral-tonal-hover)";
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-                    opt.value === value ? "var(--primary-tonal)" : "transparent";
+                    opt.value === value ? "var(--neutral-tonal)" : "transparent";
                 }}
               >
                 <span className="label-sm">{opt.label}</span>
@@ -136,7 +146,8 @@ function PeriodSelect({
   );
 }
 
-// ─── PeriodNavigator ──────────────────────────────────────────────────────────
+// ─── PeriodNavigator ─────────────────────────────────────────────────────────
+// Looks like a neutral-invert button, chevrons on each side, small date text
 
 function PeriodNavigator({
   endDate,
@@ -149,57 +160,67 @@ function PeriodNavigator({
   onPrev:  () => void;
   onNext:  () => void;
 }) {
-  const days       = PERIOD_DAYS[period];
-  const startDate  = addDays(endDate, -(days - 1));
-  const today      = startOfDay(new Date());
-  const isToday    = startOfDay(endDate).getTime() === today.getTime();
+  const days      = PERIOD_DAYS[period];
+  const startDate = addDays(endDate, -(days - 1));
+  const today     = startOfDay(new Date());
+  const isToday   = startOfDay(endDate).getTime() === today.getTime();
 
   const rangeLabel = isToday
-    ? `${formatDate(startDate)} a ${formatDate(endDate)} (oggi)`
-    : `${formatDate(startDate)} a ${formatDate(endDate)}`;
+    ? `${formatDate(startDate)} – ${formatDate(endDate)} (oggi)`
+    : `${formatDate(startDate)} – ${formatDate(endDate)}`;
+
+  // shared chevron button style
+  const chevronStyle = (disabled: boolean): React.CSSProperties => ({
+    display:         "inline-flex",
+    alignItems:      "center",
+    justifyContent:  "center",
+    background:      "none",
+    border:          "none",
+    padding:         "0 var(--spacing-1)",
+    cursor:          disabled ? "not-allowed" : "pointer",
+    color:           disabled ? "var(--disabled-font)" : "var(--neutral-action)",
+    opacity:         disabled ? 0.4 : 1,
+    flexShrink:      0,
+    outline:         "none",
+  });
 
   return (
     <div
       style={{
-        display:         "flex",
+        display:         "inline-flex",
         alignItems:      "center",
-        gap:             "var(--spacing-1)",
         flex:            1,
         minWidth:        0,
+        paddingTop:      "var(--spacing-1-5)",
+        paddingBottom:   "var(--spacing-1-5)",
+        paddingLeft:     "var(--spacing-1)",
+        paddingRight:    "var(--spacing-1)",
+        borderRadius:    "var(--rounded-full)",
+        backgroundColor: "var(--aila-button-neutral-invert-bg-default)",
+        boxShadow:       "var(--shadow-xs)",
+        border:          "var(--aila-button-border-width) solid transparent",
+        gap:             "var(--spacing-1)",
+        overflow:        "hidden",
       }}
     >
       {/* prev */}
-      <button
-        onClick={onPrev}
-        style={{
-          display:         "inline-flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          width:           "var(--spacing-7)",
-          height:          "var(--spacing-7)",
-          borderRadius:    "var(--rounded-full)",
-          backgroundColor: "transparent",
-          border:          "none",
-          cursor:          "pointer",
-          color:           "var(--subtitle-2)",
-          flexShrink:      0,
-        }}
-      >
-        <ChevronLeft size={16} strokeWidth={2.5} />
+      <button style={chevronStyle(false)} onClick={onPrev}>
+        <ChevronLeft size={15} strokeWidth={2.5} />
       </button>
 
-      {/* label */}
+      {/* range label */}
       <span
         style={{
-          flex:        1,
-          textAlign:   "center",
-          color:       "var(--subtitle-1)",
-          fontSize:    "0.75rem",
-          fontWeight:  500,
-          lineHeight:  "1rem",
-          whiteSpace:  "nowrap",
-          overflow:    "hidden",
-          textOverflow:"ellipsis",
+          flex:         1,
+          textAlign:    "center",
+          fontSize:     "0.7rem",
+          fontWeight:   500,
+          lineHeight:   "1rem",
+          color:        "var(--subtitle-1)",
+          whiteSpace:   "nowrap",
+          overflow:     "hidden",
+          textOverflow: "ellipsis",
+          userSelect:   "none",
         }}
       >
         {rangeLabel}
@@ -207,77 +228,12 @@ function PeriodNavigator({
 
       {/* next — disabled when end = today */}
       <button
+        style={chevronStyle(isToday)}
         onClick={onNext}
         disabled={isToday}
-        style={{
-          display:         "inline-flex",
-          alignItems:      "center",
-          justifyContent:  "center",
-          width:           "var(--spacing-7)",
-          height:          "var(--spacing-7)",
-          borderRadius:    "var(--rounded-full)",
-          backgroundColor: "transparent",
-          border:          "none",
-          cursor:          isToday ? "not-allowed" : "pointer",
-          color:           isToday ? "var(--disabled-font)" : "var(--subtitle-2)",
-          flexShrink:      0,
-          opacity:         isToday ? 0.4 : 1,
-        }}
       >
-        <ChevronRight size={16} strokeWidth={2.5} />
+        <ChevronRight size={15} strokeWidth={2.5} />
       </button>
-    </div>
-  );
-}
-
-// ─── SegmentedTabs ────────────────────────────────────────────────────────────
-
-function SegmentedTabs({
-  value,
-  onChange,
-}: {
-  value:    Tab;
-  onChange: (t: Tab) => void;
-}) {
-  return (
-    <div
-      style={{
-        display:         "flex",
-        backgroundColor: "var(--neutral-tonal)",
-        borderRadius:    "var(--rounded-full)",
-        padding:         "var(--spacing-1)",
-        gap:             "var(--spacing-1)",
-        border:          "var(--border-1) solid var(--border)",
-      }}
-    >
-      {(["obiettivo", "macros"] as Tab[]).map((tab) => {
-        const active = value === tab;
-        return (
-          <button
-            key={tab}
-            onClick={() => onChange(tab)}
-            style={{
-              flex:            1,
-              paddingTop:      "var(--spacing-1-5)",
-              paddingBottom:   "var(--spacing-1-5)",
-              paddingLeft:     "var(--spacing-4)",
-              paddingRight:    "var(--spacing-4)",
-              borderRadius:    "var(--rounded-full)",
-              border:          "none",
-              cursor:          "pointer",
-              backgroundColor: active ? "var(--color-neutral-800)" : "transparent",
-              color:           active ? "var(--invert)" : "var(--subtitle-2)",
-              transition:      "background-color 0.15s, color 0.15s",
-              outline:         "none",
-              userSelect:      "none",
-            }}
-          >
-            <span className="label-sm">
-              {tab === "obiettivo" ? "Obiettivo" : "Macros"}
-            </span>
-          </button>
-        );
-      })}
     </div>
   );
 }
@@ -285,13 +241,11 @@ function SegmentedTabs({
 // ─── Main content ─────────────────────────────────────────────────────────────
 
 function ProgressoContent() {
-  const searchParams = useSearchParams();
-  const router       = useRouter();
+  const router = useRouter();
 
-  const [tab,     setTab]     = useState<Tab>("obiettivo");
-  const [period,  setPeriod]  = useState<Period>("1mese");
+  const [tab,    setTab]    = useState<Tab>("obiettivo");
+  const [period, setPeriod] = useState<Period>("1mese");
 
-  // endDate starts at today; navigation shifts it back/forward by 'period' days
   const today = useMemo(() => startOfDay(new Date()), []);
   const [endDate, setEndDate] = useState<Date>(today);
 
@@ -307,7 +261,6 @@ function ProgressoContent() {
     setEndDate(next);
   }
 
-  // When period changes, snap end back to today
   function handlePeriodChange(p: Period) {
     setPeriod(p);
     setEndDate(today);
@@ -323,7 +276,7 @@ function ProgressoContent() {
       }}
     >
       {/* Back */}
-      <div style={{ display: "flex", alignItems: "center", marginLeft: "calc(-1 * var(--spacing-1))" }}>
+      <div style={{ marginLeft: "calc(-1 * var(--spacing-1))" }}>
         <Button
           variant="neutral-link"
           size="sm"
@@ -334,31 +287,33 @@ function ProgressoContent() {
         </Button>
       </div>
 
-      {/* Header card */}
-      <div
-        style={{
-          backgroundColor: "var(--background)",
-          borderRadius:    "var(--rounded-6)",
-          boxShadow:       "var(--shadow-sm)",
-          padding:         "var(--spacing-4)",
-          display:         "flex",
-          flexDirection:   "column",
-          gap:             "var(--spacing-3)",
-        }}
-      >
-        {/* Tabs */}
-        <SegmentedTabs value={tab} onChange={setTab} />
+      {/* Tabs — two separate buttons, no card */}
+      <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+        <Button
+          variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
+          size="sm"
+          onClick={() => setTab("obiettivo")}
+        >
+          Obiettivo
+        </Button>
+        <Button
+          variant={tab === "macros" ? "neutral" : "neutral-invert"}
+          size="sm"
+          onClick={() => setTab("macros")}
+        >
+          Macros
+        </Button>
+      </div>
 
-        {/* Period selector row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-          <PeriodSelect value={period} onChange={handlePeriodChange} />
-          <PeriodNavigator
-            endDate={endDate}
-            period={period}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-        </div>
+      {/* Period selector row — no card */}
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+        <PeriodSelect value={period} onChange={handlePeriodChange} />
+        <PeriodNavigator
+          endDate={endDate}
+          period={period}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
       </div>
 
       {/* Page title */}
