@@ -2,9 +2,8 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, ChevronDown, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/Button";
-import { Badge } from "@/components/Badge";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -342,44 +341,23 @@ function ProgressoContent() {
         Tuo progresso
       </h1>
 
-      {/* Badge showcase */}
+      {/* Placeholder */}
       <div
         style={{
           backgroundColor: "var(--color-white)",
           boxShadow:       "var(--shadow-sm)",
           borderRadius:    "var(--rounded-6)",
-          padding:         "var(--spacing-5)",
+          padding:         "var(--spacing-6)",
           display:         "flex",
           flexDirection:   "column",
-          gap:             "var(--spacing-4)",
+          alignItems:      "center",
+          justifyContent:  "center",
+          gap:             "var(--spacing-2)",
+          minHeight:       "12rem",
         }}
       >
-        {/* SM */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-          <span className="help-text" style={{ width: "2rem" }}>SM</span>
-          <Badge size="sm" label="Label" />
-          <Badge size="sm" label="Label" iconStart={Star} dismissible />
-          <Badge size="sm" count={99} />
-          <Badge size="sm" iconOnly={Star} />
-        </div>
-
-        {/* MD */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-          <span className="help-text" style={{ width: "2rem" }}>MD</span>
-          <Badge size="md" label="Label" />
-          <Badge size="md" label="Label" iconStart={Star} dismissible />
-          <Badge size="md" count={99} />
-          <Badge size="md" iconOnly={Star} />
-        </div>
-
-        {/* LG */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-          <span className="help-text" style={{ width: "2rem" }}>LG</span>
-          <Badge size="lg" label="Label" />
-          <Badge size="lg" label="Label" iconStart={Star} dismissible />
-          <Badge size="lg" count={99} />
-          <Badge size="lg" iconOnly={Star} />
-        </div>
+        <span className="card-secondary-title">In arrivo</span>
+        <span className="help-text">Metriche su obiettivi, kcal e macro</span>
       </div>
     </div>
   );

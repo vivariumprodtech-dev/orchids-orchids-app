@@ -6,7 +6,8 @@ import { X } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type BadgeSize = "sm" | "md" | "lg";
+export type BadgeSize    = "sm" | "md" | "lg";
+export type BadgeVariant = "neutral" | "primary" | "primary-darker" | "neutral-tonal-disabled";
 
 export interface BadgeProps {
   /** Text label inside the badge */
@@ -20,11 +21,33 @@ export interface BadgeProps {
   /** Render as icon-only (no label) */
   iconOnly?: LucideIcon;
   size?: BadgeSize;
-  /** Extra inline styles – use for color theming */
+  variant?: BadgeVariant;
+  /** Extra inline styles — merged last, can override variant colours */
   style?: React.CSSProperties;
   className?: string;
   onDismiss?: () => void;
 }
+
+// ─── Variant colour map ───────────────────────────────────────────────────────
+
+const VARIANT_STYLE: Record<BadgeVariant, React.CSSProperties> = {
+  "neutral": {
+    backgroundColor: "var(--neutral-surface)",
+    color:           "var(--invert)",
+  },
+  "primary": {
+    backgroundColor: "var(--primary-surface)",
+    color:           "var(--invert)",
+  },
+  "primary-darker": {
+    backgroundColor: "var(--primary-action-hover)",
+    color:           "var(--invert)",
+  },
+  "neutral-tonal-disabled": {
+    backgroundColor: "var(--neutral-tonal)",
+    color:           "var(--disabled-font)",
+  },
+};
 
 // ─── Token maps ───────────────────────────────────────────────────────────────
 
@@ -86,6 +109,7 @@ export function Badge({
   count,
   iconOnly: IconOnly,
   size = "md",
+  variant = "neutral",
   style,
   className,
   onDismiss,
@@ -111,9 +135,8 @@ export function Badge({
     paddingBottom,
     paddingLeft,
     paddingRight,
-    // Default neutral colours — override via style prop for theming
-    backgroundColor: "var(--neutral-tonal)",
-    color:           "var(--neutral-action)",
+    // Variant colours, caller overrides last
+    ...VARIANT_STYLE[variant],
     ...style,
   };
 
