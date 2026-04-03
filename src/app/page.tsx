@@ -2,142 +2,186 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
+
+const BOOKMARKS = [
+  { label: "Alex",       id: "6217569048" },
+  { label: "Camila",     id: "1722322879" },
+  { label: "Ugo (demo)", id: "ugo_demo"   },
+];
 
 export default function Home() {
-  const [chatId, setChatId] = useState("");
+  const [chatId, setChatId]   = useState("");
   const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
 
-  const handleViewProfile = () => {
-    if (chatId) {
-      router.push(`/profile?userId=${chatId}`);
-    }
+  const handleGo = () => {
+    if (chatId.trim()) router.push(`/profile?userId=${chatId.trim()}`);
   };
 
   const handleSync = async () => {
     setSyncing(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/sync-airtable", { method: "POST" });
+      const res  = await fetch("/api/sync-airtable", { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Sync error");
       setMessage({ text: "Sync complete!", type: "success" });
-      setTimeout(() => setMessage(null), 5000);
+      setTimeout(() => setMessage(null), 4000);
     } catch (err: any) {
-      setMessage({ text: `Error: ${err.message}`, type: "error" });
+      setMessage({ text: err.message, type: "error" });
     } finally {
       setSyncing(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-teal-50 via-white to-purple-50 p-8">
-      <div
-        className="mb-8 text-5xl font-bold"
-        style={{
-          background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-        }}
-      >
-        Giada.
+    <div
+      className="flex min-h-screen flex-col items-center justify-center p-6 gap-8"
+      style={{ backgroundColor: "var(--neutral-bg)" }}
+    >
+      {/* Logo */}
+      <div>
+        <span
+          className="heading-2"
+          style={{
+            background: "linear-gradient(90deg, var(--color-ciano-400) 0%, var(--color-blue-400) 50%, var(--color-fucsia-400) 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          Giada.
+        </span>
       </div>
 
-      <p className="mb-8 max-w-md text-center text-gray-600">
-        Nutritional assistant for Telegram Mini App.
-        <br />
-        Track calories, macros and hydration.
+      {/* Subtitle */}
+      <p className="body-md text-center max-w-xs" style={{ color: "var(--placeholder)" }}>
+        Nutritional assistant for Telegram Mini App
       </p>
 
-      <div className="mb-10 w-full max-w-sm rounded-2xl bg-white/60 p-6 shadow-xl backdrop-blur-md border border-white/20">
-        <div className="flex flex-col gap-4">
-          <label htmlFor="chatId" className="text-sm font-bold text-gray-700 flex items-center gap-2">
-            🔍 View User Profile
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="chatId"
-              type="text"
-              value={chatId}
-              onChange={(e) => setChatId(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleViewProfile()}
-              placeholder="Enter ChatID..."
-              className="flex-1 rounded-xl border border-gray-200 bg-white/50 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:border-teal-400 focus:outline-none focus:ring-4 focus:ring-teal-400/10 transition-all"
-            />
+      {/* User lookup card */}
+      <div
+        className="w-full max-w-sm rounded-[var(--rounded-6)] p-6 flex flex-col gap-4"
+        style={{
+          backgroundColor: "var(--color-white)",
+          boxShadow: "var(--shadow-md)",
+        }}
+      >
+        <span className="label-md" style={{ color: "var(--subtitle-1)" }}>
+          Open user profile
+        </span>
+
+        {/* Input row */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={chatId}
+            onChange={(e) => setChatId(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleGo()}
+            placeholder="Enter Telegram Chat ID…"
+            className="flex-1 rounded-[var(--rounded-4)] px-4 py-2.5 body-md outline-none transition-all"
+            style={{
+              border: "var(--border-2) solid var(--border)",
+              backgroundColor: "var(--neutral-bg)",
+              color: "var(--body)",
+            }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--primary-action)")}
+            onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}
+          />
+          <button
+            onClick={handleGo}
+            disabled={!chatId.trim()}
+            className="rounded-[var(--rounded-4)] px-5 py-2.5 label-md transition-all active:scale-95 disabled:opacity-40"
+            style={{
+              backgroundColor: "var(--primary-action)",
+              color: "var(--invert)",
+            }}
+          >
+            Go
+          </button>
+        </div>
+
+        {/* Bookmarks */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="body-sm" style={{ color: "var(--placeholder)" }}>Quick:</span>
+          {BOOKMARKS.map((b) => (
             <button
-              onClick={handleViewProfile}
-              disabled={!chatId}
-              className="rounded-xl bg-teal-400 px-6 py-2.5 font-bold text-white shadow-lg shadow-teal-400/20 transition-all hover:bg-teal-500 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+              key={b.id}
+              onClick={() => setChatId(b.id)}
+              className="rounded-[var(--rounded-full)] px-3 py-1 label-sm transition-colors"
+              style={{
+                backgroundColor: "var(--primary-bg)",
+                color: "var(--primary-action)",
+                border: "var(--border-1) solid var(--color-ciano-200)",
+              }}
             >
-              Go
+              {b.label}
             </button>
-          </div>
-          <div className="flex items-center gap-3 pt-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Bookmarks:</span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setChatId("6217569048")}
-                className="rounded-lg bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-600 border border-teal-100 hover:bg-teal-100 transition-colors"
-              >
-                👤 Alex
-              </button>
-              <button
-                onClick={() => setChatId("1722322879")}
-                className="rounded-lg bg-purple-50 px-2.5 py-1 text-xs font-semibold text-purple-600 border border-purple-100 hover:bg-purple-100 transition-colors"
-              >
-                👤 Camila
-              </button>
-              <button
-                onClick={() => setChatId("ugo_demo")}
-                className="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-600 border border-amber-100 hover:bg-amber-100 transition-colors"
-              >
-                👤 Ugo (demo)
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-4 w-full max-w-sm">
+      {/* Sync button */}
+      <div className="w-full max-w-sm flex flex-col gap-3">
         <button
           onClick={handleSync}
           disabled={syncing}
-          className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-8 py-4 font-bold text-white shadow-lg transition-all hover:from-teal-600 hover:to-teal-700 active:scale-95 disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 rounded-[var(--rounded-full)] py-3.5 label-md transition-all active:scale-95 disabled:opacity-50"
+          style={{
+            backgroundColor: "var(--primary-action)",
+            color: "var(--invert)",
+            boxShadow: "var(--shadow-md)",
+          }}
         >
-          {syncing ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              <span>Syncing...</span>
-            </>
-          ) : (
-            <>
-              <CheckCircle2 size={20} />
-              <span>Sync Airtable data</span>
-            </>
-          )}
+          {syncing
+            ? <><Loader2 size={18} className="animate-spin" /> Syncing…</>
+            : <><RefreshCw size={18} /> Sync Airtable data</>}
         </button>
 
         {message && (
           <div
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold animate-in fade-in slide-in-from-top-2 ${
-              message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-            }`}
+            className="flex items-center gap-2 rounded-[var(--rounded-4)] px-4 py-2.5 body-sm"
+            style={{
+              backgroundColor: message.type === "success" ? "var(--success-bg)"  : "var(--danger-bg)",
+              color:           message.type === "success" ? "var(--success-text)" : "var(--danger-text)",
+            }}
           >
-            {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {message.type === "success"
+              ? <CheckCircle2 size={16} />
+              : <AlertCircle  size={16} />}
             {message.text}
           </div>
         )}
       </div>
 
-      <div className="mt-12 rounded-xl bg-white/80 p-6 shadow-sm backdrop-blur">
-        <h3 className="mb-3 font-semibold" style={{ color: "#262C44" }}>Telegram Bot Setup:</h3>
-        <ol className="space-y-2 text-sm text-gray-600">
-          <li>1. Set <code className="rounded bg-gray-100 px-1">TELEGRAM_BOT_TOKEN</code> in .env</li>
-          <li>2. Set <code className="rounded bg-gray-100 px-1">NEXT_PUBLIC_WEBAPP_URL</code> to your URL</li>
-          <li>3. Register webhook at <code className="rounded bg-gray-100 px-1">/api/telegram</code></li>
+      {/* Setup hint */}
+      <div
+        className="w-full max-w-sm rounded-[var(--rounded-5)] p-5"
+        style={{
+          backgroundColor: "var(--color-white)",
+          boxShadow: "var(--shadow-xs)",
+          border: "var(--border-1) solid var(--border)",
+        }}
+      >
+        <p className="label-sm mb-3" style={{ color: "var(--subtitle-2)" }}>Telegram Bot Setup</p>
+        <ol className="flex flex-col gap-1.5">
+          {[
+            <>Set <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>TELEGRAM_BOT_TOKEN</code> in .env</>,
+            <>Set <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>NEXT_PUBLIC_WEBAPP_URL</code> to your URL</>,
+            <>Register webhook at <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>/api/telegram</code></>,
+          ].map((step, i) => (
+            <li key={i} className="flex items-start gap-2 help-text">
+              <span
+                className="label-sm shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-px"
+                style={{ backgroundColor: "var(--primary-bg)", color: "var(--primary-action)" }}
+              >
+                {i + 1}
+              </span>
+              <span>{step}</span>
+            </li>
+          ))}
         </ol>
       </div>
     </div>
