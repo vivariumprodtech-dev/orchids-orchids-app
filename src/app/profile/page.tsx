@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { ChevronRight, BarChart3, Utensils, Flag, Settings2, ChevronLeft } from "lucide-react";
+import { ChevronRight, Flag, Settings2, ChevronLeft } from "lucide-react";
 
 interface ProfileData {
   name: string;
@@ -13,7 +13,7 @@ function ProfileContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const userId = searchParams.get("userId");
-  
+
   const [profile, setProfile] = useState<ProfileData>({
     name: "User",
     initials: "US",
@@ -27,21 +27,11 @@ function ProfileContent() {
     } else if (userId === "ugo_demo") {
       setProfile({ name: "Ugo", initials: "UG" });
     } else if (userId) {
-      setProfile({ name: "Sarah Minuzzi", initials: "SM" });
+      setProfile({ name: "User", initials: userId.slice(0, 2).toUpperCase() });
     }
   }, [userId]);
 
   const menuItems = [
-    {
-      title: "Day view & Progress",
-      icon: <BarChart3 size={20} className="text-[#5A658D]" />,
-      onClick: () => router.push(`/stats?userId=${userId}`),
-    },
-    {
-      title: "Frequent foods",
-      icon: <Utensils size={20} className="text-[#5A658D]" />,
-      onClick: () => router.push(`/frequent-foods?userId=${userId}`),
-    },
     {
       title: "Set your goals",
       icon: <Flag size={20} className="text-[#5A658D]" />,
@@ -57,16 +47,19 @@ function ProfileContent() {
   return (
     <div className="min-h-screen bg-gray-100 font-sans text-gray-900 p-5 flex flex-col">
       <div className="mb-2 flex items-center">
-         <button onClick={() => router.back()} className="p-2 -ml-2 text-[#5A658D] active:scale-95 transition-transform">
-            <ChevronLeft size={24} />
-         </button>
+        <button
+          onClick={() => router.back()}
+          className="p-2 -ml-2 text-[#5A658D] active:scale-95 transition-transform"
+        >
+          <ChevronLeft size={24} />
+        </button>
       </div>
 
       <div className="space-y-3 flex-1">
         {/* Profile Card */}
         <div className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer active:bg-[#5A658D]/10 active:scale-[0.98] transition-all">
           <div className="flex items-center gap-2">
-            <div 
+            <div
               className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
               style={{ backgroundColor: "#2BB0BB" }}
             >
@@ -82,7 +75,7 @@ function ProfileContent() {
 
         {/* Menu Items */}
         {menuItems.map((item, index) => (
-          <div 
+          <div
             key={index}
             onClick={item.onClick}
             className="rounded-2xl bg-white p-4 shadow-sm flex items-center justify-between cursor-pointer active:bg-[#5A658D]/10 active:scale-[0.98] transition-all"
@@ -100,7 +93,8 @@ function ProfileContent() {
 
       {/* Footer Logo */}
       <div className="mt-auto pt-10 pb-4 flex justify-center">
-        <div className="text-3xl font-bold"
+        <div
+          className="text-3xl font-bold"
           style={{
             background: "linear-gradient(90deg, #7DD3C0 0%, #A8B8E6 50%, #D4A5E8 100%)",
             WebkitBackgroundClip: "text",

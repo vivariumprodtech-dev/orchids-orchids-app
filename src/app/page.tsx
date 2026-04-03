@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
@@ -11,34 +10,27 @@ export default function Home() {
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const router = useRouter();
 
-  const handleViewStats = () => {
+  const handleViewProfile = () => {
     if (chatId) {
-      router.push(`/stats?userId=${chatId}`);
+      router.push(`/profile?userId=${chatId}`);
     }
   };
 
   const handleSync = async () => {
     setSyncing(true);
     setMessage(null);
-
     try {
       const res = await fetch("/api/sync-airtable", { method: "POST" });
       const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Errore durante la sincronizzazione");
-
-      setMessage({ text: "Sincronizzazione completata!", type: "success" });
+      if (!res.ok) throw new Error(data.error || "Sync error");
+      setMessage({ text: "Sync complete!", type: "success" });
       setTimeout(() => setMessage(null), 5000);
     } catch (err: any) {
-      console.error(err);
-      setMessage({ text: `Errore: ${err.message}`, type: "error" });
+      setMessage({ text: `Error: ${err.message}`, type: "error" });
     } finally {
       setSyncing(false);
     }
   };
-
-  const demoUrl = "/stats?calories=850&protein=45&carbs=90&fats=35&fiber=12&water=1500&activeCalories=200&foods=" + 
-    encodeURIComponent("Skyr Lidl:150:90:16.5:6:0.3:0|Pane Proteico:100:225:18:14:9:8|Cioccolato 78%:30:176:3:9:13.5:3.3");
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-teal-50 via-white to-purple-50 p-8">
@@ -55,15 +47,15 @@ export default function Home() {
       </div>
 
       <p className="mb-8 max-w-md text-center text-gray-600">
-        Assistente nutrizionale per Telegram Mini App.
+        Nutritional assistant for Telegram Mini App.
         <br />
-        Traccia calorie, macro e idratazione.
+        Track calories, macros and hydration.
       </p>
 
       <div className="mb-10 w-full max-w-sm rounded-2xl bg-white/60 p-6 shadow-xl backdrop-blur-md border border-white/20">
         <div className="flex flex-col gap-4">
           <label htmlFor="chatId" className="text-sm font-bold text-gray-700 flex items-center gap-2">
-            🔍 Visualizza Statistiche Utente
+            🔍 View User Profile
           </label>
           <div className="flex gap-2">
             <input
@@ -71,15 +63,16 @@ export default function Home() {
               type="text"
               value={chatId}
               onChange={(e) => setChatId(e.target.value)}
-              placeholder="Inserisci ChatID..."
+              onKeyDown={(e) => e.key === "Enter" && handleViewProfile()}
+              placeholder="Enter ChatID..."
               className="flex-1 rounded-xl border border-gray-200 bg-white/50 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:border-teal-400 focus:outline-none focus:ring-4 focus:ring-teal-400/10 transition-all"
             />
             <button
-              onClick={handleViewStats}
-              className="rounded-xl bg-teal-400 px-6 py-2.5 font-bold text-white shadow-lg shadow-teal-400/20 transition-all hover:bg-teal-500 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+              onClick={handleViewProfile}
               disabled={!chatId}
+              className="rounded-xl bg-teal-400 px-6 py-2.5 font-bold text-white shadow-lg shadow-teal-400/20 transition-all hover:bg-teal-500 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
             >
-              Vai
+              Go
             </button>
           </div>
           <div className="flex items-center gap-3 pt-1">
@@ -108,61 +101,43 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <Link
-          href={demoUrl}
-          className="rounded-full bg-teal-400 px-8 py-3 text-center font-semibold text-white shadow-lg transition-all hover:bg-teal-500 hover:shadow-xl"
+      <div className="flex flex-col items-center gap-4 w-full max-w-sm">
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-8 py-4 font-bold text-white shadow-lg transition-all hover:from-teal-600 hover:to-teal-700 active:scale-95 disabled:opacity-50"
         >
-          📊 Demo Statistiche
-        </Link>
-
-        <div className="flex flex-col items-center gap-2">
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-8 py-4 font-bold text-white shadow-lg transition-all hover:from-teal-600 hover:to-teal-700 active:scale-95 disabled:opacity-50"
-          >
-            {syncing ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                <span>Sincronizzazione in corso...</span>
-              </>
-            ) : (
-              <>
-                <CheckCircle2 size={20} />
-                <span>Sincronizza dati Airtable</span>
-              </>
-            )}
-          </button>
-          
-          {message && (
-            <div
-              className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold animate-in fade-in slide-in-from-top-2 ${
-                message.type === "success"
-                  ? "bg-green-50 text-green-700"
-                  : "bg-red-50 text-red-700"
-              }`}
-            >
-              {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-              {message.text}
-            </div>
+          {syncing ? (
+            <>
+              <Loader2 className="animate-spin" size={20} />
+              <span>Syncing...</span>
+            </>
+          ) : (
+            <>
+              <CheckCircle2 size={20} />
+              <span>Sync Airtable data</span>
+            </>
           )}
-        </div>
+        </button>
 
-        <Link
-          href="/stats"
-          className="rounded-full border-2 border-gray-200 bg-white px-8 py-3 text-center font-semibold text-gray-500 transition-all hover:bg-gray-50"
-        >
-          📱 Mini App (vuota)
-        </Link>
+        {message && (
+          <div
+            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold animate-in fade-in slide-in-from-top-2 ${
+              message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+            }`}
+          >
+            {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+            {message.text}
+          </div>
+        )}
       </div>
 
       <div className="mt-12 rounded-xl bg-white/80 p-6 shadow-sm backdrop-blur">
-        <h3 className="mb-3 font-semibold" style={{ color: '#262C44' }}>Setup Bot Telegram:</h3>
+        <h3 className="mb-3 font-semibold" style={{ color: "#262C44" }}>Telegram Bot Setup:</h3>
         <ol className="space-y-2 text-sm text-gray-600">
-          <li>1. Configura <code className="rounded bg-gray-100 px-1">TELEGRAM_BOT_TOKEN</code> in .env</li>
-          <li>2. Configura <code className="rounded bg-gray-100 px-1">NEXT_PUBLIC_WEBAPP_URL</code> col tuo URL</li>
-          <li>3. Imposta il webhook: <code className="rounded bg-gray-100 px-1">/api/telegram</code></li>
+          <li>1. Set <code className="rounded bg-gray-100 px-1">TELEGRAM_BOT_TOKEN</code> in .env</li>
+          <li>2. Set <code className="rounded bg-gray-100 px-1">NEXT_PUBLIC_WEBAPP_URL</code> to your URL</li>
+          <li>3. Register webhook at <code className="rounded bg-gray-100 px-1">/api/telegram</code></li>
         </ol>
       </div>
     </div>
