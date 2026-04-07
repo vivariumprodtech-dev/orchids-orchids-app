@@ -242,7 +242,7 @@ function WeekView({
         backgroundColor: "var(--color-white)",
         boxShadow: "var(--shadow-sm)",
         borderRadius: "var(--rounded-6)",
-        padding: "var(--spacing-5)",
+        padding: "var(--spacing-4)",
         display: "flex",
         flexDirection: "column",
         gap: "var(--spacing-4)",
@@ -405,7 +405,7 @@ function MonthView({
                   style={{
                     color: "var(--neutral-surface-light)",
                     fontSize: "0.625rem",
-                    lineHeight: 1,
+                    lineHeight: 0.625,
                     whiteSpace: "nowrap",
                   }}
                 >
