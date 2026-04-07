@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from "recharts";
 import { isMockUser, getMockActive } from "@/lib/mock-progress-data";
+import { niceYTicks } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -151,6 +152,7 @@ export function CalorieAttive({
 
   const values = chartData.map((d) => d.value).filter((v) => v > 0);
   const maxVal = Math.max(...values, 100);
+  const { ticks: yTicks, domain: yDomain } = niceYTicks(0, maxVal, 4);
 
   return (
     <CardShell title="Calorie Attive" emoji="🔥">
@@ -182,7 +184,8 @@ export function CalorieAttive({
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
-              domain={[0, Math.ceil(maxVal * 1.2 / 50) * 50]}
+              domain={yDomain}
+              ticks={yTicks}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}

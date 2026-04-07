@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from "recharts";
 import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
+import { niceYTicks } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -172,8 +173,11 @@ export function ObiettivoPeso({
 
   const weights = rawData.map((d) => d.weight);
   if (goalWeight) weights.push(goalWeight);
-  const minW = Math.floor(Math.min(...weights) - 1);
-  const maxW = Math.ceil(Math.max(...weights) + 1);
+  const { ticks: yTicks, domain: [minW, maxW] } = niceYTicks(
+    Math.min(...weights) - 0.5,
+    Math.max(...weights) + 0.5,
+    4
+  );
 
   const showDots = period === "settimana";
 
@@ -208,6 +212,7 @@ export function ObiettivoPeso({
             />
             <YAxis
               domain={[minW, maxW]}
+              ticks={yTicks}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}

@@ -14,6 +14,7 @@ import {
   Cell,
 } from "recharts";
 import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
+import { niceSymmetricTicks } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -202,11 +203,10 @@ export function BilancioCalorico({
     };
   });
 
-  // Y axis: symmetric around 0
+  // Y axis: symmetric around 0 with nice even steps
   const diffs = chartData.map((d) => d.diff).filter((v) => v !== 0);
   const absMax = diffs.length > 0 ? Math.max(...diffs.map(Math.abs)) : 500;
-  const yBound = Math.ceil(absMax / 250) * 250;
-  const yDomain = [-yBound, yBound];
+  const { ticks: yTicks, domain: yDomain } = niceSymmetricTicks(absMax, 5);
 
   const today = toYMD(new Date());
 
@@ -243,6 +243,7 @@ export function BilancioCalorico({
             />
             <YAxis
               domain={yDomain}
+              ticks={yTicks}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}
