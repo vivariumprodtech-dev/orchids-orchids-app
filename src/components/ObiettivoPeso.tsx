@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -38,6 +38,24 @@ function parseYMD(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
+function toYMD(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+}
+
+function daysInRange(start: string, end: string): string[] {
+  const result: string[] = [];
+  const cur = parseYMD(start);
+  const last = parseYMD(end);
+  while (cur <= last) {
+    result.push(toYMD(cur));
+    cur.setDate(cur.getDate() + 1);
+  }
+  return result;
+}
+
 function formatXLabel(dateStr: string, period: Period): string {
   const d = parseYMD(dateStr);
   if (period === "settimana") {
@@ -54,7 +72,7 @@ export function ObiettivoPeso({
   endDate,
   period,
 }: ObiettivoPesoProps) {
-  const [data, setData] = useState<WeightDay[]>([]);
+  const [rawData, setRawData] = useState<WeightDay[]>([]);
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
   const [startingWeight, setStartingWeight] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,14 +84,13 @@ export function ObiettivoPeso({
     if (isMockUser(userId)) {
       const mock = getMockWeights(userId, startDate, endDate);
       const meta = getMockWeightMeta(userId);
-      setData(mock);
+      setRawData(mock);
       setGoalWeight(meta?.goalWeight ?? null);
       setStartingWeight(meta?.startingWeight ?? null);
       setLoading(false);
       return;
     }
 
-    // Try to fetch weight logs
     supabase
       .from("weight_logs")
       .select("date, weight")
@@ -83,12 +100,11 @@ export function ObiettivoPeso({
       .order("date", { ascending: true })
       .then(({ data: rows, error }) => {
         if (error || !rows || rows.length === 0) {
-          setData([]);
+          setRawData([]);
           setLoading(false);
           return;
         }
-
-        setData(
+        setRawData(
           rows.map((r: any) => ({
             date: r.date,
             weight: r.weight ?? 0,
@@ -97,7 +113,6 @@ export function ObiettivoPeso({
         setLoading(false);
       });
 
-    // Fetch user goal weight
     supabase
       .from("users")
       .select("goal_weight, starting_weight")
@@ -111,11 +126,19 @@ export function ObiettivoPeso({
       });
   }, [userId, startDate, endDate]);
 
+  // Fill all days — only include weight where we have data (line gaps are fine)
+  const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
+  const dataMap = useMemo(() => {
+    const m = new Map<string, number>();
+    rawData.forEach((d) => m.set(d.date, d.weight));
+    return m;
+  }, [rawData]);
+
   if (loading) {
     return <CardShell title="Obiettivo di peso" loading />;
   }
 
-  if (data.length === 0) {
+  if (rawData.length === 0) {
     return (
       <CardShell title="Obiettivo di peso">
         <div
@@ -132,19 +155,24 @@ export function ObiettivoPeso({
     );
   }
 
-  const currentWeight = data[data.length - 1].weight;
-  const effectiveStart = startingWeight ?? data[0].weight;
+  // Use overall starting weight from profile, not period start
+  const currentWeight = rawData[rawData.length - 1].weight;
+  const effectiveStart = startingWeight ?? rawData[0].weight;
   const lost = Math.round((effectiveStart - currentWeight) * 10) / 10;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
-  const chartData = data.map((d) => ({
-    label: formatXLabel(d.date, period),
-    weight: d.weight,
-    date: d.date,
-  }));
+  // Build chart data — all days with labels, weight only where data exists
+  const chartData = allDays.map((date) => {
+    const w = dataMap.get(date);
+    return {
+      label: formatXLabel(date, period),
+      weight: w ?? null,
+      date,
+    };
+  });
 
   // Y axis domain
-  const weights = chartData.map((d) => d.weight);
+  const weights = rawData.map((d) => d.weight);
   if (goalWeight) weights.push(goalWeight);
   const minW = Math.floor(Math.min(...weights) - 1);
   const maxW = Math.ceil(Math.max(...weights) + 1);
@@ -152,9 +180,7 @@ export function ObiettivoPeso({
   const showDots = period === "settimana";
 
   return (
-    <CardShell
-      title={`Obiettivo di peso → ${goalLabel}`}
-    >
+    <CardShell title={`Obiettivo di peso → ${goalLabel}`}>
       {/* Metric */}
       <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
         <span className="card-number-md" style={{ display: "inline" }}>
@@ -168,7 +194,7 @@ export function ObiettivoPeso({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -20 }}
+            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
           >
             <XAxis
               dataKey="label"
@@ -196,6 +222,7 @@ export function ObiettivoPeso({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
+                if (d.weight == null) return null;
                 return (
                   <div
                     style={{
@@ -216,6 +243,7 @@ export function ObiettivoPeso({
               dataKey="weight"
               stroke="var(--primary-action)"
               strokeWidth={2}
+              connectNulls
               dot={showDots ? { r: 4, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 2 } : false}
               activeDot={{ r: 5, fill: "var(--primary-action)" }}
             />
@@ -301,31 +329,11 @@ function LegendItem({
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
       {type === "dashed" ? (
-        <div
-          style={{
-            width: 16,
-            height: 0,
-            borderTop: `2px dashed ${color}`,
-          }}
-        />
+        <div style={{ width: 16, height: 0, borderTop: `2px dashed ${color}` }} />
       ) : type === "line" ? (
-        <div
-          style={{
-            width: 16,
-            height: 2,
-            backgroundColor: color,
-            borderRadius: 1,
-          }}
-        />
+        <div style={{ width: 16, height: 2, backgroundColor: color, borderRadius: 1 }} />
       ) : (
-        <div
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            backgroundColor: color,
-          }}
-        />
+        <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: color }} />
       )}
       <span className="help-text" style={{ color: "var(--placeholder)" }}>
         {label}

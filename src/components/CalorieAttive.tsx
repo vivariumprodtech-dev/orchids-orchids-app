@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -44,6 +44,24 @@ function parseYMD(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
+function toYMD(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+}
+
+function daysInRange(start: string, end: string): string[] {
+  const result: string[] = [];
+  const cur = parseYMD(start);
+  const last = parseYMD(end);
+  while (cur <= last) {
+    result.push(toYMD(cur));
+    cur.setDate(cur.getDate() + 1);
+  }
+  return result;
+}
+
 function formatXLabel(dateStr: string, period: Period): string {
   const d = parseYMD(dateStr);
   if (period === "settimana") {
@@ -60,7 +78,7 @@ export function CalorieAttive({
   endDate,
   period,
 }: CalorieAttiveProps) {
-  const [data, setData] = useState<DayData[]>([]);
+  const [rawData, setRawData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,7 +87,7 @@ export function CalorieAttive({
 
     if (isMockUser(userId)) {
       const mock = getMockActive(userId, startDate, endDate);
-      setData(mock);
+      setRawData(mock);
       setLoading(false);
       return;
     }
@@ -82,7 +100,7 @@ export function CalorieAttive({
       .lte("date", endDate)
       .order("date", { ascending: true })
       .then(({ data: rows }) => {
-        setData(
+        setRawData(
           (rows ?? []).map((r: any) => ({
             date: r.date,
             activeCal: r.active_calories ?? 0,
@@ -92,22 +110,31 @@ export function CalorieAttive({
       });
   }, [userId, startDate, endDate]);
 
+  // Fill all days in range
+  const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
+  const dataMap = useMemo(() => {
+    const m = new Map<string, number>();
+    rawData.forEach((d) => m.set(d.date, d.activeCal));
+    return m;
+  }, [rawData]);
+
   if (loading) {
     return <CardShell title="Calorie Attive" emoji="🔥" loading />;
   }
 
-  const totalActiveCal = data.reduce((s, d) => s + d.activeCal, 0);
-  const numDays = data.length || 1;
+  // Average over logged days only
+  const loggedDays = rawData.filter((d) => d.activeCal > 0);
+  const totalActiveCal = loggedDays.reduce((s, d) => s + d.activeCal, 0);
+  const numDays = loggedDays.length || 1;
   const avg = Math.round(totalActiveCal / numDays);
 
-  const chartData = data.map((d) => ({
-    label: formatXLabel(d.date, period),
-    value: d.activeCal,
-    date: d.date,
+  const chartData = allDays.map((date) => ({
+    label: formatXLabel(date, period),
+    value: dataMap.get(date) ?? 0,
+    date,
   }));
 
-  // Y axis: compute nice ticks
-  const values = chartData.map((d) => d.value);
+  const values = chartData.map((d) => d.value).filter((v) => v > 0);
   const maxVal = Math.max(...values, 100);
 
   return (
@@ -125,7 +152,7 @@ export function CalorieAttive({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -20 }}
+            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
           >
             <XAxis
               dataKey="label"
@@ -135,7 +162,7 @@ export function CalorieAttive({
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
-              domain={[0, Math.ceil(maxVal * 1.1)]}
+              domain={[0, Math.ceil(maxVal * 1.2 / 50) * 50]}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}
@@ -145,6 +172,7 @@ export function CalorieAttive({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
+                if (d.value === 0) return null;
                 return (
                   <div
                     style={{

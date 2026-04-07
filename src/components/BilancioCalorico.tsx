@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -40,6 +40,24 @@ function parseYMD(s: string): Date {
   return new Date(y, m - 1, d);
 }
 
+function toYMD(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+}
+
+function daysInRange(start: string, end: string): string[] {
+  const result: string[] = [];
+  const cur = parseYMD(start);
+  const last = parseYMD(end);
+  while (cur <= last) {
+    result.push(toYMD(cur));
+    cur.setDate(cur.getDate() + 1);
+  }
+  return result;
+}
+
 function formatXLabel(dateStr: string, period: Period): string {
   const d = parseYMD(dateStr);
   if (period === "settimana") {
@@ -51,7 +69,8 @@ function formatXLabel(dateStr: string, period: Period): string {
 function classifyBar(
   cal: number,
   target: number
-): "pocoSopra" | "pocoSotto" | "troppoSopra" | "troppoSotto" | "onTarget" {
+): "pocoSopra" | "pocoSotto" | "troppoSopra" | "troppoSotto" | "onTarget" | "empty" {
+  if (cal === 0) return "empty";
   if (target === 0) return "onTarget";
   const diff = cal - target;
   const pct = diff / target;
@@ -68,6 +87,7 @@ const BAR_COLORS: Record<string, string> = {
   troppoSopra: "var(--danger-surface)",
   troppoSotto: "var(--color-danger-200)",
   onTarget: "var(--primary-surface)",
+  empty: "var(--color-neutral-100, #f0f0f0)",
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -78,7 +98,7 @@ export function BilancioCalorico({
   endDate,
   period,
 }: BilancioCaloricoProp) {
-  const [data, setData] = useState<DayData[]>([]);
+  const [rawData, setRawData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -87,7 +107,7 @@ export function BilancioCalorico({
 
     if (isMockUser(userId)) {
       const mock = getMockCalories(userId, startDate, endDate);
-      setData(mock);
+      setRawData(mock);
       setLoading(false);
       return;
     }
@@ -100,7 +120,7 @@ export function BilancioCalorico({
       .lte("date", endDate)
       .order("date", { ascending: true })
       .then(({ data: rows }) => {
-        setData(
+        setRawData(
           (rows ?? []).map((r: any) => ({
             date: r.date,
             calories: r.calories ?? 0,
@@ -111,38 +131,50 @@ export function BilancioCalorico({
       });
   }, [userId, startDate, endDate]);
 
+  // Fill all days in range, even those with no data
+  const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
+  const dataMap = useMemo(() => {
+    const m = new Map<string, DayData>();
+    rawData.forEach((d) => m.set(d.date, d));
+    return m;
+  }, [rawData]);
+
   if (loading) {
     return <CardShell title="Bilancio calorico" emoji="🍽️" loading />;
   }
 
+  // Get the default target from available data
+  const loggedDays = rawData.filter((d) => d.calories > 0);
   const avgTarget =
-    data.length > 0
-      ? Math.round(data.reduce((s, d) => s + d.target, 0) / data.length)
+    loggedDays.length > 0
+      ? Math.round(loggedDays.reduce((s, d) => s + d.target, 0) / loggedDays.length)
       : 0;
 
-  const daysNearTarget = data.filter((d) => {
+  const daysNearTarget = loggedDays.filter((d) => {
     if (d.target === 0) return false;
     const pct = Math.abs(d.calories - d.target) / d.target;
     return pct <= 0.15;
   }).length;
 
-  const totalDays = data.length;
+  const totalDays = loggedDays.length;
 
-  // Build chart data with relative values (difference from target)
-  const chartData = data.map((d) => ({
-    label: formatXLabel(d.date, period),
-    value: d.calories - d.target,
-    calories: d.calories,
-    target: d.target,
-    category: classifyBar(d.calories, d.target),
-  }));
+  // Build chart data — all days, calories as positive bars, target as reference line
+  const chartData = allDays.map((date) => {
+    const d = dataMap.get(date);
+    const cal = d?.calories ?? 0;
+    const target = d?.target ?? avgTarget;
+    return {
+      label: formatXLabel(date, period),
+      calories: cal,
+      target,
+      category: classifyBar(cal, target),
+    };
+  });
 
-  // Compute Y axis domain
-  const values = chartData.map((d) => d.value);
-  const minVal = Math.min(0, ...values);
-  const maxVal = Math.max(0, ...values);
-  const absMax = Math.max(Math.abs(minVal), Math.abs(maxVal), 100);
-  const yDomain = [-Math.ceil(absMax / 100) * 100, Math.ceil(absMax / 100) * 100];
+  // Y axis domain — based on actual calorie values
+  const calValues = chartData.map((d) => d.calories).filter((v) => v > 0);
+  const maxCal = Math.max(...calValues, avgTarget + 200, 500);
+  const yMax = Math.ceil(maxCal / 500) * 500;
 
   return (
     <CardShell title="Bilancio calorico" emoji="🍽️">
@@ -159,7 +191,7 @@ export function BilancioCalorico({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -20 }}
+            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
           >
             <XAxis
               dataKey="label"
@@ -169,17 +201,24 @@ export function BilancioCalorico({
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
-              domain={yDomain}
+              domain={[0, yMax]}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}
               tickFormatter={(v: number) => `${Math.round(v)}`}
             />
-            <ReferenceLine y={0} stroke="var(--primary-action)" strokeWidth={2} />
+            {avgTarget > 0 && (
+              <ReferenceLine
+                y={avgTarget}
+                stroke="var(--primary-action)"
+                strokeWidth={2}
+              />
+            )}
             <Tooltip
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
+                if (d.calories === 0) return null;
                 return (
                   <div
                     style={{
@@ -192,12 +231,11 @@ export function BilancioCalorico({
                   >
                     <div>Calorie: <strong>{d.calories}</strong></div>
                     <div>Target: <strong>{d.target}</strong></div>
-                    <div>Diff: <strong>{d.value > 0 ? "+" : ""}{d.value}</strong></div>
                   </div>
                 );
               }}
             />
-            <Bar dataKey="value" radius={[3, 3, 3, 3]} maxBarSize={period === "settimana" ? 28 : 12}>
+            <Bar dataKey="calories" radius={[3, 3, 0, 0]} maxBarSize={period === "settimana" ? 28 : 12}>
               {chartData.map((entry, i) => (
                 <Cell key={i} fill={BAR_COLORS[entry.category]} />
               ))}
@@ -215,7 +253,7 @@ export function BilancioCalorico({
           marginTop: "var(--spacing-1)",
         }}
       >
-        <LegendItem color="var(--primary-action)" label="Target" type="line" />
+        <LegendItem color="var(--primary-action)" label="Target al kcal" type="line" />
         <LegendItem color="var(--primary-surface)" label="Poco sopra" />
         <LegendItem color="var(--color-ciano-200)" label="Poco sotto" />
         <LegendItem color="var(--danger-surface)" label="Troppo sopra" />
