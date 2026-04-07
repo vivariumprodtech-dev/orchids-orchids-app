@@ -192,14 +192,15 @@ export function BilancioCalorico({
     const d = dataMap.get(date);
     const cal = d?.calories ?? 0;
     const target = d?.target ?? avgTarget;
-    const diff = cal > 0 ? cal - target : 0;
+    const hasLog = !!d && cal > 0;
+    const diff = hasLog ? cal - target : -target;
     return {
       date,
       diff,
       zero: 0, // for the target line with dots
       calories: cal,
       target,
-      category: cal > 0 ? classifyBar(diff, target) : "empty",
+      category: hasLog ? classifyBar(diff, target) : (target > 0 ? "troppoSotto" : "empty"),
     };
   });
 
