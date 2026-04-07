@@ -213,11 +213,10 @@ export function BilancioCalorico({
     }
 
     if (!hasLog) {
-      // Active day but no log — show a small placeholder bar
-      const smallBar = -(avgTarget * 0.05 || 50);
+      // Active day but no log — full bar from 0 to -target
       return {
         date,
-        diff: smallBar,
+        diff: -target,
         zero: 0 as number | null,
         calories: 0,
         target,
