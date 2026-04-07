@@ -72,19 +72,11 @@ function logFood(userData: UserData, foodName: string, grams: number) {
 }
 
 function buildStatsUrl(userData: UserData, userId: number): string {
-  const foodsStr = userData.foods.map(f =>
-    `${f.name}:${f.grams}:${f.calories}:${f.protein || 0}:${f.carbs || 0}:${f.fats || 0}:${f.fiber || 0}`
-  ).join('|');
-
-  const activitiesStr = userData.activities.map(a =>
-    `${a.name}:${a.kcal}`
-  ).join('|');
-
-  return `${WEBAPP_URL}/stats?userId=${userId}&calories=${userData.calories}&protein=${userData.protein}&carbs=${userData.carbs}&fats=${userData.fats}&fiber=${userData.fiber}&water=${userData.water}&activeCalories=${userData.activeCalories}&foods=${encodeURIComponent(foodsStr)}&activities=${encodeURIComponent(activitiesStr)}&_v=${Date.now()}`;
+  return `${WEBAPP_URL}/progresso?userId=${userId}&_v=${Date.now()}`;
 }
 
 function buildFrequentFoodsUrl(userId: number): string {
-  return `${WEBAPP_URL}/frequent-foods?userId=${userId}&_v=${Date.now()}`;
+  return `${WEBAPP_URL}/profile?userId=${userId}&_v=${Date.now()}`;
 }
 
 export async function POST(request: NextRequest) {
