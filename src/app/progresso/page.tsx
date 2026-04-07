@@ -5,6 +5,9 @@ import { Suspense, useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/Button";
 import { CostanzaCard } from "@/components/CostanzaCard";
+import { BilancioCalorico } from "@/components/BilancioCalorico";
+import { ObiettivoPeso } from "@/components/ObiettivoPeso";
+import { CalorieAttive } from "@/components/CalorieAttive";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -417,6 +420,36 @@ function ProgressoContent() {
           period={period}
           isNewUser={isNewUser}
           onOpenChat={handleOpenChat}
+        />
+      )}
+
+      {/* Bilancio Calorico */}
+      {userId && (
+        <BilancioCalorico
+          userId={userId}
+          startDate={toYMD(periodStart)}
+          endDate={toYMD(endDate)}
+          period={period}
+        />
+      )}
+
+      {/* Obiettivo di Peso */}
+      {userId && (
+        <ObiettivoPeso
+          userId={userId}
+          startDate={toYMD(periodStart)}
+          endDate={toYMD(endDate)}
+          period={period}
+        />
+      )}
+
+      {/* Calorie Attive */}
+      {userId && (
+        <CalorieAttive
+          userId={userId}
+          startDate={toYMD(periodStart)}
+          endDate={toYMD(endDate)}
+          period={period}
         />
       )}
     </div>
