@@ -319,13 +319,13 @@ function WeekView({
       {/* CTA */}
       {showButton && (
         <Button
-          variant="primary-tonal"
-          size="md"
+          variant="primary-outlined"
+          size="sm"
           fullWidth
           iconStart={MessageCircle}
           onClick={onOpenChat}
         >
-          Scrivimi i tuoi pasti di oggi
+          Scrivimi i tuoi pasti
         </Button>
       )}
     </div>
@@ -353,16 +353,6 @@ function MonthView({
   const loggedInPeriod = allDays.filter((d) => loggedSet.has(d)).sort();
   const record = longestConsecutiveStreak(loggedInPeriod);
 
-  // Build rows of 7 (Mon–Sun), padding first row
-  const firstDate = parseYMD(allDays[0]);
-  const firstDow = (firstDate.getDay() + 6) % 7; // Mon=0
-  const leadingNulls: null[] = Array(firstDow).fill(null);
-  const flat: (string | null)[] = [...leadingNulls, ...allDays];
-  const rows: (string | null)[][] = [];
-  for (let i = 0; i < flat.length; i += 7) {
-    rows.push(flat.slice(i, i + 7));
-  }
-
   return (
     <div
       style={{
@@ -384,81 +374,51 @@ function MonthView({
         </div>
       </div>
 
-      {/* Dot grid */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1-5)" }}>
-        {rows.map((row, ri) => (
-          <div
-            key={ri}
-            style={{
-              display: "flex",
-              gap: "var(--spacing-1)",
-              alignItems: "center",
-            }}
-          >
-            {Array.from({ length: 7 }).map((_, ci) => {
-              const day = row[ci] ?? null;
-              if (day === null) {
-                return (
-                  <div key={ci} style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: dotSize === "lg" ? "0.625rem" : "0.375rem",
-                        height: dotSize === "lg" ? "0.625rem" : "0.375rem",
-                      }}
-                    />
-                  </div>
-                );
-              }
+      {/* Dots — inline flow wrapping with "oggi" label inline */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: dotSize === "lg" ? "var(--spacing-1-5)" : "var(--spacing-1)",
+          alignItems: "center",
+          rowGap: dotSize === "lg" ? "var(--spacing-2)" : "var(--spacing-1-5)",
+        }}
+      >
+        {allDays.map((day) => {
+          const isToday = day === today;
+          const isLogged = loggedSet.has(day);
 
-              const isToday = day === today;
-              const isLogged = loggedSet.has(day);
+          let variant: "neutral-tonal-disabled" | "primary" | "primary-darker" =
+            "neutral-tonal-disabled";
+          if (isLogged && isToday) variant = "primary-darker";
+          else if (isLogged) variant = "primary";
 
-              let variant: "neutral-tonal-disabled" | "primary" | "primary-darker" =
-                "neutral-tonal-disabled";
-              if (isLogged && isToday) variant = "primary-darker";
-              else if (isLogged) variant = "primary";
-
-              return (
-                <div
-                  key={day}
+          return (
+            <React.Fragment key={day}>
+              <BadgeDot size={dotSize} variant={variant} />
+              {isToday && (
+                <span
+                  className="label-sm"
                   style={{
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
+                    color: "var(--primary-action-hover)",
+                    fontSize: "0.625rem",
+                    lineHeight: 1,
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  <BadgeDot size={dotSize} variant={variant} />
-                  {isToday && (
-                    <span
-                      className="label-sm"
-                      style={{
-                        position: "absolute",
-                        top: "calc(100% + var(--spacing-0-5))",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        color: "var(--primary-action-hover)",
-                        fontSize: "0.625rem",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      oggi
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                  oggi
+                </span>
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
 
       {/* CTA — only if today not logged */}
       {!todayLogged && (
         <Button
-          variant="primary-tonal"
-          size="md"
+          variant="primary-outlined"
+          size="sm"
           fullWidth
           iconStart={MessageCircle}
           onClick={onOpenChat}
