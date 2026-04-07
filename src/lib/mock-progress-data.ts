@@ -233,3 +233,26 @@ export function getMockActive(
   if (!p) return [];
   return filterByRange(p.active, startDate, endDate);
 }
+
+/** Return all logged date strings for a given user + range (for Costanza card) */
+export function getMockLoggedDates(
+  userId: string,
+  startDate: string,
+  endDate: string
+): string[] {
+  const p = getProfile(userId);
+  if (!p) return [];
+  return filterByRange(p.calories, startDate, endDate).map((d) => d.date);
+}
+
+/** Whether this mock user is "new" (first log within 7 days of today) */
+export function isMockNewUser(userId: string): boolean {
+  const p = getProfile(userId);
+  if (!p || p.calories.length === 0) return true;
+  const first = p.calories[0].date;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const firstDate = new Date(first + "T00:00:00");
+  const diff = Math.floor((today.getTime() - firstDate.getTime()) / 86400000);
+  return diff <= 7;
+}

@@ -9,6 +9,7 @@ import { BilancioCalorico } from "@/components/BilancioCalorico";
 import { ObiettivoPeso } from "@/components/ObiettivoPeso";
 import { CalorieAttive } from "@/components/CalorieAttive";
 import { supabase } from "@/lib/supabase";
+import { isMockUser, getMockLoggedDates, isMockNewUser } from "@/lib/mock-progress-data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -276,6 +277,14 @@ function ProgressoContent() {
     if (!userId) return;
     const start = toYMD(addDays(endDate, -(days - 1)));
     const end   = toYMD(endDate);
+
+    // Use mock data for demo users
+    if (isMockUser(userId)) {
+      setLoggedDates(getMockLoggedDates(userId, start, end));
+      setIsNewUser(isMockNewUser(userId));
+      setLoadingLogs(false);
+      return;
+    }
 
     setLoadingLogs(true);
     supabase
