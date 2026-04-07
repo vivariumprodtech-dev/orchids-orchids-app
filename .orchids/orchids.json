@@ -3,5 +3,5 @@
   "createdAt": 1769093464282,
   "version": "1.0.0",
   "templateId": "nextjs",
-  "startupCommands": ["npm install; npm run dev"]
+  "startupCommands": ["npm install; npx next dev --turbopack -p 3000"]
 }
