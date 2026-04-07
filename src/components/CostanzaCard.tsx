@@ -232,9 +232,10 @@ function WeekView({
   isNewUser: boolean;
   onOpenChat?: () => void;
 }) {
+  const todayInRange = weekDays.includes(today);
   const todayLogged = loggedSet.has(today);
   const state = resolveWeekState(loggedSet, weekDays, today, isNewUser);
-  const showButton = state.buttonAlways || !todayLogged;
+  const showButton = todayInRange && !todayLogged;
 
   return (
     <div
@@ -328,7 +329,7 @@ function WeekView({
           iconStart={MessageCircle}
           onClick={onOpenChat}
         >
-          Scrivimi i tuoi pasti
+          Scrivimi i tuoi pasti di oggi
         </Button>
       )}
     </div>
@@ -417,8 +418,8 @@ function MonthView({
         })}
       </div>
 
-      {/* CTA — only if today not logged */}
-      {!todayLogged && (
+      {/* CTA — only if today is in range and not logged */}
+      {allDays.includes(today) && !todayLogged && (
         <Button
           variant="primary-outlined"
           size="sm"
