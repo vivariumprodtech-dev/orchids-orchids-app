@@ -260,7 +260,7 @@ function WeekView({
           <>
             <span className="card-main-title">Costanza</span>
             <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-              <span className="card-number-sm" style={{ display: "inline" }}>{record}</span>
+              <span className="card-number-md" style={{ display: "inline" }}>{record}</span>
               {" "}giorni – record di log in sequenza
             </div>
           </>
@@ -389,7 +389,7 @@ function MonthView({
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
         <span className="card-main-title">Costanza</span>
         <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-          <span className="card-number-sm" style={{ display: "inline" }}>{record}</span>
+          <span className="card-number-md" style={{ display: "inline" }}>{record}</span>
           {" "}giorni – record di log in sequenza
         </div>
       </div>
