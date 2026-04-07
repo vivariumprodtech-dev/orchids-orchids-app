@@ -192,7 +192,6 @@ export function CalorieAttive({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
-                if (d.value === 0) return null;
                 return (
                   <div
                     style={{
@@ -211,7 +210,7 @@ export function CalorieAttive({
             <Bar
               dataKey="value"
               fill="var(--nutrient-attive-surface)"
-              radius={[3, 3, 0, 0]}
+              radius={[2, 2, 0, 0]}
               maxBarSize={period === "settimana" ? 28 : 10}
             />
           </BarChart>

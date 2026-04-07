@@ -252,7 +252,6 @@ export function BilancioCalorico({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
-                if (d.calories === 0) return null;
                 return (
                   <div
                     style={{
@@ -272,7 +271,7 @@ export function BilancioCalorico({
             />
             <Bar
               dataKey="diff"
-              radius={[3, 3, 3, 3]}
+              radius={[2, 2, 2, 2]}
               maxBarSize={period === "settimana" ? 28 : 10}
             >
               {chartData.map((entry, i) => (
@@ -285,7 +284,7 @@ export function BilancioCalorico({
               dataKey="zero"
               stroke="var(--primary-action)"
               strokeWidth={2}
-              dot={{ r: 3, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 1.5 }}
+              dot={period === "settimana" ? { r: 3, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 1.5 } : false}
               activeDot={false}
               isAnimationActive={false}
             />
