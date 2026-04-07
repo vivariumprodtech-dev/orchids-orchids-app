@@ -303,7 +303,7 @@ function WeekView({
               <span
                 className="label-sm"
                 style={{
-                  color: isToday
+                  color: isToday && isLogged
                     ? "var(--primary-action-hover)"
                     : "var(--neutral-surface-light)",
                   fontSize: "0.75rem",
@@ -400,7 +400,7 @@ function MonthView({
                 <span
                   className="label-sm"
                   style={{
-                    color: "var(--primary-action-hover)",
+                    color: "var(--neutral-surface-light)",
                     fontSize: "0.625rem",
                     lineHeight: 1,
                     whiteSpace: "nowrap",
