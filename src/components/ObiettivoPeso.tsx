@@ -196,12 +196,13 @@ export function ObiettivoPeso({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 4, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
+            margin={{ top: 10, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
           >
             <CartesianGrid
               strokeDasharray="0"
               stroke="var(--border)"
               vertical={false}
+              horizontalValues={yTicks}
             />
             <XAxis
               dataKey="date"
@@ -213,6 +214,8 @@ export function ObiettivoPeso({
             <YAxis
               domain={[minW, maxW]}
               ticks={yTicks}
+              interval={0}
+              allowDataOverflow
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}

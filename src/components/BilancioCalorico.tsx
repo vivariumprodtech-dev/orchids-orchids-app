@@ -225,12 +225,13 @@ export function BilancioCalorico({
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={chartData}
-            margin={{ top: 4, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
+            margin={{ top: 10, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
           >
             <CartesianGrid
               strokeDasharray="0"
               stroke="var(--border)"
               vertical={false}
+              horizontalValues={yTicks}
             />
             <XAxis
               dataKey="date"
@@ -244,6 +245,8 @@ export function BilancioCalorico({
             <YAxis
               domain={yDomain}
               ticks={yTicks}
+              interval={0}
+              allowDataOverflow
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}
