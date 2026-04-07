@@ -11,6 +11,7 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
+import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -83,6 +84,14 @@ export function BilancioCalorico({
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
+
+    if (isMockUser(userId)) {
+      const mock = getMockCalories(userId, startDate, endDate);
+      setData(mock);
+      setLoading(false);
+      return;
+    }
+
     supabase
       .from("daily_logs")
       .select("date, calories, target_calories")

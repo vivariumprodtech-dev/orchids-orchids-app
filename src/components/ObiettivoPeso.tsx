@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -61,6 +62,16 @@ export function ObiettivoPeso({
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
+
+    if (isMockUser(userId)) {
+      const mock = getMockWeights(userId, startDate, endDate);
+      const meta = getMockWeightMeta(userId);
+      setData(mock);
+      setGoalWeight(meta?.goalWeight ?? null);
+      setStartingWeight(meta?.startingWeight ?? null);
+      setLoading(false);
+      return;
+    }
 
     // Try to fetch weight logs
     supabase

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { isMockUser, getMockActive } from "@/lib/mock-progress-data";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -65,6 +66,14 @@ export function CalorieAttive({
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
+
+    if (isMockUser(userId)) {
+      const mock = getMockActive(userId, startDate, endDate);
+      setData(mock);
+      setLoading(false);
+      return;
+    }
+
     supabase
       .from("daily_logs")
       .select("date, active_calories")
