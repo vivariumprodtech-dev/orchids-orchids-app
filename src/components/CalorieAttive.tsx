@@ -6,6 +6,7 @@ import {
   Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
@@ -62,12 +63,29 @@ function daysInRange(start: string, end: string): string[] {
   return result;
 }
 
-function formatXLabel(dateStr: string, period: Period): string {
-  const d = parseYMD(dateStr);
+// ─── Custom X-axis tick ──────────────────────────────────────────────────────
+
+function XTick({ x, y, payload, period }: any) {
+  const d = parseYMD(payload.value);
   if (period === "settimana") {
-    return `${DOW_IT[d.getDay()]} ${d.getDate()}`;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text textAnchor="middle" dy={12} fontSize={11} fill="var(--placeholder)">
+          {DOW_IT[d.getDay()]}
+        </text>
+        <text textAnchor="middle" dy={24} fontSize={11} fill="var(--placeholder)">
+          {d.getDate()}
+        </text>
+      </g>
+    );
   }
-  return `${d.getDate()}/${d.getMonth() + 1}`;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text textAnchor="middle" dy={14} fontSize={11} fill="var(--placeholder)">
+        {`${d.getDate()}/${d.getMonth() + 1}`}
+      </text>
+    </g>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -110,7 +128,6 @@ export function CalorieAttive({
       });
   }, [userId, startDate, endDate]);
 
-  // Fill all days in range
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {
     const m = new Map<string, number>();
@@ -122,16 +139,14 @@ export function CalorieAttive({
     return <CardShell title="Calorie Attive" emoji="🔥" loading />;
   }
 
-  // Average over logged days only
   const loggedDays = rawData.filter((d) => d.activeCal > 0);
   const totalActiveCal = loggedDays.reduce((s, d) => s + d.activeCal, 0);
   const numDays = loggedDays.length || 1;
   const avg = Math.round(totalActiveCal / numDays);
 
   const chartData = allDays.map((date) => ({
-    label: formatXLabel(date, period),
-    value: dataMap.get(date) ?? 0,
     date,
+    value: dataMap.get(date) ?? 0,
   }));
 
   const values = chartData.map((d) => d.value).filter((v) => v > 0);
@@ -148,17 +163,22 @@ export function CalorieAttive({
       </div>
 
       {/* Chart */}
-      <div style={{ width: "100%", height: 160 }}>
+      <div style={{ width: "100%", height: period === "settimana" ? 180 : 160 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
+            margin={{ top: 4, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
           >
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="var(--border)"
+              vertical={false}
+            />
             <XAxis
-              dataKey="label"
+              dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "var(--placeholder)" }}
+              tick={(props: any) => <XTick {...props} period={period} />}
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
@@ -192,7 +212,7 @@ export function CalorieAttive({
               dataKey="value"
               fill="var(--nutrient-attive-surface)"
               radius={[3, 3, 0, 0]}
-              maxBarSize={period === "settimana" ? 28 : 12}
+              maxBarSize={period === "settimana" ? 28 : 10}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -202,8 +222,8 @@ export function CalorieAttive({
       <div
         style={{
           display: "flex",
+          justifyContent: "center",
           gap: "var(--spacing-3)",
-          marginTop: "var(--spacing-1)",
         }}
       >
         <LegendItem color="var(--nutrient-attive-surface)" label="kcal attive" />
@@ -248,14 +268,7 @@ function CardShell({
         <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{emoji}</span>
       </div>
       {loading ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "8rem",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "8rem" }}>
           <span className="help-text">Caricamento…</span>
         </div>
       ) : (
@@ -272,9 +285,9 @@ function LegendItem({ color, label }: { color: string; label: string }) {
     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
       <div
         style={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
+          width: 10,
+          height: 10,
+          borderRadius: 2,
           backgroundColor: color,
         }}
       />

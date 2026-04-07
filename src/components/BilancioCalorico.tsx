@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -20,7 +22,7 @@ type Period = "settimana" | "1mese" | "2mesi" | "3mesi";
 
 interface BilancioCaloricoProp {
   userId: string;
-  startDate: string; // YYYY-MM-DD
+  startDate: string;
   endDate: string;
   period: Period;
 }
@@ -58,26 +60,16 @@ function daysInRange(start: string, end: string): string[] {
   return result;
 }
 
-function formatXLabel(dateStr: string, period: Period): string {
-  const d = parseYMD(dateStr);
-  if (period === "settimana") {
-    return `${DOW_IT[d.getDay()]} ${d.getDate()}`;
-  }
-  return `${d.getDate()}/${d.getMonth() + 1}`;
-}
-
 function classifyBar(
-  cal: number,
+  diff: number,
   target: number
 ): "pocoSopra" | "pocoSotto" | "troppoSopra" | "troppoSotto" | "onTarget" | "empty" {
-  if (cal === 0) return "empty";
-  if (target === 0) return "onTarget";
-  const diff = cal - target;
+  if (target === 0) return "empty";
   const pct = diff / target;
   if (pct > 0.15) return "troppoSopra";
-  if (pct > 0) return "pocoSopra";
+  if (pct > 0.01) return "pocoSopra";
   if (pct < -0.15) return "troppoSotto";
-  if (pct < 0) return "pocoSotto";
+  if (pct < -0.01) return "pocoSotto";
   return "onTarget";
 }
 
@@ -87,8 +79,46 @@ const BAR_COLORS: Record<string, string> = {
   troppoSopra: "var(--danger-surface)",
   troppoSotto: "var(--color-danger-200)",
   onTarget: "var(--primary-surface)",
-  empty: "var(--color-neutral-100, #f0f0f0)",
+  empty: "transparent",
 };
+
+// ─── Custom X-axis tick ──────────────────────────────────────────────────────
+
+function XTick({ x, y, payload, period, todayLabel }: any) {
+  const d = parseYMD(payload.value);
+  const isBold = payload.value === todayLabel;
+  if (period === "settimana") {
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          textAnchor="middle"
+          dy={12}
+          fontSize={11}
+          fill="var(--placeholder)"
+          fontWeight={isBold ? 700 : 400}
+        >
+          {DOW_IT[d.getDay()]}
+        </text>
+        <text
+          textAnchor="middle"
+          dy={24}
+          fontSize={11}
+          fill="var(--placeholder)"
+          fontWeight={isBold ? 700 : 400}
+        >
+          {d.getDate()}
+        </text>
+      </g>
+    );
+  }
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text textAnchor="middle" dy={14} fontSize={11} fill="var(--placeholder)">
+        {`${d.getDate()}/${d.getMonth() + 1}`}
+      </text>
+    </g>
+  );
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -131,7 +161,6 @@ export function BilancioCalorico({
       });
   }, [userId, startDate, endDate]);
 
-  // Fill all days in range, even those with no data
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {
     const m = new Map<string, DayData>();
@@ -143,7 +172,6 @@ export function BilancioCalorico({
     return <CardShell title="Bilancio calorico" emoji="🍽️" loading />;
   }
 
-  // Get the default target from available data
   const loggedDays = rawData.filter((d) => d.calories > 0);
   const avgTarget =
     loggedDays.length > 0
@@ -158,23 +186,29 @@ export function BilancioCalorico({
 
   const totalDays = loggedDays.length;
 
-  // Build chart data — all days, calories as positive bars, target as reference line
+  // Build chart data: diverging bars (diff from target), 0 = target line
   const chartData = allDays.map((date) => {
     const d = dataMap.get(date);
     const cal = d?.calories ?? 0;
     const target = d?.target ?? avgTarget;
+    const diff = cal > 0 ? cal - target : 0;
     return {
-      label: formatXLabel(date, period),
+      date,
+      diff,
+      zero: 0, // for the target line with dots
       calories: cal,
       target,
-      category: classifyBar(cal, target),
+      category: cal > 0 ? classifyBar(diff, target) : "empty",
     };
   });
 
-  // Y axis domain — based on actual calorie values
-  const calValues = chartData.map((d) => d.calories).filter((v) => v > 0);
-  const maxCal = Math.max(...calValues, avgTarget + 200, 500);
-  const yMax = Math.ceil(maxCal / 500) * 500;
+  // Y axis: symmetric around 0
+  const diffs = chartData.map((d) => d.diff).filter((v) => v !== 0);
+  const absMax = diffs.length > 0 ? Math.max(...diffs.map(Math.abs)) : 500;
+  const yBound = Math.ceil(absMax / 250) * 250;
+  const yDomain = [-yBound, yBound];
+
+  const today = toYMD(new Date());
 
   return (
     <CardShell title="Bilancio calorico" emoji="🍽️">
@@ -187,33 +221,33 @@ export function BilancioCalorico({
       </div>
 
       {/* Chart */}
-      <div style={{ width: "100%", height: 160 }}>
+      <div style={{ width: "100%", height: period === "settimana" ? 200 : 180 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <ComposedChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
+            margin={{ top: 4, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
           >
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="var(--border)"
+              vertical={false}
+            />
             <XAxis
-              dataKey="label"
+              dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "var(--placeholder)" }}
+              tick={(props: any) => (
+                <XTick {...props} period={period} todayLabel={today} />
+              )}
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
-              domain={[0, yMax]}
+              domain={yDomain}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 11, fill: "var(--placeholder)" }}
               tickFormatter={(v: number) => `${Math.round(v)}`}
             />
-            {avgTarget > 0 && (
-              <ReferenceLine
-                y={avgTarget}
-                stroke="var(--primary-action)"
-                strokeWidth={2}
-              />
-            )}
             <Tooltip
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
@@ -231,16 +265,31 @@ export function BilancioCalorico({
                   >
                     <div>Calorie: <strong>{d.calories}</strong></div>
                     <div>Target: <strong>{d.target}</strong></div>
+                    <div>Diff: <strong>{d.diff > 0 ? "+" : ""}{d.diff}</strong></div>
                   </div>
                 );
               }}
             />
-            <Bar dataKey="calories" radius={[3, 3, 0, 0]} maxBarSize={period === "settimana" ? 28 : 12}>
+            <Bar
+              dataKey="diff"
+              radius={[3, 3, 3, 3]}
+              maxBarSize={period === "settimana" ? 28 : 10}
+            >
               {chartData.map((entry, i) => (
                 <Cell key={i} fill={BAR_COLORS[entry.category]} />
               ))}
             </Bar>
-          </BarChart>
+            {/* Target line with dots at y=0 */}
+            <Line
+              type="monotone"
+              dataKey="zero"
+              stroke="var(--primary-action)"
+              strokeWidth={2}
+              dot={{ r: 3, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 1.5 }}
+              activeDot={false}
+              isAnimationActive={false}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
 
@@ -249,15 +298,15 @@ export function BilancioCalorico({
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "var(--spacing-3)",
-          marginTop: "var(--spacing-1)",
+          justifyContent: "center",
+          gap: "var(--spacing-2) var(--spacing-3)",
         }}
       >
-        <LegendItem color="var(--primary-action)" label="Target al kcal" type="line" />
-        <LegendItem color="var(--primary-surface)" label="Poco sopra" />
+        <LegendItem color="var(--primary-action)" label="Target in kcal" type="line-dot" />
         <LegendItem color="var(--color-ciano-200)" label="Poco sotto" />
-        <LegendItem color="var(--danger-surface)" label="Troppo sopra" />
+        <LegendItem color="var(--primary-surface)" label="Poco sopra" />
         <LegendItem color="var(--color-danger-200)" label="Troppo sotto" />
+        <LegendItem color="var(--danger-surface)" label="Troppo sopra" />
       </div>
     </CardShell>
   );
@@ -321,29 +370,25 @@ function CardShell({
 function LegendItem({
   color,
   label,
-  type = "dot",
+  type = "square",
 }: {
   color: string;
   label: string;
-  type?: "dot" | "line";
+  type?: "square" | "line-dot";
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
-      {type === "line" ? (
-        <div
-          style={{
-            width: 16,
-            height: 2,
-            backgroundColor: color,
-            borderRadius: 1,
-          }}
-        />
+      {type === "line-dot" ? (
+        <svg width={20} height={10} viewBox="0 0 20 10">
+          <line x1={0} y1={5} x2={20} y2={5} stroke={color} strokeWidth={2} />
+          <circle cx={10} cy={5} r={3} fill={color} />
+        </svg>
       ) : (
         <div
           style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
+            width: 10,
+            height: 10,
+            borderRadius: 2,
             backgroundColor: color,
           }}
         />

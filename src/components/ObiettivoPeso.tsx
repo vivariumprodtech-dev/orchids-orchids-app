@@ -6,6 +6,7 @@ import {
   Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -56,12 +57,29 @@ function daysInRange(start: string, end: string): string[] {
   return result;
 }
 
-function formatXLabel(dateStr: string, period: Period): string {
-  const d = parseYMD(dateStr);
+// ─── Custom X-axis tick ──────────────────────────────────────────────────────
+
+function XTick({ x, y, payload, period }: any) {
+  const d = parseYMD(payload.value);
   if (period === "settimana") {
-    return `${DOW_IT[d.getDay()]} ${d.getDate()}`;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text textAnchor="middle" dy={12} fontSize={11} fill="var(--placeholder)">
+          {DOW_IT[d.getDay()]}
+        </text>
+        <text textAnchor="middle" dy={24} fontSize={11} fill="var(--placeholder)">
+          {d.getDate()}
+        </text>
+      </g>
+    );
   }
-  return `${d.getDate()}/${d.getMonth() + 1}`;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text textAnchor="middle" dy={14} fontSize={11} fill="var(--placeholder)">
+        {`${d.getDate()}/${d.getMonth() + 1}`}
+      </text>
+    </g>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -104,12 +122,7 @@ export function ObiettivoPeso({
           setLoading(false);
           return;
         }
-        setRawData(
-          rows.map((r: any) => ({
-            date: r.date,
-            weight: r.weight ?? 0,
-          }))
-        );
+        setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
         setLoading(false);
       });
 
@@ -126,7 +139,6 @@ export function ObiettivoPeso({
       });
   }, [userId, startDate, endDate]);
 
-  // Fill all days — only include weight where we have data (line gaps are fine)
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {
     const m = new Map<string, number>();
@@ -141,37 +153,23 @@ export function ObiettivoPeso({
   if (rawData.length === 0) {
     return (
       <CardShell title="Obiettivo di peso">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "6rem",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "6rem" }}>
           <span className="help-text">Nessun dato di peso disponibile</span>
         </div>
       </CardShell>
     );
   }
 
-  // Use overall starting weight from profile, not period start
   const currentWeight = rawData[rawData.length - 1].weight;
   const effectiveStart = startingWeight ?? rawData[0].weight;
   const lost = Math.round((effectiveStart - currentWeight) * 10) / 10;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
-  // Build chart data — all days with labels, weight only where data exists
   const chartData = allDays.map((date) => {
     const w = dataMap.get(date);
-    return {
-      label: formatXLabel(date, period),
-      weight: w ?? null,
-      date,
-    };
+    return { date, weight: w ?? null };
   });
 
-  // Y axis domain
   const weights = rawData.map((d) => d.weight);
   if (goalWeight) weights.push(goalWeight);
   const minW = Math.floor(Math.min(...weights) - 1);
@@ -190,17 +188,22 @@ export function ObiettivoPeso({
       </div>
 
       {/* Chart */}
-      <div style={{ width: "100%", height: 160 }}>
+      <div style={{ width: "100%", height: period === "settimana" ? 180 : 160 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 4, right: 0, bottom: 0, left: -12 }}
+            margin={{ top: 4, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
           >
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="var(--border)"
+              vertical={false}
+            />
             <XAxis
-              dataKey="label"
+              dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "var(--placeholder)" }}
+              tick={(props: any) => <XTick {...props} period={period} />}
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />
             <YAxis
@@ -256,17 +259,13 @@ export function ObiettivoPeso({
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "var(--spacing-3)",
-          marginTop: "var(--spacing-1)",
+          justifyContent: "center",
+          gap: "var(--spacing-2) var(--spacing-3)",
         }}
       >
         <LegendItem color="var(--primary-action)" label="Peso kg" type="line" />
         {goalWeight && (
-          <LegendItem
-            color="var(--neutral-surface-light)"
-            label="Obiettivo di peso"
-            type="dashed"
-          />
+          <LegendItem color="var(--neutral-surface-light)" label="Obiettivo di peso" type="dashed" />
         )}
       </div>
     </CardShell>
@@ -298,14 +297,7 @@ function CardShell({
     >
       <span className="card-main-title">{title}</span>
       {loading ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "8rem",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "8rem" }}>
           <span className="help-text">Caricamento…</span>
         </div>
       ) : (
@@ -320,20 +312,22 @@ function CardShell({
 function LegendItem({
   color,
   label,
-  type = "dot",
+  type = "line",
 }: {
   color: string;
   label: string;
-  type?: "dot" | "line" | "dashed";
+  type?: "line" | "dashed";
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}>
       {type === "dashed" ? (
-        <div style={{ width: 16, height: 0, borderTop: `2px dashed ${color}` }} />
-      ) : type === "line" ? (
-        <div style={{ width: 16, height: 2, backgroundColor: color, borderRadius: 1 }} />
+        <svg width={16} height={4} viewBox="0 0 16 4">
+          <line x1={0} y1={2} x2={16} y2={2} stroke={color} strokeWidth={2} strokeDasharray="4 2" />
+        </svg>
       ) : (
-        <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: color }} />
+        <svg width={16} height={4} viewBox="0 0 16 4">
+          <line x1={0} y1={2} x2={16} y2={2} stroke={color} strokeWidth={2} />
+        </svg>
       )}
       <span className="help-text" style={{ color: "var(--placeholder)" }}>
         {label}
