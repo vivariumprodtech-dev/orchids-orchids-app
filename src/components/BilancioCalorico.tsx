@@ -275,7 +275,7 @@ export function BilancioCalorico({
             />
             <Bar
               dataKey="diff"
-              radius={[2, 2, 2, 2]}
+              radius={0}
               maxBarSize={period === "settimana" ? 28 : 10}
             >
               {chartData.map((entry, i) => (

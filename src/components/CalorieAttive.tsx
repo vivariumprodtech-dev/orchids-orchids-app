@@ -216,7 +216,7 @@ export function CalorieAttive({
             <Bar
               dataKey="value"
               fill="var(--nutrient-attive-surface)"
-              radius={[2, 2, 0, 0]}
+              radius={0}
               maxBarSize={period === "settimana" ? 28 : 10}
             />
           </BarChart>
