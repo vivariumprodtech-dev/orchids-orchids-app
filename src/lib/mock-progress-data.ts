@@ -162,10 +162,77 @@ function generateUgo() {
   };
 }
 
+// ─── Profile 3: Alex — Regular user ──────────────────────────────────────────
+// ~6 weeks of data, decent consistency (~70%), bulking phase (weight going up)
+
+function generateAlex() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const rand = seededRandom(789);
+
+  const calories: MockDayCalories[] = [];
+  const weights: MockDayWeight[] = [];
+  const active: MockDayActive[] = [];
+
+  const threeMonthsAgo = addDays(today, -90);
+
+  for (let i = 0; i <= 90; i++) {
+    const day = addDays(threeMonthsAgo, i);
+    const dateStr = toYMD(day);
+
+    // Started logging ~45 days ago
+    const daysActive = 90 - i;
+    if (daysActive > 45) continue;
+
+    // ~70% logging rate, with a 5-day gap around day 20
+    const daysSinceStart = 45 - daysActive;
+    const inGap = daysSinceStart >= 18 && daysSinceStart <= 22;
+    if (inGap) continue;
+    const logged = rand() < 0.72;
+    if (!logged) continue;
+
+    const target = 2600; // bulking target, higher calories
+
+    // Often slightly above target (surplus for muscle gain)
+    let cal: number;
+    const r = rand();
+    if (r < 0.15) {
+      // Big surplus day
+      cal = target + 400 + Math.floor(rand() * 300);
+    } else if (r < 0.25) {
+      // Under target (missed meals)
+      cal = target - 300 - Math.floor(rand() * 250);
+    } else {
+      // Near/slightly above target
+      cal = target + Math.floor(rand() * 200) - 50;
+    }
+    calories.push({ date: dateStr, calories: Math.round(cal), target });
+
+    // Weight: 75 → 76.5 over 45 days (slow lean bulk)
+    const progress = daysSinceStart / 45;
+    const trendWeight = 75 + progress * 1.5;
+    const fluctuation = (rand() - 0.5) * 0.8;
+    const w = trendWeight + fluctuation;
+    weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
+
+    // Active kcal: 300-500 (gym days + walks)
+    const kcal = 300 + Math.floor(rand() * 200);
+    active.push({ date: dateStr, activeCal: kcal });
+  }
+
+  return {
+    calories,
+    weights,
+    active,
+    weightMeta: { goalWeight: 78, startingWeight: 75 },
+  };
+}
+
 // ─── Cached data ──────────────────────────────────────────────────────────────
 
 let _camila: ReturnType<typeof generateCamila> | null = null;
 let _ugo: ReturnType<typeof generateUgo> | null = null;
+let _alex: ReturnType<typeof generateAlex> | null = null;
 
 function getCamila() {
   if (!_camila) _camila = generateCamila();
@@ -177,9 +244,14 @@ function getUgo() {
   return _ugo;
 }
 
+function getAlex() {
+  if (!_alex) _alex = generateAlex();
+  return _alex;
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-const MOCK_USER_IDS = new Set(["1722322879", "ugo_demo"]);
+const MOCK_USER_IDS = new Set(["1722322879", "ugo_demo", "6217569048"]);
 
 export function isMockUser(userId: string): boolean {
   return MOCK_USER_IDS.has(userId);
@@ -188,6 +260,7 @@ export function isMockUser(userId: string): boolean {
 function getProfile(userId: string) {
   if (userId === "1722322879") return getCamila();
   if (userId === "ugo_demo") return getUgo();
+  if (userId === "6217569048") return getAlex();
   return null;
 }
 
