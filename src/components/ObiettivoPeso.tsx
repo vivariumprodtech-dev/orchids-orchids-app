@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "recharts";
 import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
-import { niceYTicks } from "@/lib/chart-utils";
+import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -244,6 +244,7 @@ export function ObiettivoPeso({
                       fontSize: "0.8125rem",
                     }}
                   >
+                    <div style={{ fontWeight: 600, marginBottom: 2 }}>{formatTooltipDate(d.date)}</div>
                     <div>Peso: <strong>{d.weight}kg</strong></div>
                   </div>
                 );

@@ -14,7 +14,7 @@ import {
   Cell,
 } from "recharts";
 import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
-import { niceSymmetricTicks } from "@/lib/chart-utils";
+import { niceSymmetricTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -298,6 +298,7 @@ export function BilancioCalorico({
                       fontSize: "0.8125rem",
                     }}
                   >
+                    <div style={{ fontWeight: 600, marginBottom: 2 }}>{formatTooltipDate(d.date)}</div>
                     <div>Calorie: <strong>{d.calories}</strong></div>
                     <div>Target: <strong>{d.target}</strong></div>
                     <div>Diff: <strong>{d.diff > 0 ? "+" : ""}{d.diff}</strong></div>
