@@ -80,6 +80,7 @@ const BAR_COLORS: Record<string, string> = {
   troppoSopra: "var(--danger-surface)",
   troppoSotto: "var(--color-danger-200)",
   onTarget: "var(--primary-surface)",
+  noLog: "var(--neutral-bg)",
   empty: "transparent",
 };
 
@@ -211,14 +212,27 @@ export function BilancioCalorico({
       };
     }
 
-    const diff = hasLog ? cal - target : -target;
+    if (!hasLog) {
+      // Active day but no log — show a small placeholder bar
+      const smallBar = -(avgTarget * 0.05 || 50);
+      return {
+        date,
+        diff: smallBar,
+        zero: 0 as number | null,
+        calories: 0,
+        target,
+        category: "noLog",
+      };
+    }
+
+    const diff = cal - target;
     return {
       date,
       diff,
       zero: 0 as number | null, // target line visible for active days
       calories: cal,
       target,
-      category: hasLog ? classifyBar(diff, target) : (target > 0 ? "troppoSotto" : "empty"),
+      category: classifyBar(diff, target),
     };
   });
 
