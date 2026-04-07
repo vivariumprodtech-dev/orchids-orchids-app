@@ -1,9 +1,11 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState, useMemo } from "react";
+import { Suspense, useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/Button";
+import { CostanzaCard } from "@/components/CostanzaCard";
+import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -43,6 +45,13 @@ function formatDate(d: Date) {
   const mm   = String(d.getMonth() + 1).padStart(2, "0");
   const yy   = String(d.getFullYear()).slice(-2);
   return `${dd}/${mm}/${yy}`;
+}
+
+function toYMD(d: Date): string {
+  const y  = d.getFullYear();
+  const m  = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
 }
 
 // ─── PeriodSelect ─────────────────────────────────────────────────────────────
@@ -242,15 +251,54 @@ function PeriodNavigator({
 // ─── Main content ─────────────────────────────────────────────────────────────
 
 function ProgressoContent() {
-  const router = useRouter();
+  const router       = useRouter();
+  const searchParams = useSearchParams();
+  const userId       = searchParams.get("userId");
 
   const [tab,    setTab]    = useState<Tab>("obiettivo");
-  const [period, setPeriod] = useState<Period>("1mese");
+  const [period, setPeriod] = useState<Period>("settimana");
 
   const today = useMemo(() => startOfDay(new Date()), []);
   const [endDate, setEndDate] = useState<Date>(today);
 
-  const days = PERIOD_DAYS[period];
+  const [loggedDates, setLoggedDates] = useState<string[]>([]);
+  const [isNewUser,   setIsNewUser]   = useState(false);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
+  const days      = PERIOD_DAYS[period];
+  const periodStart = addDays(endDate, -(days - 1));
+
+  // Fetch logs when userId/period/endDate changes
+  useEffect(() => {
+    if (!userId) return;
+    const start = toYMD(addDays(endDate, -(days - 1)));
+    const end   = toYMD(endDate);
+
+    setLoadingLogs(true);
+    supabase
+      .from("daily_logs")
+      .select("date")
+      .eq("user_id", userId)
+      .gte("date", start)
+      .lte("date", end)
+      .then(({ data }) => {
+        setLoggedDates((data ?? []).map((r: { date: string }) => r.date));
+        setLoadingLogs(false);
+      });
+
+    // Check if new user (first log within 7 days)
+    supabase
+      .from("daily_logs")
+      .select("date")
+      .eq("user_id", userId)
+      .order("date", { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (!data || data.length === 0) { setIsNewUser(true); return; }
+        const diff = Math.floor((today.getTime() - new Date(data[0].date).getTime()) / 86400000);
+        setIsNewUser(diff <= 7);
+      });
+  }, [userId, period, endDate, days, today]);
 
   function handlePrev() {
     setEndDate((d) => addDays(d, -days));
@@ -265,6 +313,10 @@ function ProgressoContent() {
   function handlePeriodChange(p: Period) {
     setPeriod(p);
     setEndDate(today);
+  }
+
+  function handleOpenChat() {
+    if (userId) router.push(`/?userId=${userId}`);
   }
 
   return (
@@ -341,24 +393,32 @@ function ProgressoContent() {
         Tuo progresso
       </h1>
 
-      {/* Placeholder */}
-      <div
-        style={{
-          backgroundColor: "var(--color-white)",
-          boxShadow:       "var(--shadow-sm)",
-          borderRadius:    "var(--rounded-6)",
-          padding:         "var(--spacing-6)",
-          display:         "flex",
-          flexDirection:   "column",
-          alignItems:      "center",
-          justifyContent:  "center",
-          gap:             "var(--spacing-2)",
-          minHeight:       "12rem",
-        }}
-      >
-        <span className="card-secondary-title">In arrivo</span>
-        <span className="help-text">Metriche su obiettivi, kcal e macro</span>
-      </div>
+      {/* Costanza Card */}
+      {loadingLogs ? (
+        <div
+          style={{
+            backgroundColor: "var(--color-white)",
+            boxShadow:       "var(--shadow-sm)",
+            borderRadius:    "var(--rounded-6)",
+            padding:         "var(--spacing-6)",
+            display:         "flex",
+            alignItems:      "center",
+            justifyContent:  "center",
+            minHeight:       "8rem",
+          }}
+        >
+          <span className="help-text">Caricamento…</span>
+        </div>
+      ) : (
+        <CostanzaCard
+          loggedDates={loggedDates}
+          startDate={toYMD(periodStart)}
+          endDate={toYMD(endDate)}
+          period={period}
+          isNewUser={isNewUser}
+          onOpenChat={handleOpenChat}
+        />
+      )}
     </div>
   );
 }
