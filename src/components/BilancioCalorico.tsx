@@ -187,17 +187,35 @@ export function BilancioCalorico({
 
   const totalDays = loggedDays.length;
 
+  // First date the user ever logged — days before this are "inactive"
+  const sortedLogDates = rawData.map((d) => d.date).sort();
+  const firstLogDate = sortedLogDates.length > 0 ? sortedLogDates[0] : null;
+
   // Build chart data: diverging bars (diff from target), 0 = target line
   const chartData = allDays.map((date) => {
     const d = dataMap.get(date);
     const cal = d?.calories ?? 0;
     const target = d?.target ?? avgTarget;
     const hasLog = !!d && cal > 0;
+    // Days before the user's first log are inactive (no bar, no line)
+    const isInactive = !firstLogDate || date < firstLogDate;
+
+    if (isInactive) {
+      return {
+        date,
+        diff: 0,
+        zero: null as number | null, // no target line for inactive days
+        calories: 0,
+        target: 0,
+        category: "empty",
+      };
+    }
+
     const diff = hasLog ? cal - target : -target;
     return {
       date,
       diff,
-      zero: 0, // for the target line with dots
+      zero: 0 as number | null, // target line visible for active days
       calories: cal,
       target,
       category: hasLog ? classifyBar(diff, target) : (target > 0 ? "troppoSotto" : "empty"),
@@ -292,6 +310,7 @@ export function BilancioCalorico({
               dot={period === "settimana" ? { r: 3, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 1.5 } : false}
               activeDot={false}
               isAnimationActive={false}
+              connectNulls={false}
             />
           </ComposedChart>
         </ResponsiveContainer>

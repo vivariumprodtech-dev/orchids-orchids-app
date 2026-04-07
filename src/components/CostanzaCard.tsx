@@ -234,8 +234,13 @@ function WeekView({
 }) {
   const todayInRange = weekDays.includes(today);
   const todayLogged = loggedSet.has(today);
-  const state = resolveWeekState(loggedSet, weekDays, today, isNewUser);
   const showButton = todayInRange && !todayLogged;
+
+  // Past periods: show neutral "Costanza" title with record metric
+  const isPast = !todayInRange;
+  const loggedInWeek = weekDays.filter((d) => loggedSet.has(d)).sort();
+  const record = longestConsecutiveStreak(loggedInWeek);
+  const state = isPast ? null : resolveWeekState(loggedSet, weekDays, today, isNewUser);
 
   return (
     <div
@@ -251,17 +256,28 @@ function WeekView({
     >
       {/* Header */}
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span className="card-main-title">{state.title}</span>
-          <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{state.emoji}</span>
-        </div>
-        {/* Metric with bold number */}
-        <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-          <span className="card-number-md" style={{ display: "inline" }}>
-            {state.metric.match(/^\d+/)?.[0]}
-          </span>{" "}
-          {state.metric.replace(/^\d+\s*/, "")}
-        </div>
+        {isPast ? (
+          <>
+            <span className="card-main-title">Costanza</span>
+            <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
+              <span className="card-number-sm" style={{ display: "inline" }}>{record}</span>
+              {" "}giorni – record di log in sequenza
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="card-main-title">{state!.title}</span>
+              <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{state!.emoji}</span>
+            </div>
+            <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
+              <span className="card-number-md" style={{ display: "inline" }}>
+                {state!.metric.match(/^\d+/)?.[0]}
+              </span>{" "}
+              {state!.metric.replace(/^\d+\s*/, "")}
+            </div>
+          </>
+        )}
       </div>
 
       {/* 7 badges */}
