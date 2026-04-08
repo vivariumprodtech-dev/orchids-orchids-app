@@ -46,6 +46,7 @@ const mainKeyboard = {
   keyboard: [
     ['💧 Acqua', '🍽 Cibi frequenti', '🏃 Attività'],
     ['📊 Statistiche'],
+    ['🔎 Ricerca su Giada'],
   ],
   resize_keyboard: true,
   persistent: true,
@@ -302,6 +303,22 @@ if (text === '📊 Statistiche') {
             ]],
           },
         });
+        return NextResponse.json({ ok: true });
+      }
+
+      if (text === '🔎 Ricerca su Giada') {
+        const tallyUrl = `https://tally.so/r/0QJQWZ?telegramId=${userId}`;
+        await sendMessage(
+          chatId,
+          `Ehi! 👋 Il team che lavora su di me ti chiede un piccolo favore — ci vuole pochi minuti.\nLa tua opinione ci aiuta a migliorare. Puoi condividerla qui 👇`,
+          {
+            reply_markup: {
+              inline_keyboard: [[
+                { text: 'Come sta andando con Giada?', url: tallyUrl },
+              ]],
+            },
+          }
+        );
         return NextResponse.json({ ok: true });
       }
 
