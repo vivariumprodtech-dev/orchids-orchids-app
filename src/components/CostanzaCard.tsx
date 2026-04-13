@@ -94,6 +94,7 @@ interface WeekState {
   emoji: string;
   metric: string;
   buttonAlways: boolean;
+  noButton?: boolean;
 }
 
 function resolveWeekState(
@@ -108,13 +109,14 @@ function resolveWeekState(
   const loggedDaysThisWeek = weekDays.filter((d) => loggedSet.has(d));
   const missingDays = weekDays.filter((d) => !loggedSet.has(d));
 
-  // Rule 1 — Long streak (>= 7, but > 7 to not conflict with Rule 3)
-  if (consecutiveDays > 7) {
+  // Rule 1 — Long streak (8+ days): no button ever
+  if (consecutiveDays >= 8) {
     return {
       title: "Sei inarrestabile",
       emoji: "💎",
       metric: `${consecutiveDays} giorni di log in sequenza`,
       buttonAlways: false,
+      noButton: true,
     };
   }
 
@@ -234,13 +236,14 @@ function WeekView({
 }) {
   const todayInRange = weekDays.includes(today);
   const todayLogged = loggedSet.has(today);
-  const showButton = todayInRange && !todayLogged;
 
   // Past periods: show neutral "Costanza" title with record metric
   const isPast = !todayInRange;
   const loggedInWeek = weekDays.filter((d) => loggedSet.has(d)).sort();
   const record = longestConsecutiveStreak(loggedInWeek);
   const state = isPast ? null : resolveWeekState(loggedSet, weekDays, today, isNewUser);
+
+  const showButton = todayInRange && !todayLogged && !state?.noButton;
 
   return (
     <div
