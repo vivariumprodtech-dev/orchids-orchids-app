@@ -10,6 +10,7 @@ import { ObiettivoPeso } from "@/components/ObiettivoPeso";
 import { CalorieAttive } from "@/components/CalorieAttive";
 import { supabase } from "@/lib/supabase";
 import { isMockUser, getMockLoggedDates, isMockNewUser } from "@/lib/mock-progress-data";
+import { fetchFoodEntries } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -287,28 +288,52 @@ function ProgressoContent() {
     }
 
     setLoadingLogs(true);
-    supabase
-      .from("daily_logs")
-      .select("date")
-      .eq("user_id", userId)
-      .gte("date", start)
-      .lte("date", end)
-      .then(({ data }) => {
-        setLoggedDates((data ?? []).map((r: { date: string }) => r.date));
-        setLoadingLogs(false);
-      });
+    fetchFoodEntries(userId)
+      .then((entries) => {
+        // Collect unique dates with logged food in range
+        const dateSet = new Set<string>();
+        let firstDate: string | null = null;
+        for (const entry of entries) {
+          const d = entry.date?.slice(0, 10);
+          if (!d) continue;
+          if (!firstDate || d < firstDate) firstDate = d;
+          if (d >= start && d <= end) dateSet.add(d);
+        }
+        setLoggedDates(Array.from(dateSet).sort());
 
-    // Check if new user (first log within 7 days)
-    supabase
-      .from("daily_logs")
-      .select("date")
-      .eq("user_id", userId)
-      .order("date", { ascending: true })
-      .limit(1)
-      .then(({ data }) => {
-        if (!data || data.length === 0) { setIsNewUser(true); return; }
-        const diff = Math.floor((today.getTime() - new Date(data[0].date).getTime()) / 86400000);
-        setIsNewUser(diff <= 7);
+        // New user = first log within 7 days
+        if (!firstDate) {
+          setIsNewUser(true);
+        } else {
+          const diff = Math.floor((today.getTime() - new Date(firstDate + "T00:00:00").getTime()) / 86400000);
+          setIsNewUser(diff <= 7);
+        }
+        setLoadingLogs(false);
+      })
+      .catch(() => {
+        // Fallback to Supabase
+        supabase
+          .from("daily_logs")
+          .select("date")
+          .eq("user_id", userId)
+          .gte("date", start)
+          .lte("date", end)
+          .then(({ data }) => {
+            setLoggedDates((data ?? []).map((r: { date: string }) => r.date));
+            setLoadingLogs(false);
+          });
+
+        supabase
+          .from("daily_logs")
+          .select("date")
+          .eq("user_id", userId)
+          .order("date", { ascending: true })
+          .limit(1)
+          .then(({ data }) => {
+            if (!data || data.length === 0) { setIsNewUser(true); return; }
+            const diff = Math.floor((today.getTime() - new Date(data[0].date).getTime()) / 86400000);
+            setIsNewUser(diff <= 7);
+          });
       });
   }, [userId, period, endDate, days, today]);
 

@@ -16,6 +16,7 @@ import {
 import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
 import { niceSymmetricTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
+import { fetchFoodEntries, fetchDailyGoals } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -144,23 +145,56 @@ export function BilancioCalorico({
       return;
     }
 
-    supabase
-      .from("daily_logs")
-      .select("date, calories, target_calories")
-      .eq("user_id", userId)
-      .gte("date", startDate)
-      .lte("date", endDate)
-      .order("date", { ascending: true })
-      .then(({ data: rows }) => {
-        setRawData(
-          (rows ?? []).map((r: any) => ({
-            date: r.date,
-            calories: r.calories ?? 0,
-            target: r.target_calories ?? 0,
-          }))
-        );
-        setLoading(false);
-      });
+    Promise.all([
+      fetchFoodEntries(userId).catch(() => []),
+      fetchDailyGoals(userId).catch(() => null),
+    ]).then(([foodEntries, dailyGoals]) => {
+      // Group food entries by date
+      const calByDate = new Map<string, number>();
+      for (const entry of foodEntries) {
+        const d = entry.date?.slice(0, 10);
+        if (!d || d < startDate || d > endDate) continue;
+        const cal = entry.totalCalories ?? entry.calories ?? 0;
+        calByDate.set(d, (calByDate.get(d) ?? 0) + cal);
+      }
+
+      // Build target map from daily goals
+      const targetByDate = new Map<string, number>();
+      if (Array.isArray(dailyGoals)) {
+        for (const g of dailyGoals) {
+          const d = g.date?.slice(0, 10);
+          if (d) targetByDate.set(d, g.calorieTarget ?? g.calories ?? 0);
+        }
+      }
+
+      const rows: DayData[] = Array.from(calByDate.entries()).map(([date, calories]) => ({
+        date,
+        calories,
+        target: targetByDate.get(date) ?? 0,
+      }));
+
+      setRawData(rows.sort((a, b) => a.date.localeCompare(b.date)));
+      setLoading(false);
+    }).catch(() => {
+      // Fallback to Supabase
+      supabase
+        .from("daily_logs")
+        .select("date, calories, target_calories")
+        .eq("user_id", userId)
+        .gte("date", startDate)
+        .lte("date", endDate)
+        .order("date", { ascending: true })
+        .then(({ data: rows }) => {
+          setRawData(
+            (rows ?? []).map((r: any) => ({
+              date: r.date,
+              calories: r.calories ?? 0,
+              target: r.target_calories ?? 0,
+            }))
+          );
+          setLoading(false);
+        });
+    });
   }, [userId, startDate, endDate]);
 
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);

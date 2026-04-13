@@ -13,6 +13,7 @@ import {
 import { isMockUser, getMockActive } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
+import { fetchActiveCalories } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -111,21 +112,40 @@ export function CalorieAttive({
       return;
     }
 
-    supabase
-      .from("daily_logs")
-      .select("date, active_calories")
-      .eq("user_id", userId)
-      .gte("date", startDate)
-      .lte("date", endDate)
-      .order("date", { ascending: true })
-      .then(({ data: rows }) => {
-        setRawData(
-          (rows ?? []).map((r: any) => ({
-            date: r.date,
-            activeCal: r.active_calories ?? 0,
+    fetchActiveCalories(userId)
+      .then((entries) => {
+        const rows: DayData[] = entries
+          .filter((e) => {
+            const d = e.date?.slice(0, 10);
+            return d && d >= startDate && d <= endDate;
+          })
+          .map((e) => ({
+            date: e.date.slice(0, 10),
+            activeCal: e.activeCalories ?? e.calories ?? 0,
           }))
-        );
+          .sort((a, b) => a.date.localeCompare(b.date));
+
+        setRawData(rows);
         setLoading(false);
+      })
+      .catch(() => {
+        // Fallback to Supabase
+        supabase
+          .from("daily_logs")
+          .select("date, active_calories")
+          .eq("user_id", userId)
+          .gte("date", startDate)
+          .lte("date", endDate)
+          .order("date", { ascending: true })
+          .then(({ data: rows }) => {
+            setRawData(
+              (rows ?? []).map((r: any) => ({
+                date: r.date,
+                activeCal: r.active_calories ?? 0,
+              }))
+            );
+            setLoading(false);
+          });
       });
   }, [userId, startDate, endDate]);
 

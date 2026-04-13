@@ -14,6 +14,7 @@ import {
 import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
+import { fetchHealthData, fetchProfile } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -110,34 +111,61 @@ export function ObiettivoPeso({
       return;
     }
 
-    supabase
-      .from("weight_logs")
-      .select("date, weight")
-      .eq("user_id", userId)
-      .gte("date", startDate)
-      .lte("date", endDate)
-      .order("date", { ascending: true })
-      .then(({ data: rows, error }) => {
-        if (error || !rows || rows.length === 0) {
-          setRawData([]);
-          setLoading(false);
-          return;
-        }
-        setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
-        setLoading(false);
-      });
+    Promise.all([
+      fetchHealthData(userId).catch(() => []),
+      fetchProfile(userId).catch(() => null),
+    ]).then(([healthData, profile]) => {
+      // Filter weight entries by date range
+      const weights: WeightDay[] = healthData
+        .filter((e) => {
+          const d = e.date?.slice(0, 10);
+          return d && d >= startDate && d <= endDate && (e.weightKg ?? e.weight) != null;
+        })
+        .map((e) => ({
+          date: e.date.slice(0, 10),
+          weight: e.weightKg ?? (e.weight as number),
+        }))
+        .sort((a, b) => a.date.localeCompare(b.date));
 
-    supabase
-      .from("users")
-      .select("goal_weight, starting_weight")
-      .eq("telegram_id", userId)
-      .single()
-      .then(({ data: user }) => {
-        if (user) {
-          setGoalWeight(user.goal_weight ?? null);
-          setStartingWeight(user.starting_weight ?? null);
-        }
-      });
+      setRawData(weights);
+
+      if (profile) {
+        setGoalWeight(profile.weightGoalKg ?? null);
+        setStartingWeight(profile.startingWeightKg ?? null);
+      }
+
+      setLoading(false);
+    }).catch(() => {
+      // Fallback to Supabase
+      supabase
+        .from("weight_logs")
+        .select("date, weight")
+        .eq("user_id", userId)
+        .gte("date", startDate)
+        .lte("date", endDate)
+        .order("date", { ascending: true })
+        .then(({ data: rows, error }) => {
+          if (error || !rows || rows.length === 0) {
+            setRawData([]);
+            setLoading(false);
+            return;
+          }
+          setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
+          setLoading(false);
+        });
+
+      supabase
+        .from("users")
+        .select("goal_weight, starting_weight")
+        .eq("telegram_id", userId)
+        .single()
+        .then(({ data: user }) => {
+          if (user) {
+            setGoalWeight(user.goal_weight ?? null);
+            setStartingWeight(user.starting_weight ?? null);
+          }
+        });
+    });
   }, [userId, startDate, endDate]);
 
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
