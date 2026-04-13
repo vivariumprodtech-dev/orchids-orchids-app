@@ -10,28 +10,53 @@ async function apiFetch<T>(path: string): Promise<T> {
   return res.json();
 }
 
+// ─── Paginated fetch — follows nextCursor until exhausted ─────────────────────
+// Returns all items from a list endpoint by walking every page.
+
+async function fetchAllPages<TItem>(
+  basePath: string,
+  listKey: string
+): Promise<TItem[]> {
+  const all: TItem[] = [];
+  let cursor: string | null | undefined = undefined; // undefined = first page
+
+  while (true) {
+    const url = cursor ? `${basePath}?cursor=${encodeURIComponent(cursor)}` : basePath;
+    const page = await apiFetch<Record<string, unknown>>(url);
+
+    const items = (page[listKey] as TItem[]) ?? [];
+    all.push(...items);
+
+    const next = page["nextCursor"] as string | null | undefined;
+    if (!next) break;
+    cursor = next;
+  }
+
+  return all;
+}
+
 // ─── Raw API response shapes (matching actual API) ────────────────────────────
 
 export interface ApiProfile {
-  id:             string;
-  name:           string;
-  bmr:            number;
-  weightKg:       number | null;
-  weightGoalKg:   number | null;
-  heightCm:       number | null;
-  [key: string]:  unknown;
+  id:            string;
+  name:          string;
+  bmr:           number;
+  weightKg:      number | null;
+  weightGoalKg:  number | null;
+  heightCm:      number | null;
+  [key: string]: unknown;
 }
 
 export interface ApiFoodEntry {
-  id:        string;
-  foodName:  string;
-  date:      string;       // "YYYY-MM-DD"
-  calories:  number;
-  protein:   number;
-  carbs:     number;
-  fiber:     number;
-  fat:       number;
-  mealType:  string;
+  id:       string;
+  foodName: string;
+  date:     string;    // "YYYY-MM-DD"
+  calories: number | null;
+  protein:  number;
+  carbs:    number;
+  fiber:    number;
+  fat:      number;
+  mealType: string;
   [key: string]: unknown;
 }
 
@@ -43,59 +68,59 @@ export interface ApiDailyGoal {
   fat:            number;
   fiber:          number;
   water:          number;
-  caloricDeficit: number;  // subtract from BMR to get calorie target
+  caloricDeficit: number;  // calorie target = BMR − caloricDeficit
   [key: string]:  unknown;
 }
 
 export interface ApiHealthEntry {
   id:    string;
-  date:  string;  // "YYYY-MM-DD"
-  type:  string;  // "peso" | "waistline" | ...
+  date:  string;   // "YYYY-MM-DD"
+  type:  string;   // "peso" | "waistline" | ...
   value: number;
   [key: string]: unknown;
 }
 
 export interface ApiActiveCalEntry {
   id:       string;
-  date:     string;   // "YYYY-MM-DD"
+  date:     string;  // "YYYY-MM-DD"
   calories: number;
   [key: string]: unknown;
 }
 
-// ─── Typed fetch wrappers ──────────────────────────────────────────────────────
+// ─── Typed fetch wrappers (all pages) ─────────────────────────────────────────
 
 export function fetchProfile(userId: string) {
   return apiFetch<{ profile: ApiProfile }>(`/users/${userId}/profile`);
 }
 
 export function fetchFoodEntries(userId: string) {
-  return apiFetch<{ foodEntries: ApiFoodEntry[] }>(`/users/${userId}/food-entries?limit=100`);
+  return fetchAllPages<ApiFoodEntry>(`/users/${userId}/food-entries`, "foodEntries");
 }
 
 export function fetchDailyGoals(userId: string) {
-  return apiFetch<{ dailyGoals: ApiDailyGoal[] }>(`/users/${userId}/daily-goals?limit=100`);
+  return fetchAllPages<ApiDailyGoal>(`/users/${userId}/daily-goals`, "dailyGoals");
 }
 
 export function fetchHealthData(userId: string) {
-  return apiFetch<{ healthData: ApiHealthEntry[] }>(`/users/${userId}/health-data?limit=100`);
+  return fetchAllPages<ApiHealthEntry>(`/users/${userId}/health-data`, "healthData");
 }
 
 export function fetchActiveCalories(userId: string) {
-  return apiFetch<{ activeCalories: ApiActiveCalEntry[] }>(`/users/${userId}/active-calories?limit=100`);
+  return fetchAllPages<ApiActiveCalEntry>(`/users/${userId}/active-calories`, "activeCalories");
 }
 
 // ─── Aggregated shape for the dashboard ───────────────────────────────────────
 
 export interface AllUserData {
-  profile:         ApiProfile;
-  foodEntries:     ApiFoodEntry[];
-  dailyGoals:      ApiDailyGoal[];
-  healthData:      ApiHealthEntry[];
-  activeCalories:  ApiActiveCalEntry[];
+  profile:        ApiProfile;
+  foodEntries:    ApiFoodEntry[];
+  dailyGoals:     ApiDailyGoal[];
+  healthData:     ApiHealthEntry[];
+  activeCalories: ApiActiveCalEntry[];
 }
 
 export async function fetchAllUserData(userId: string): Promise<AllUserData> {
-  const [profileRes, foodRes, goalsRes, healthRes, activeRes] = await Promise.all([
+  const [profileRes, foodEntries, dailyGoals, healthData, activeCalories] = await Promise.all([
     fetchProfile(userId),
     fetchFoodEntries(userId),
     fetchDailyGoals(userId),
@@ -104,9 +129,9 @@ export async function fetchAllUserData(userId: string): Promise<AllUserData> {
   ]);
   return {
     profile:        profileRes.profile,
-    foodEntries:    foodRes.foodEntries,
-    dailyGoals:     goalsRes.dailyGoals,
-    healthData:     healthRes.healthData,
-    activeCalories: activeRes.activeCalories,
+    foodEntries,
+    dailyGoals,
+    healthData,
+    activeCalories,
   };
 }
