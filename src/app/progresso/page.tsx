@@ -51,20 +51,38 @@ function processApiData(
 ): ProcessedApiData {
   const { profile, foodEntries, dailyGoals, healthData, activeCalories } = data;
 
-  // Aggregate food entries (could be multiple meals/day) by date
-  const calByDate = new Map<string, number>();
+  // ── Aggregate food entries (multiple meals/day) by date ──────────────────
+  const calByDate    = new Map<string, number>();
   const allFoodDates: string[] = [];
   for (const entry of foodEntries) {
     const d = entry.date?.slice(0, 10);
     if (!d) continue;
-    calByDate.set(d, (calByDate.get(d) ?? 0) + (entry.totalCalories ?? entry.calories ?? 0));
+    calByDate.set(d, (calByDate.get(d) ?? 0) + (entry.calories ?? 0));
     if (!allFoodDates.includes(d)) allFoodDates.push(d);
   }
 
+  // ── Calorie target per day = BMR − caloricDeficit ────────────────────────
+  // We carry the last known goal forward for days without an explicit record.
+  const bmr = profile.bmr ?? 0;
   const targetByDate = new Map<string, number>();
   for (const g of dailyGoals) {
     const d = g.date?.slice(0, 10);
-    if (d) targetByDate.set(d, g.calorieTarget ?? g.calories ?? 0);
+    if (d) {
+      const deficit = g.caloricDeficit ?? 0;
+      targetByDate.set(d, bmr - deficit);
+    }
+  }
+
+  // Fill days that have food logs but no goal entry using the nearest previous goal
+  const sortedGoalDates = Array.from(targetByDate.keys()).sort();
+  function nearestTarget(date: string): number {
+    // find the latest goal date <= date
+    let best: string | null = null;
+    for (const gd of sortedGoalDates) {
+      if (gd <= date) best = gd;
+      else break;
+    }
+    return best ? targetByDate.get(best)! : bmr;
   }
 
   // Calorie data filtered to current view range
@@ -73,7 +91,7 @@ function processApiData(
     .map(([date, calories]) => ({
       date,
       calories,
-      target: targetByDate.get(date) ?? 0,
+      target: targetByDate.get(date) ?? nearestTarget(date),
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
@@ -82,26 +100,26 @@ function processApiData(
     .filter((d) => d >= startDate && d <= endDate)
     .sort();
 
-  // isNewUser based on all-time first logged date
-  const firstDate = allFoodDates.sort()[0];
-  const todayMs = new Date().setHours(0, 0, 0, 0);
+  // isNewUser = first ever log within 7 days of today
+  const firstDate = [...allFoodDates].sort()[0];
+  const todayMs   = new Date().setHours(0, 0, 0, 0);
   const isNewUser =
     !firstDate ||
     Math.floor((todayMs - new Date(firstDate + "T00:00:00").getTime()) / 86400000) <= 7;
 
-  // Weight data filtered to range
+  // ── Weight — only "peso" type entries ────────────────────────────────────
   const weightData = healthData
     .filter((e) => {
       const d = e.date?.slice(0, 10);
-      return d && d >= startDate && d <= endDate && (e.weightKg ?? e.weight) != null;
+      return d && d >= startDate && d <= endDate && e.type === "peso" && e.value != null;
     })
     .map((e) => ({
       date:   e.date.slice(0, 10),
-      weight: (e.weightKg ?? e.weight) as number,
+      weight: e.value,
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  // Active calories filtered to range
+  // ── Active calories ───────────────────────────────────────────────────────
   const activeData = activeCalories
     .filter((e) => {
       const d = e.date?.slice(0, 10);
@@ -109,7 +127,7 @@ function processApiData(
     })
     .map((e) => ({
       date:      e.date.slice(0, 10),
-      activeCal: e.activeCalories ?? e.calories ?? 0,
+      activeCal: e.calories ?? 0,
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
@@ -118,8 +136,8 @@ function processApiData(
     isNewUser,
     calorieData,
     weightData,
-    goalWeight:     profile.weightGoalKg     ?? null,
-    startingWeight: profile.startingWeightKg ?? null,
+    goalWeight:     profile.weightGoalKg ?? null,
+    startingWeight: profile.weightKg     ?? null,   // current weight as starting ref
     activeData,
   };
 }

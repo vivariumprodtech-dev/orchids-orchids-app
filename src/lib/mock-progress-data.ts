@@ -251,7 +251,7 @@ function getAlex() {
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-const MOCK_USER_IDS = new Set(["1722322879", "ugo_demo", "6217569048"]);
+const MOCK_USER_IDS = new Set(["ugo_demo", "6217569048"]);
 
 export function isMockUser(userId: string): boolean {
   return MOCK_USER_IDS.has(userId);
