@@ -61,6 +61,9 @@ function generateCamila() {
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
 
+  // BMR=1950, caloricDeficit=150 → bmrDeficit=1800. Target = bmrDeficit + activeCalories.
+  const bmrDeficit = 1800;
+
   // Generate 3 months back of "empty" + 3 days of actual data
   const threeMonthsAgo = addDays(today, -90);
 
@@ -73,7 +76,11 @@ function generateCamila() {
 
     if (daysFromStart >= 0 && daysFromStart <= 2) {
       // She logged these 3 days
-      const target = 1800;
+      // Active kcal: 100-200 (just starting)
+      const kcal = 100 + Math.floor(rand() * 100);
+      active.push({ date: dateStr, activeCal: kcal });
+
+      const target = bmrDeficit + kcal;
       // Mostly under target (still learning) — eating 200-500 under
       const deficit = 200 + Math.floor(rand() * 300);
       const cal = target - deficit + (rand() > 0.7 ? Math.floor(rand() * 200) : 0);
@@ -83,10 +90,6 @@ function generateCamila() {
       // Weight: 68kg, no real change yet (just 3 days)
       const w = 68.0 + (rand() - 0.5) * 0.4;
       weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
-
-      // Active kcal: 100-200 (just starting)
-      const kcal = 100 + Math.floor(rand() * 100);
-      active.push({ date: dateStr, activeCal: kcal });
     }
   }
 
@@ -110,6 +113,9 @@ function generateUgo() {
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
 
+  // BMR=2500, caloricDeficit=300 → bmrDeficit=2200. Target = bmrDeficit + activeCalories.
+  const bmrDeficit = 2200;
+
   const threeMonthsAgo = addDays(today, -90);
 
   for (let i = 0; i <= 90; i++) {
@@ -124,7 +130,11 @@ function generateUgo() {
 
     if (!logged) continue;
 
-    const target = 2200;
+    // Active kcal: 250-400/day
+    const kcal = 250 + Math.floor(rand() * 150);
+    active.push({ date: dateStr, activeCal: kcal });
+
+    const target = bmrDeficit + kcal;
 
     // Mostly near target, occasional spikes
     let cal: number;
@@ -148,10 +158,6 @@ function generateUgo() {
     const fluctuation = (rand() - 0.5) * 0.6;
     const w = trendWeight + fluctuation;
     weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
-
-    // Active kcal: 250-400/day
-    const kcal = 250 + Math.floor(rand() * 150);
-    active.push({ date: dateStr, activeCal: kcal });
   }
 
   return {
@@ -174,6 +180,9 @@ function generateAlex() {
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
 
+  // BMR=2900, caloricDeficit=300 → bmrDeficit=2600. Target = bmrDeficit + activeCalories.
+  const bmrDeficit = 2600;
+
   const threeMonthsAgo = addDays(today, -90);
 
   for (let i = 0; i <= 90; i++) {
@@ -191,7 +200,11 @@ function generateAlex() {
     const logged = rand() < 0.72;
     if (!logged) continue;
 
-    const target = 2600; // bulking target, higher calories
+    // Active kcal: 300-500 (gym days + walks)
+    const kcal = 300 + Math.floor(rand() * 200);
+    active.push({ date: dateStr, activeCal: kcal });
+
+    const target = bmrDeficit + kcal; // bulking target
 
     // Often slightly above target (surplus for muscle gain)
     let cal: number;
@@ -214,10 +227,6 @@ function generateAlex() {
     const fluctuation = (rand() - 0.5) * 0.8;
     const w = trendWeight + fluctuation;
     weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
-
-    // Active kcal: 300-500 (gym days + walks)
-    const kcal = 300 + Math.floor(rand() * 200);
-    active.push({ date: dateStr, activeCal: kcal });
   }
 
   return {

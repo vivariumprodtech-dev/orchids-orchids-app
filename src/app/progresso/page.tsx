@@ -61,38 +61,48 @@ function processApiData(
     if (!allFoodDates.includes(d)) allFoodDates.push(d);
   }
 
-  // ── Calorie target per day = BMR − caloricDeficit ────────────────────────
-  // We carry the last known goal forward for days without an explicit record.
+  // ── Calorie target per day = BMR − caloricDeficit + activeCalories ──────
+  // We carry the last known goal (bmr-deficit) forward for days without an explicit record,
+  // then add that day's actual active calories on top.
   const bmr = profile.bmr ?? 0;
-  const targetByDate = new Map<string, number>();
-  for (const g of dailyGoals) {
-    const d = g.date?.slice(0, 10);
-    if (d) {
-      const deficit = g.caloricDeficit ?? 0;
-      targetByDate.set(d, bmr - deficit);
-    }
+
+  // Build active calories lookup by date
+  const activeCalByDate = new Map<string, number>();
+  for (const ac of activeCalories) {
+    const d = ac.date?.slice(0, 10);
+    if (d) activeCalByDate.set(d, ac.calories ?? 0);
   }
 
-  // Fill days that have food logs but no goal entry using the nearest previous goal
-  const sortedGoalDates = Array.from(targetByDate.keys()).sort();
-  function nearestTarget(date: string): number {
-    // find the latest goal date <= date
+  // Store only the bmr-deficit portion keyed by date (active cal added per-day below)
+  const bmrDeficitByDate = new Map<string, number>();
+  for (const g of dailyGoals) {
+    const d = g.date?.slice(0, 10);
+    if (d) bmrDeficitByDate.set(d, bmr - (g.caloricDeficit ?? 0));
+  }
+
+  // Carry-forward helper: find latest goal date <= queried date
+  const sortedGoalDates = Array.from(bmrDeficitByDate.keys()).sort();
+  function nearestBmrDeficit(date: string): number {
     let best: string | null = null;
     for (const gd of sortedGoalDates) {
       if (gd <= date) best = gd;
       else break;
     }
-    return best ? targetByDate.get(best)! : bmr;
+    return best ? bmrDeficitByDate.get(best)! : bmr;
   }
 
   // Calorie data filtered to current view range
   const calorieData = Array.from(calByDate.entries())
     .filter(([d]) => d >= startDate && d <= endDate)
-    .map(([date, calories]) => ({
-      date,
-      calories,
-      target: targetByDate.get(date) ?? nearestTarget(date),
-    }))
+    .map(([date, calories]) => {
+      const activeCal  = activeCalByDate.get(date) ?? 0;
+      const bmrDeficit = bmrDeficitByDate.get(date) ?? nearestBmrDeficit(date);
+      return {
+        date,
+        calories,
+        target: bmrDeficit + activeCal,
+      };
+    })
     .sort((a, b) => a.date.localeCompare(b.date));
 
   // Logged dates in current view range
