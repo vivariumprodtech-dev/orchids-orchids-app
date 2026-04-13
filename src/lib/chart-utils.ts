@@ -1,5 +1,10 @@
 const DOW_IT_FULL = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
 
+/** Format a number with max 1 decimal place, trimming trailing zero */
+export function fmt1(n: number): string {
+  return Number(n.toFixed(1)).toString();
+}
+
 /** Format a YYYY-MM-DD date for chart tooltips → "Lun 7/04/2026" */
 export function formatTooltipDate(dateStr: string): string {
   const [y, m, d] = dateStr.split("-").map(Number);

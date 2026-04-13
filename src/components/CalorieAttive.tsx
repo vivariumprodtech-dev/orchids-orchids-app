@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "recharts";
 import { isMockUser, getMockActive } from "@/lib/mock-progress-data";
-import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
+import { niceYTicks, formatTooltipDate, fmt1 } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -220,7 +220,7 @@ export function CalorieAttive({
                     }}
                   >
                     <div style={{ fontWeight: 600, marginBottom: 2 }}>{formatTooltipDate(d.date)}</div>
-                    <div>Kcal attive: <strong>{d.value}</strong></div>
+                    <div>Kcal attive: <strong>{fmt1(d.value)}</strong></div>
                   </div>
                 );
               }}
