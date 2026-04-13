@@ -11,8 +11,10 @@ import { Button } from "./Button";
 export type CostanzaPeriod = "settimana" | "1mese" | "2mesi" | "3mesi";
 
 export interface CostanzaCardProps {
-  /** ISO date strings (YYYY-MM-DD) of days the user logged */
+  /** ISO date strings (YYYY-MM-DD) of days the user logged — for badge/dot display */
   loggedDates: string[];
+  /** All logged dates across full history — used for streak calculation only */
+  streakLoggedDates?: string[];
   /** ISO date string of the first day to display (inclusive) */
   startDate: string;
   /** ISO date string of the last day to display (inclusive) */
@@ -223,12 +225,14 @@ function resolveWeekState(
 
 function WeekView({
   loggedSet,
+  streakSet,
   weekDays,
   today,
   isNewUser,
   onOpenChat,
 }: {
   loggedSet: Set<string>;
+  streakSet: Set<string>;
   weekDays: string[];
   today: string;
   isNewUser: boolean;
@@ -241,7 +245,8 @@ function WeekView({
   const isPast = !todayInRange;
   const loggedInWeek = weekDays.filter((d) => loggedSet.has(d)).sort();
   const record = longestConsecutiveStreak(loggedInWeek);
-  const state = isPast ? null : resolveWeekState(loggedSet, weekDays, today, isNewUser);
+  // Use streakSet (full history) for streak calculation, loggedSet for badge display
+  const state = isPast ? null : resolveWeekState(streakSet, weekDays, today, isNewUser);
 
   const showButton = todayInRange && !todayLogged && !state?.noButton;
 
@@ -462,8 +467,11 @@ export function CostanzaCard({
   period,
   isNewUser = false,
   onOpenChat,
+  streakLoggedDates,
 }: CostanzaCardProps) {
   const loggedSet = new Set(loggedDates);
+  // Use wider history for streak calc if provided, otherwise fall back to display set
+  const streakSet = streakLoggedDates ? new Set(streakLoggedDates) : loggedSet;
   const today = toYMD(new Date());
 
   if (period === "settimana") {
@@ -472,6 +480,7 @@ export function CostanzaCard({
     return (
       <WeekView
         loggedSet={loggedSet}
+        streakSet={streakSet}
         weekDays={weekDays}
         today={today}
         isNewUser={isNewUser}

@@ -33,13 +33,14 @@ const PERIOD_DAYS: Record<Period, number> = {
 // ─── Processed API data shape ─────────────────────────────────────────────────
 
 interface ProcessedApiData {
-  loggedDates:    string[];
-  isNewUser:      boolean;
-  calorieData:    { date: string; calories: number; target: number }[];
-  weightData:     { date: string; weight: number }[];
-  goalWeight:     number | null;
-  startingWeight: number | null;
-  activeData:     { date: string; activeCal: number }[];
+  loggedDates:       string[];
+  allLoggedDates:    string[]; // full history, for streak calc
+  isNewUser:         boolean;
+  calorieData:       { date: string; calories: number; target: number }[];
+  weightData:        { date: string; weight: number }[];
+  goalWeight:        number | null;
+  startingWeight:    number | null;
+  activeData:        { date: string; activeCal: number }[];
 }
 
 /** Process the raw AllUserData fetched from the API into per-component shapes,
@@ -110,6 +111,9 @@ function processApiData(
     .filter((d) => d >= startDate && d <= endDate)
     .sort();
 
+  // All logged dates (full history) — for streak calculation
+  const allLoggedDates = Array.from(calByDate.keys()).sort();
+
   // isNewUser = first ever log within 7 days of today
   const firstDate = [...allFoodDates].sort()[0];
   const todayMs   = new Date().setHours(0, 0, 0, 0);
@@ -143,6 +147,7 @@ function processApiData(
 
   return {
     loggedDates,
+    allLoggedDates,
     isNewUser,
     calorieData,
     weightData,
@@ -382,9 +387,10 @@ function ProgressoContent() {
   const [endDate, setEndDate] = useState<Date>(today);
 
   // CostanzaCard state (mock + API)
-  const [loggedDates, setLoggedDates] = useState<string[]>([]);
-  const [isNewUser,   setIsNewUser]   = useState(false);
-  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [loggedDates,       setLoggedDates]       = useState<string[]>([]);
+  const [streakLoggedDates, setStreakLoggedDates]  = useState<string[]>([]);
+  const [isNewUser,         setIsNewUser]          = useState(false);
+  const [loadingLogs,       setLoadingLogs]        = useState(false);
 
   // Centralized API data for real users
   const [rawApiData,  setRawApiData]  = useState<AllUserData | null>(null);
@@ -424,7 +430,10 @@ function ProgressoContent() {
     if (!userId) return;
 
     if (isMockUser(userId)) {
+      const todayStr = toYMD(today);
+      const ninetyAgo = toYMD(addDays(today, -90));
       setLoggedDates(getMockLoggedDates(userId, startStr, endStr));
+      setStreakLoggedDates(getMockLoggedDates(userId, ninetyAgo, todayStr));
       setIsNewUser(isMockNewUser(userId));
       setLoadingLogs(false);
       setProcessed(null);
@@ -445,6 +454,7 @@ function ProgressoContent() {
     const p = processApiData(rawApiData, startStr, endStr);
     setProcessed(p);
     setLoggedDates(p.loggedDates);
+    setStreakLoggedDates(p.allLoggedDates);
     setIsNewUser(p.isNewUser);
     setLoadingLogs(false);
   }, [userId, startStr, endStr, rawApiData, loadingApi]);
@@ -586,6 +596,7 @@ function ProgressoContent() {
           ) : (
             <CostanzaCard
               loggedDates={loggedDates}
+              streakLoggedDates={streakLoggedDates}
               startDate={startStr}
               endDate={endStr}
               period={period}
