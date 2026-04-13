@@ -2,15 +2,14 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useMemo, useEffect } from "react";
-import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { CostanzaCard } from "@/components/CostanzaCard";
 import { BilancioCalorico } from "@/components/BilancioCalorico";
 import { ObiettivoPeso } from "@/components/ObiettivoPeso";
 import { CalorieAttive } from "@/components/CalorieAttive";
-import { supabase } from "@/lib/supabase";
 import { isMockUser, getMockLoggedDates, isMockNewUser } from "@/lib/mock-progress-data";
-import { fetchFoodEntries } from "@/lib/api";
+import { fetchAllUserData, AllUserData } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,6 +30,100 @@ const PERIOD_DAYS: Record<Period, number> = {
   "3mesi":   90,
 };
 
+// ─── Processed API data shape ─────────────────────────────────────────────────
+
+interface ProcessedApiData {
+  loggedDates:    string[];
+  isNewUser:      boolean;
+  calorieData:    { date: string; calories: number; target: number }[];
+  weightData:     { date: string; weight: number }[];
+  goalWeight:     number | null;
+  startingWeight: number | null;
+  activeData:     { date: string; activeCal: number }[];
+}
+
+/** Process the raw AllUserData fetched from the API into per-component shapes,
+ *  filtered to [startDate, endDate]. */
+function processApiData(
+  data: AllUserData,
+  startDate: string,
+  endDate: string
+): ProcessedApiData {
+  const { profile, foodEntries, dailyGoals, healthData, activeCalories } = data;
+
+  // Aggregate food entries (could be multiple meals/day) by date
+  const calByDate = new Map<string, number>();
+  const allFoodDates: string[] = [];
+  for (const entry of foodEntries) {
+    const d = entry.date?.slice(0, 10);
+    if (!d) continue;
+    calByDate.set(d, (calByDate.get(d) ?? 0) + (entry.totalCalories ?? entry.calories ?? 0));
+    if (!allFoodDates.includes(d)) allFoodDates.push(d);
+  }
+
+  const targetByDate = new Map<string, number>();
+  for (const g of dailyGoals) {
+    const d = g.date?.slice(0, 10);
+    if (d) targetByDate.set(d, g.calorieTarget ?? g.calories ?? 0);
+  }
+
+  // Calorie data filtered to current view range
+  const calorieData = Array.from(calByDate.entries())
+    .filter(([d]) => d >= startDate && d <= endDate)
+    .map(([date, calories]) => ({
+      date,
+      calories,
+      target: targetByDate.get(date) ?? 0,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Logged dates in current view range
+  const loggedDates = Array.from(calByDate.keys())
+    .filter((d) => d >= startDate && d <= endDate)
+    .sort();
+
+  // isNewUser based on all-time first logged date
+  const firstDate = allFoodDates.sort()[0];
+  const todayMs = new Date().setHours(0, 0, 0, 0);
+  const isNewUser =
+    !firstDate ||
+    Math.floor((todayMs - new Date(firstDate + "T00:00:00").getTime()) / 86400000) <= 7;
+
+  // Weight data filtered to range
+  const weightData = healthData
+    .filter((e) => {
+      const d = e.date?.slice(0, 10);
+      return d && d >= startDate && d <= endDate && (e.weightKg ?? e.weight) != null;
+    })
+    .map((e) => ({
+      date:   e.date.slice(0, 10),
+      weight: (e.weightKg ?? e.weight) as number,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  // Active calories filtered to range
+  const activeData = activeCalories
+    .filter((e) => {
+      const d = e.date?.slice(0, 10);
+      return d && d >= startDate && d <= endDate;
+    })
+    .map((e) => ({
+      date:      e.date.slice(0, 10),
+      activeCal: e.activeCalories ?? e.calories ?? 0,
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  return {
+    loggedDates,
+    isNewUser,
+    calorieData,
+    weightData,
+    goalWeight:     profile.weightGoalKg     ?? null,
+    startingWeight: profile.startingWeightKg ?? null,
+    activeData,
+  };
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function startOfDay(d: Date) {
@@ -46,9 +139,9 @@ function addDays(d: Date, n: number) {
 }
 
 function formatDate(d: Date) {
-  const dd   = String(d.getDate()).padStart(2, "0");
-  const mm   = String(d.getMonth() + 1).padStart(2, "0");
-  const yy   = String(d.getFullYear()).slice(-2);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yy = String(d.getFullYear()).slice(-2);
   return `${dd}/${mm}/${yy}`;
 }
 
@@ -73,7 +166,6 @@ function PeriodSelect({
 
   return (
     <div style={{ position: "relative", flexShrink: 0 }}>
-      {/* Trigger — styled as neutral-invert button */}
       <button
         onClick={() => setOpen((v) => !v)}
         style={{
@@ -164,7 +256,6 @@ function PeriodSelect({
 }
 
 // ─── PeriodNavigator ─────────────────────────────────────────────────────────
-// Looks like a neutral-invert button, chevrons on each side, small date text
 
 function PeriodNavigator({
   endDate,
@@ -186,19 +277,18 @@ function PeriodNavigator({
     ? `${formatDate(startDate)} – ${formatDate(endDate)} (oggi)`
     : `${formatDate(startDate)} – ${formatDate(endDate)}`;
 
-  // shared chevron button style
   const chevronStyle = (disabled: boolean): React.CSSProperties => ({
-    display:         "inline-flex",
-    alignItems:      "center",
-    justifyContent:  "center",
-    background:      "none",
-    border:          "none",
-    padding:         "0 var(--spacing-1)",
-    cursor:          disabled ? "not-allowed" : "pointer",
-    color:           disabled ? "var(--disabled-font)" : "var(--neutral-action)",
-    opacity:         disabled ? 0.4 : 1,
-    flexShrink:      0,
-    outline:         "none",
+    display:        "inline-flex",
+    alignItems:     "center",
+    justifyContent: "center",
+    background:     "none",
+    border:         "none",
+    padding:        "0 var(--spacing-1)",
+    cursor:         disabled ? "not-allowed" : "pointer",
+    color:          disabled ? "var(--disabled-font)" : "var(--neutral-action)",
+    opacity:        disabled ? 0.4 : 1,
+    flexShrink:     0,
+    outline:        "none",
   });
 
   return (
@@ -220,12 +310,10 @@ function PeriodNavigator({
         boxSizing:       "border-box",
       }}
     >
-      {/* prev */}
       <button style={chevronStyle(false)} onClick={onPrev}>
         <ChevronLeft size={15} strokeWidth={2.5} />
       </button>
 
-      {/* range label */}
       <span
         className="body-sm"
         style={{
@@ -241,7 +329,6 @@ function PeriodNavigator({
         {rangeLabel}
       </span>
 
-      {/* next — disabled when end = today */}
       <button
         style={chevronStyle(isToday)}
         onClick={onNext}
@@ -266,76 +353,73 @@ function ProgressoContent() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [endDate, setEndDate] = useState<Date>(today);
 
+  // CostanzaCard state (mock + API)
   const [loggedDates, setLoggedDates] = useState<string[]>([]);
   const [isNewUser,   setIsNewUser]   = useState(false);
   const [loadingLogs, setLoadingLogs] = useState(false);
 
-  const days      = PERIOD_DAYS[period];
-  const periodStart = addDays(endDate, -(days - 1));
+  // Centralized API data for real users
+  const [rawApiData,  setRawApiData]  = useState<AllUserData | null>(null);
+  const [loadingApi,  setLoadingApi]  = useState(false);
+  // Processed/filtered slice for the current view window
+  const [processed,   setProcessed]   = useState<ProcessedApiData | null>(null);
 
-  // Fetch logs when userId/period/endDate changes
+  const days        = PERIOD_DAYS[period];
+  const periodStart = addDays(endDate, -(days - 1));
+  const startStr    = toYMD(periodStart);
+  const endStr      = toYMD(endDate);
+
+  // ── Effect 1: fetch ALL raw API data once per userId (real users only) ──────
+  useEffect(() => {
+    if (!userId || isMockUser(userId)) {
+      setRawApiData(null);
+      setProcessed(null);
+      return;
+    }
+
+    setLoadingApi(true);
+    setProcessed(null);
+
+    fetchAllUserData(userId)
+      .then((data) => {
+        setRawApiData(data);
+        setLoadingApi(false);
+      })
+      .catch(() => {
+        setRawApiData(null);
+        setLoadingApi(false);
+      });
+  }, [userId]);
+
+  // ── Effect 2: (re)process raw data or mock when view window changes ─────────
   useEffect(() => {
     if (!userId) return;
-    const start = toYMD(addDays(endDate, -(days - 1)));
-    const end   = toYMD(endDate);
 
-    // Use mock data for demo users
     if (isMockUser(userId)) {
-      setLoggedDates(getMockLoggedDates(userId, start, end));
+      setLoggedDates(getMockLoggedDates(userId, startStr, endStr));
       setIsNewUser(isMockNewUser(userId));
+      setLoadingLogs(false);
+      setProcessed(null);
+      return;
+    }
+
+    // Real user — wait until raw API data arrives
+    if (loadingApi) {
+      setLoadingLogs(true);
+      return;
+    }
+
+    if (!rawApiData) {
       setLoadingLogs(false);
       return;
     }
 
-    setLoadingLogs(true);
-    fetchFoodEntries(userId)
-      .then((entries) => {
-        // Collect unique dates with logged food in range
-        const dateSet = new Set<string>();
-        let firstDate: string | null = null;
-        for (const entry of entries) {
-          const d = entry.date?.slice(0, 10);
-          if (!d) continue;
-          if (!firstDate || d < firstDate) firstDate = d;
-          if (d >= start && d <= end) dateSet.add(d);
-        }
-        setLoggedDates(Array.from(dateSet).sort());
-
-        // New user = first log within 7 days
-        if (!firstDate) {
-          setIsNewUser(true);
-        } else {
-          const diff = Math.floor((today.getTime() - new Date(firstDate + "T00:00:00").getTime()) / 86400000);
-          setIsNewUser(diff <= 7);
-        }
-        setLoadingLogs(false);
-      })
-      .catch(() => {
-        // Fallback to Supabase
-        supabase
-          .from("daily_logs")
-          .select("date")
-          .eq("user_id", userId)
-          .gte("date", start)
-          .lte("date", end)
-          .then(({ data }) => {
-            setLoggedDates((data ?? []).map((r: { date: string }) => r.date));
-            setLoadingLogs(false);
-          });
-
-        supabase
-          .from("daily_logs")
-          .select("date")
-          .eq("user_id", userId)
-          .order("date", { ascending: true })
-          .limit(1)
-          .then(({ data }) => {
-            if (!data || data.length === 0) { setIsNewUser(true); return; }
-            const diff = Math.floor((today.getTime() - new Date(data[0].date).getTime()) / 86400000);
-            setIsNewUser(diff <= 7);
-          });
-      });
-  }, [userId, period, endDate, days, today]);
+    const p = processApiData(rawApiData, startStr, endStr);
+    setProcessed(p);
+    setLoggedDates(p.loggedDates);
+    setIsNewUser(p.isNewUser);
+    setLoadingLogs(false);
+  }, [userId, startStr, endStr, rawApiData, loadingApi]);
 
   function handlePrev() {
     setEndDate((d) => addDays(d, -days));
@@ -355,6 +439,8 @@ function ProgressoContent() {
   function handleOpenChat() {
     if (userId) router.push(`/?userId=${userId}`);
   }
+
+  const isLoading = loadingApi || loadingLogs;
 
   return (
     <div
@@ -377,7 +463,7 @@ function ProgressoContent() {
         </Button>
       </div>
 
-      {/* Tabs + period row, with divider underneath */}
+      {/* Tabs + period row */}
       <div
         style={{
           display:       "flex",
@@ -391,7 +477,6 @@ function ProgressoContent() {
           paddingRight:  "var(--spacing-4)",
         }}
       >
-        {/* Tabs */}
         <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
           <Button
             variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
@@ -413,7 +498,6 @@ function ProgressoContent() {
           </Button>
         </div>
 
-        {/* Period selector row */}
         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
           <PeriodSelect value={period} onChange={handlePeriodChange} />
           <PeriodNavigator
@@ -430,61 +514,93 @@ function ProgressoContent() {
         Tuo progresso
       </h1>
 
-      {/* Costanza Card */}
-      {loadingLogs ? (
+      {/* Global loading state for real users */}
+      {loadingApi && (
         <div
           style={{
+            display:         "flex",
+            alignItems:      "center",
+            justifyContent:  "center",
+            gap:             "var(--spacing-2)",
             backgroundColor: "var(--color-white)",
             boxShadow:       "var(--shadow-sm)",
             borderRadius:    "var(--rounded-6)",
             padding:         "var(--spacing-6)",
-            display:         "flex",
-            alignItems:      "center",
-            justifyContent:  "center",
-            minHeight:       "8rem",
           }}
         >
-          <span className="help-text">Caricamento…</span>
+          <Loader2
+            size={18}
+            style={{ color: "var(--primary-action)", animation: "spin 1s linear infinite" }}
+          />
+          <span className="help-text">Caricamento dati…</span>
         </div>
-      ) : (
-        <CostanzaCard
-          loggedDates={loggedDates}
-          startDate={toYMD(periodStart)}
-          endDate={toYMD(endDate)}
-          period={period}
-          isNewUser={isNewUser}
-          onOpenChat={handleOpenChat}
-        />
       )}
 
-      {/* Bilancio Calorico */}
-      {userId && (
-        <BilancioCalorico
-          userId={userId}
-          startDate={toYMD(periodStart)}
-          endDate={toYMD(endDate)}
-          period={period}
-        />
-      )}
+      {/* Cards — show once data is ready */}
+      {!loadingApi && (
+        <>
+          {/* Costanza Card */}
+          {isLoading ? (
+            <div
+              style={{
+                backgroundColor: "var(--color-white)",
+                boxShadow:       "var(--shadow-sm)",
+                borderRadius:    "var(--rounded-6)",
+                padding:         "var(--spacing-6)",
+                display:         "flex",
+                alignItems:      "center",
+                justifyContent:  "center",
+                minHeight:       "8rem",
+              }}
+            >
+              <span className="help-text">Caricamento…</span>
+            </div>
+          ) : (
+            <CostanzaCard
+              loggedDates={loggedDates}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              isNewUser={isNewUser}
+              onOpenChat={handleOpenChat}
+            />
+          )}
 
-      {/* Obiettivo di Peso */}
-      {userId && (
-        <ObiettivoPeso
-          userId={userId}
-          startDate={toYMD(periodStart)}
-          endDate={toYMD(endDate)}
-          period={period}
-        />
-      )}
+          {/* Bilancio Calorico */}
+          {userId && (
+            <BilancioCalorico
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.calorieData}
+            />
+          )}
 
-      {/* Calorie Attive */}
-      {userId && (
-        <CalorieAttive
-          userId={userId}
-          startDate={toYMD(periodStart)}
-          endDate={toYMD(endDate)}
-          period={period}
-        />
+          {/* Obiettivo di Peso */}
+          {userId && (
+            <ObiettivoPeso
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedWeights={processed?.weightData}
+              preloadedGoalWeight={processed?.goalWeight}
+              preloadedStartingWeight={processed?.startingWeight}
+            />
+          )}
+
+          {/* Calorie Attive */}
+          {userId && (
+            <CalorieAttive
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.activeData}
+            />
+          )}
+        </>
       )}
     </div>
   );

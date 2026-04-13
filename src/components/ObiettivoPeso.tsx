@@ -14,7 +14,6 @@ import {
 import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
-import { fetchHealthData, fetchProfile } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -25,6 +24,10 @@ interface ObiettivoPesoProps {
   startDate: string;
   endDate: string;
   period: Period;
+  /** Pre-fetched data from parent (skips internal fetch when provided) */
+  preloadedWeights?: WeightDay[];
+  preloadedGoalWeight?: number | null;
+  preloadedStartingWeight?: number | null;
 }
 
 interface WeightDay {
@@ -91,6 +94,9 @@ export function ObiettivoPeso({
   startDate,
   endDate,
   period,
+  preloadedWeights,
+  preloadedGoalWeight,
+  preloadedStartingWeight,
 }: ObiettivoPesoProps) {
   const [rawData, setRawData] = useState<WeightDay[]>([]);
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
@@ -101,6 +107,16 @@ export function ObiettivoPeso({
     if (!userId) return;
     setLoading(true);
 
+    // Use pre-fetched data from parent (real API users)
+    if (preloadedWeights !== undefined) {
+      setRawData(preloadedWeights);
+      setGoalWeight(preloadedGoalWeight ?? null);
+      setStartingWeight(preloadedStartingWeight ?? null);
+      setLoading(false);
+      return;
+    }
+
+    // Mock demo users
     if (isMockUser(userId)) {
       const mock = getMockWeights(userId, startDate, endDate);
       const meta = getMockWeightMeta(userId);
@@ -111,62 +127,36 @@ export function ObiettivoPeso({
       return;
     }
 
-    Promise.all([
-      fetchHealthData(userId).catch(() => []),
-      fetchProfile(userId).catch(() => null),
-    ]).then(([healthData, profile]) => {
-      // Filter weight entries by date range
-      const weights: WeightDay[] = healthData
-        .filter((e) => {
-          const d = e.date?.slice(0, 10);
-          return d && d >= startDate && d <= endDate && (e.weightKg ?? e.weight) != null;
-        })
-        .map((e) => ({
-          date: e.date.slice(0, 10),
-          weight: e.weightKg ?? (e.weight as number),
-        }))
-        .sort((a, b) => a.date.localeCompare(b.date));
-
-      setRawData(weights);
-
-      if (profile) {
-        setGoalWeight(profile.weightGoalKg ?? null);
-        setStartingWeight(profile.startingWeightKg ?? null);
-      }
-
-      setLoading(false);
-    }).catch(() => {
-      // Fallback to Supabase
-      supabase
-        .from("weight_logs")
-        .select("date, weight")
-        .eq("user_id", userId)
-        .gte("date", startDate)
-        .lte("date", endDate)
-        .order("date", { ascending: true })
-        .then(({ data: rows, error }) => {
-          if (error || !rows || rows.length === 0) {
-            setRawData([]);
-            setLoading(false);
-            return;
-          }
-          setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
+    // Supabase fallback
+    supabase
+      .from("weight_logs")
+      .select("date, weight")
+      .eq("user_id", userId)
+      .gte("date", startDate)
+      .lte("date", endDate)
+      .order("date", { ascending: true })
+      .then(({ data: rows, error }) => {
+        if (error || !rows || rows.length === 0) {
+          setRawData([]);
           setLoading(false);
-        });
+          return;
+        }
+        setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
+        setLoading(false);
+      });
 
-      supabase
-        .from("users")
-        .select("goal_weight, starting_weight")
-        .eq("telegram_id", userId)
-        .single()
-        .then(({ data: user }) => {
-          if (user) {
-            setGoalWeight(user.goal_weight ?? null);
-            setStartingWeight(user.starting_weight ?? null);
-          }
-        });
-    });
-  }, [userId, startDate, endDate]);
+    supabase
+      .from("users")
+      .select("goal_weight, starting_weight")
+      .eq("telegram_id", userId)
+      .single()
+      .then(({ data: user }) => {
+        if (user) {
+          setGoalWeight(user.goal_weight ?? null);
+          setStartingWeight(user.starting_weight ?? null);
+        }
+      });
+  }, [userId, startDate, endDate, preloadedWeights, preloadedGoalWeight, preloadedStartingWeight]);
 
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {

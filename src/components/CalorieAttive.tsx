@@ -13,7 +13,6 @@ import {
 import { isMockUser, getMockActive } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
-import { fetchActiveCalories } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,6 +23,8 @@ interface CalorieAttiveProps {
   startDate: string;
   endDate: string;
   period: Period;
+  /** Pre-fetched data from parent (skips internal fetch when provided) */
+  preloadedData?: DayData[];
 }
 
 interface DayData {
@@ -97,6 +98,7 @@ export function CalorieAttive({
   startDate,
   endDate,
   period,
+  preloadedData,
 }: CalorieAttiveProps) {
   const [rawData, setRawData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,49 +107,38 @@ export function CalorieAttive({
     if (!userId) return;
     setLoading(true);
 
-    if (isMockUser(userId)) {
-      const mock = getMockActive(userId, startDate, endDate);
-      setRawData(mock);
+    // Use pre-fetched data from parent (real API users)
+    if (preloadedData !== undefined) {
+      setRawData(preloadedData);
       setLoading(false);
       return;
     }
 
-    fetchActiveCalories(userId)
-      .then((entries) => {
-        const rows: DayData[] = entries
-          .filter((e) => {
-            const d = e.date?.slice(0, 10);
-            return d && d >= startDate && d <= endDate;
-          })
-          .map((e) => ({
-            date: e.date.slice(0, 10),
-            activeCal: e.activeCalories ?? e.calories ?? 0,
-          }))
-          .sort((a, b) => a.date.localeCompare(b.date));
+    // Mock demo users
+    if (isMockUser(userId)) {
+      setRawData(getMockActive(userId, startDate, endDate));
+      setLoading(false);
+      return;
+    }
 
-        setRawData(rows);
+    // Supabase fallback
+    supabase
+      .from("daily_logs")
+      .select("date, active_calories")
+      .eq("user_id", userId)
+      .gte("date", startDate)
+      .lte("date", endDate)
+      .order("date", { ascending: true })
+      .then(({ data: rows }) => {
+        setRawData(
+          (rows ?? []).map((r: any) => ({
+            date: r.date,
+            activeCal: r.active_calories ?? 0,
+          }))
+        );
         setLoading(false);
-      })
-      .catch(() => {
-        // Fallback to Supabase
-        supabase
-          .from("daily_logs")
-          .select("date, active_calories")
-          .eq("user_id", userId)
-          .gte("date", startDate)
-          .lte("date", endDate)
-          .order("date", { ascending: true })
-          .then(({ data: rows }) => {
-            setRawData(
-              (rows ?? []).map((r: any) => ({
-                date: r.date,
-                activeCal: r.active_calories ?? 0,
-              }))
-            );
-            setLoading(false);
-          });
       });
-  }, [userId, startDate, endDate]);
+  }, [userId, startDate, endDate, preloadedData]);
 
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {
