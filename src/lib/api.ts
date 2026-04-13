@@ -1,10 +1,9 @@
-const BASE_URL = "http://api.giada.care/v1";
-const TOKEN    = "dk_namaedpfjvrtqmxbr0hr5ukw";
+// Calls go through the Next.js proxy (/api/giada/...) to avoid
+// mixed-content blocks (the upstream API is HTTP, the app is HTTPS).
+const BASE_URL = "/api/giada";
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { Authorization: `Bearer ${TOKEN}` },
-  });
+  const res = await fetch(`${BASE_URL}${path}`);
   if (!res.ok) {
     throw new Error(`API ${res.status}: ${res.statusText}`);
   }
