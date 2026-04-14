@@ -181,7 +181,7 @@ export function ObiettivoPeso({
 
   const currentWeight = rawData[rawData.length - 1].weight;
   const effectiveStart = startingWeight ?? rawData[0].weight;
-  const lost = Math.round((effectiveStart - currentWeight) * 10) / 10;
+  const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
   const chartData = allDays.map((date) => {
