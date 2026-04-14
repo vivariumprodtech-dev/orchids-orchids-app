@@ -103,18 +103,12 @@ function resolveWeekState(
   loggedSet: Set<string>,
   weekDays: string[],
   today: string,
-  isNewUser: boolean
+  isNewUser: boolean,
+  streakFromEnd: number
 ): WeekState {
   const logsThisWeek = weekDays.filter((d) => loggedSet.has(d)).length;
   const missingThisWeek = weekDays.filter((d) => !loggedSet.has(d)).length;
-  // Full streak for rule thresholds; capped to period start for display
   const consecutiveDays = computeCurrentStreak(loggedSet, today);
-  const periodStart = weekDays[0];
-  const periodStartDate = parseYMD(periodStart);
-  const consecutiveDaysInPeriod = Math.min(
-    consecutiveDays,
-    Math.floor((parseYMD(today).getTime() - periodStartDate.getTime()) / 86400000) + 1
-  );
   const loggedDaysThisWeek = weekDays.filter((d) => loggedSet.has(d));
   const missingDays = weekDays.filter((d) => !loggedSet.has(d));
 
@@ -123,7 +117,7 @@ function resolveWeekState(
     return {
       title: "Sei inarrestabile",
       emoji: "💎",
-      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
+      metric: `${streakFromEnd} giorni di log in sequenza`,
       buttonAlways: false,
       noButton: true,
     };
@@ -134,7 +128,7 @@ function resolveWeekState(
     return {
       title: "Ottimo inizio, continua così",
       emoji: "🌱",
-      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
+      metric: `${streakFromEnd} giorni di log in sequenza`,
       buttonAlways: false,
     };
   }
@@ -144,7 +138,7 @@ function resolveWeekState(
     return {
       title: "Costanza perfetta",
       emoji: "⚡",
-      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
+      metric: `${streakFromEnd} giorni di log in sequenza`,
       buttonAlways: false,
     };
   }
@@ -248,12 +242,14 @@ function WeekView({
   const todayInRange = weekDays.includes(today);
   const todayLogged = loggedSet.has(today);
 
-  // Past periods: show neutral "Costanza" title with record metric
+  // Streak ending at the last day of this period (using full history)
+  const lastDayInPeriod = [...weekDays].reverse().find((d) => d <= today) ?? weekDays[weekDays.length - 1];
+  const streakFromEnd = computeCurrentStreak(streakSet, lastDayInPeriod);
+
+  // Past periods: show neutral "Costanza" title with streak-from-end metric
   const isPast = !todayInRange;
-  const loggedInWeek = weekDays.filter((d) => loggedSet.has(d)).sort();
-  const record = longestConsecutiveStreak(loggedInWeek);
   // Use streakSet (full history) for streak calculation, loggedSet for badge display
-  const state = isPast ? null : resolveWeekState(streakSet, weekDays, today, isNewUser);
+  const state = isPast ? null : resolveWeekState(streakSet, weekDays, today, isNewUser, streakFromEnd);
 
   const showButton = todayInRange && !todayLogged && !state?.noButton;
 
@@ -275,8 +271,8 @@ function WeekView({
           <>
             <span className="card-main-title">Costanza</span>
             <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-              <span className="card-number-md" style={{ display: "inline" }}>{record}</span>
-              {" "}giorni – record di log in sequenza
+              <span className="card-number-md" style={{ display: "inline" }}>{streakFromEnd}</span>
+              {" "}giorni di log in sequenza
             </div>
           </>
         ) : (
@@ -371,12 +367,14 @@ function WeekView({
 
 function MonthView({
   loggedSet,
+  streakSet,
   allDays,
   today,
   period,
   onOpenChat,
 }: {
   loggedSet: Set<string>;
+  streakSet: Set<string>;
   allDays: string[];
   today: string;
   period: CostanzaPeriod;
@@ -385,8 +383,9 @@ function MonthView({
   const todayLogged = loggedSet.has(today);
   const dotSize = period === "1mese" ? "lg" : "sm";
 
-  const loggedInPeriod = allDays.filter((d) => loggedSet.has(d)).sort();
-  const record = longestConsecutiveStreak(loggedInPeriod);
+  // Streak ending at the last day of this period (using full history)
+  const lastDayInPeriod = [...allDays].reverse().find((d) => d <= today) ?? allDays[allDays.length - 1];
+  const streak = computeCurrentStreak(streakSet, lastDayInPeriod);
 
   return (
     <div
@@ -404,8 +403,8 @@ function MonthView({
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
         <span className="card-main-title">Costanza</span>
         <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-          <span className="card-number-md" style={{ display: "inline" }}>{record}</span>
-          {" "}giorni – record di log in sequenza
+          <span className="card-number-md" style={{ display: "inline" }}>{streak}</span>
+          {" "}giorni di log in sequenza
         </div>
       </div>
 
@@ -500,6 +499,7 @@ export function CostanzaCard({
   return (
     <MonthView
       loggedSet={loggedSet}
+      streakSet={streakSet}
       allDays={allDays}
       today={today}
       period={period}
