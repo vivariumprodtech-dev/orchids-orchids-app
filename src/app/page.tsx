@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/Button";
 
 const BOOKMARKS = [
@@ -12,29 +11,11 @@ const BOOKMARKS = [
 ];
 
 export default function Home() {
-  const [chatId, setChatId]   = useState("");
-  const [syncing, setSyncing] = useState(false);
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [chatId, setChatId] = useState("");
   const router = useRouter();
 
   const handleGo = () => {
     if (chatId.trim()) router.push(`/profile?userId=${chatId.trim()}`);
-  };
-
-  const handleSync = async () => {
-    setSyncing(true);
-    setMessage(null);
-    try {
-      const res  = await fetch("/api/sync-airtable", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Sync error");
-      setMessage({ text: "Sync complete!", type: "success" });
-      setTimeout(() => setMessage(null), 4000);
-    } catch (err: any) {
-      setMessage({ text: err.message, type: "error" });
-    } finally {
-      setSyncing(false);
-    }
   };
 
   return (
@@ -111,33 +92,6 @@ export default function Home() {
             </Button>
           ))}
         </div>
-      </div>
-
-      {/* Sync button */}
-      <div className="w-full max-w-sm flex flex-col gap-3">
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={handleSync}
-          disabled={syncing}
-          fullWidth
-          iconStart={syncing ? Loader2 : RefreshCw}
-        >
-          {syncing ? "Syncing…" : "Sync Airtable data"}
-        </Button>
-
-        {message && (
-          <div
-            className="flex items-center gap-2 rounded-[var(--rounded-4)] px-4 py-2.5 body-sm"
-            style={{
-              backgroundColor: message.type === "success" ? "var(--success-bg)"  : "var(--danger-bg)",
-              color:           message.type === "success" ? "var(--success-text)" : "var(--danger-text)",
-            }}
-          >
-            {message.type === "success" ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-            {message.text}
-          </div>
-        )}
       </div>
 
       {/* Setup hint */}
