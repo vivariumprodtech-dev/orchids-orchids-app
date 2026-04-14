@@ -107,7 +107,14 @@ function resolveWeekState(
 ): WeekState {
   const logsThisWeek = weekDays.filter((d) => loggedSet.has(d)).length;
   const missingThisWeek = weekDays.filter((d) => !loggedSet.has(d)).length;
+  // Full streak for rule thresholds; capped to period start for display
   const consecutiveDays = computeCurrentStreak(loggedSet, today);
+  const periodStart = weekDays[0];
+  const periodStartDate = parseYMD(periodStart);
+  const consecutiveDaysInPeriod = Math.min(
+    consecutiveDays,
+    Math.floor((parseYMD(today).getTime() - periodStartDate.getTime()) / 86400000) + 1
+  );
   const loggedDaysThisWeek = weekDays.filter((d) => loggedSet.has(d));
   const missingDays = weekDays.filter((d) => !loggedSet.has(d));
 
@@ -116,7 +123,7 @@ function resolveWeekState(
     return {
       title: "Sei inarrestabile",
       emoji: "💎",
-      metric: `${consecutiveDays} giorni di log in sequenza`,
+      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
       buttonAlways: false,
       noButton: true,
     };
@@ -127,7 +134,7 @@ function resolveWeekState(
     return {
       title: "Ottimo inizio, continua così",
       emoji: "🌱",
-      metric: `${consecutiveDays} giorni di log in sequenza`,
+      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
       buttonAlways: false,
     };
   }
@@ -137,7 +144,7 @@ function resolveWeekState(
     return {
       title: "Costanza perfetta",
       emoji: "⚡",
-      metric: "7 giorni di log in sequenza",
+      metric: `${consecutiveDaysInPeriod} giorni di log in sequenza`,
       buttonAlways: false,
     };
   }
