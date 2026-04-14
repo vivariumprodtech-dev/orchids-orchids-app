@@ -515,27 +515,6 @@ function ProgressoContent() {
           paddingRight:  "var(--spacing-4)",
         }}
       >
-        <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-          <Button
-            variant={tab === "obiettivo" ? "neutral" : "neutral-invert"}
-            size="sm"
-            fullWidth
-            style={{ flex: 1 }}
-            onClick={() => setTab("obiettivo")}
-          >
-            Obiettivo
-          </Button>
-          <Button
-            variant={tab === "macros" ? "neutral" : "neutral-invert"}
-            size="sm"
-            fullWidth
-            style={{ flex: 1 }}
-            onClick={() => setTab("macros")}
-          >
-            Macros
-          </Button>
-        </div>
-
         <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
           <PeriodSelect value={period} onChange={handlePeriodChange} />
           <PeriodNavigator
