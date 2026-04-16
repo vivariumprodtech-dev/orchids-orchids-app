@@ -306,6 +306,17 @@ export function getMockWeightMeta(userId: string): MockWeightMeta | null {
   return p?.weightMeta ?? null;
 }
 
+/** Returns the last weight entry strictly before startDate (for line anchoring) */
+export function getMockPreviousWeight(
+  userId: string,
+  startDate: string
+): MockDayWeight | null {
+  const p = getProfile(userId);
+  if (!p) return null;
+  const before = p.weights.filter((d) => d.date < startDate).sort((a, b) => b.date.localeCompare(a.date));
+  return before[0] ?? null;
+}
+
 export function getMockActive(
   userId: string,
   startDate: string,

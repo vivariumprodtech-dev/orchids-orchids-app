@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { isMockUser, getMockWeights, getMockWeightMeta } from "@/lib/mock-progress-data";
+import { isMockUser, getMockWeights, getMockWeightMeta, getMockPreviousWeight } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate, fmt1 } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
@@ -28,6 +28,8 @@ interface ObiettivoPesoProps {
   preloadedWeights?: WeightDay[];
   preloadedGoalWeight?: number | null;
   preloadedStartingWeight?: number | null;
+  /** Last weight entry strictly before startDate — used to draw a line when period has ≤ 1 entry */
+  preloadedPreviousWeight?: WeightDay | null;
 }
 
 interface WeightDay {
@@ -97,10 +99,12 @@ export function ObiettivoPeso({
   preloadedWeights,
   preloadedGoalWeight,
   preloadedStartingWeight,
+  preloadedPreviousWeight,
 }: ObiettivoPesoProps) {
   const [rawData, setRawData] = useState<WeightDay[]>([]);
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
   const [startingWeight, setStartingWeight] = useState<number | null>(null);
+  const [previousWeight, setPreviousWeight] = useState<WeightDay | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -112,6 +116,7 @@ export function ObiettivoPeso({
       setRawData(preloadedWeights);
       setGoalWeight(preloadedGoalWeight ?? null);
       setStartingWeight(preloadedStartingWeight ?? null);
+      setPreviousWeight(preloadedPreviousWeight ?? null);
       setLoading(false);
       return;
     }
@@ -123,27 +128,33 @@ export function ObiettivoPeso({
       setRawData(mock);
       setGoalWeight(meta?.goalWeight ?? null);
       setStartingWeight(meta?.startingWeight ?? null);
+      setPreviousWeight(getMockPreviousWeight(userId, startDate));
       setLoading(false);
       return;
     }
 
     // Supabase fallback
-    supabase
-      .from("weight_logs")
-      .select("date, weight")
-      .eq("user_id", userId)
-      .gte("date", startDate)
-      .lte("date", endDate)
-      .order("date", { ascending: true })
-      .then(({ data: rows, error }) => {
-        if (error || !rows || rows.length === 0) {
-          setRawData([]);
-          setLoading(false);
-          return;
-        }
-        setRawData(rows.map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
-        setLoading(false);
-      });
+    Promise.all([
+      supabase
+        .from("weight_logs")
+        .select("date, weight")
+        .eq("user_id", userId)
+        .gte("date", startDate)
+        .lte("date", endDate)
+        .order("date", { ascending: true }),
+      supabase
+        .from("weight_logs")
+        .select("date, weight")
+        .eq("user_id", userId)
+        .lt("date", startDate)
+        .order("date", { ascending: false })
+        .limit(1),
+    ]).then(([{ data: rows }, { data: prev }]) => {
+      setRawData((rows ?? []).map((r: any) => ({ date: r.date, weight: r.weight ?? 0 })));
+      const prevRow = prev?.[0];
+      setPreviousWeight(prevRow ? { date: prevRow.date, weight: prevRow.weight ?? 0 } : null);
+      setLoading(false);
+    });
 
     supabase
       .from("users")
@@ -156,7 +167,7 @@ export function ObiettivoPeso({
           setStartingWeight(user.starting_weight ?? null);
         }
       });
-  }, [userId, startDate, endDate, preloadedWeights, preloadedGoalWeight, preloadedStartingWeight]);
+  }, [userId, startDate, endDate, preloadedWeights, preloadedGoalWeight, preloadedStartingWeight, preloadedPreviousWeight]);
 
   const allDays = useMemo(() => daysInRange(startDate, endDate), [startDate, endDate]);
   const dataMap = useMemo(() => {
@@ -184,12 +195,23 @@ export function ObiettivoPeso({
   const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
+  // When the period has ≤ 1 weight entry, inject the last previous weight at startDate
+  // so the chart can draw a line. Only show a lone dot when there's truly no prior data.
+  const inPeriodCount = rawData.length;
+  const anchorWeight: WeightDay | null =
+    inPeriodCount <= 1 && previousWeight ? previousWeight : null;
+
   const chartData = allDays.map((date) => {
     const w = dataMap.get(date);
-    return { date, weight: w ?? null };
+    // Inject anchor at startDate if we have one and this day has no logged weight
+    if (anchorWeight && date === startDate && w == null) {
+      return { date, weight: anchorWeight.weight, isAnchor: true };
+    }
+    return { date, weight: w ?? null, isAnchor: false };
   });
 
   const weights = rawData.map((d) => d.weight);
+  if (anchorWeight) weights.push(anchorWeight.weight);
   if (goalWeight) weights.push(goalWeight);
   const { ticks: yTicks, domain: [minW, maxW] } = niceYTicks(
     Math.min(...weights) - 0.5,
@@ -251,7 +273,7 @@ export function ObiettivoPeso({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
-                if (d.weight == null) return null;
+                if (d.weight == null || d.isAnchor) return null;
                 return (
                   <div
                     style={{

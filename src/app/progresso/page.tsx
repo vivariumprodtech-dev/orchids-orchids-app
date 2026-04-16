@@ -40,6 +40,7 @@ interface ProcessedApiData {
   weightData:        { date: string; weight: number }[];
   goalWeight:        number | null;
   startingWeight:    number | null;
+  previousWeight:    { date: string; weight: number } | null;
   activeData:        { date: string; activeCal: number }[];
 }
 
@@ -133,6 +134,17 @@ function processApiData(
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
+  // Last weight entry strictly before startDate — used to anchor the line when ≤ 1 in period
+  const prevWeightEntry = healthData
+    .filter((e) => {
+      const d = e.date?.slice(0, 10);
+      return d && d < startDate && e.type === "peso" && e.value != null;
+    })
+    .sort((a, b) => b.date.localeCompare(a.date))[0] ?? null;
+  const previousWeight = prevWeightEntry
+    ? { date: prevWeightEntry.date.slice(0, 10), weight: prevWeightEntry.value }
+    : null;
+
   // ── Active calories ───────────────────────────────────────────────────────
   const activeData = activeCalories
     .filter((e) => {
@@ -152,7 +164,8 @@ function processApiData(
     calorieData,
     weightData,
     goalWeight:     profile.weightGoalKg ?? null,
-    startingWeight: profile.weightKg     ?? null,   // current weight as starting ref
+    startingWeight: profile.weightKg     ?? null,
+    previousWeight,
     activeData,
   };
 }
@@ -605,6 +618,7 @@ function ProgressoContent() {
               preloadedWeights={processed?.weightData}
               preloadedGoalWeight={processed?.goalWeight}
               preloadedStartingWeight={processed?.startingWeight}
+              preloadedPreviousWeight={processed?.previousWeight}
             />
           )}
 
