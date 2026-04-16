@@ -180,7 +180,8 @@ export function ObiettivoPeso({
     return <CardShell title="Obiettivo di peso" loading />;
   }
 
-  if (rawData.length === 0) {
+  // No data at all — not in period AND no prior weight either
+  if (rawData.length === 0 && previousWeight == null) {
     return (
       <CardShell title="Obiettivo di peso">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "6rem" }}>
@@ -190,8 +191,11 @@ export function ObiettivoPeso({
     );
   }
 
-  const currentWeight = rawData[rawData.length - 1].weight;
-  const effectiveStart = startingWeight ?? rawData[0].weight;
+  // Use the last in-period measurement, or fall back to previousWeight
+  const currentWeight =
+    rawData.length > 0 ? rawData[rawData.length - 1].weight : previousWeight!.weight;
+  const effectiveStart =
+    startingWeight ?? (rawData.length > 0 ? rawData[0].weight : previousWeight!.weight);
   const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
