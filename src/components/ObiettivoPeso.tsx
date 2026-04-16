@@ -226,9 +226,9 @@ export function ObiettivoPeso({
       {/* Metric */}
       <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
         <span className="card-number-md" style={{ display: "inline" }}>
-          {lost}
+          {Math.abs(lost)}
         </span>{" "}
-        kg persi → da {effectiveStart}kg a {currentWeight}kg attuale
+        {lost >= 0 ? "kg persi" : "kg in più"} → da {effectiveStart}kg a {currentWeight}kg attuale
       </div>
 
       {/* Chart */}
