@@ -154,10 +154,10 @@ function resolveWeekState(
   }
 
   // Rule 5 — Only today missing
-  if (missingThisWeek === 1 && missingDays[0] === today) {
+  if (missingThisWeek >= 3 && missingDays[0] === today) {
     return {
-      title: "Manca solo oggi",
-      emoji: "⏰",
+      title: "Ricomincia, ci siamo",
+      emoji: "🤝",
       metric: `${logsThisWeek} giorni di log nella settimana`,
       buttonAlways: true,
     };
