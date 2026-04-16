@@ -82,7 +82,7 @@ const BAR_COLORS: Record<string, string> = {
   troppoSopra: "var(--danger-surface)",
   troppoSotto: "var(--color-warning-100)",
   onTarget: "var(--color-ciano-400)",
-  noLog: "var(--color-neutral-200)",
+  noLog: "var(--neutral-bg)",
   empty: "transparent",
 };
 
@@ -341,7 +341,7 @@ export function BilancioCalorico({
         <LegendItem color="var(--color-ciano-400)" label="Vicino" />
         <LegendItem color="var(--danger-surface)" label="Sopra" />
         <LegendItem color="var(--color-warning-100)" label="Sotto" />
-        <LegendItem color="var(--color-neutral-200)" label="Senza log" />
+        <LegendItem color="var(--neutral-bg)" label="Senza log" />
       </div>
     </CardShell>
   );
