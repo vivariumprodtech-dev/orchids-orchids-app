@@ -195,23 +195,35 @@ export function ObiettivoPeso({
   const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
-  // When the period has ≤ 1 weight entry, inject the last previous weight at startDate
-  // so the chart can draw a line. Only show a lone dot when there's truly no prior data.
-  const inPeriodCount = rawData.length;
-  const anchorWeight: WeightDay | null =
-    inPeriodCount <= 1 && previousWeight ? previousWeight : null;
+  // Carry the last known weight forward to today so the line always reaches the present.
+  // "previousWeight" anchors the line start when < 2 entries exist in the period.
+  const today = toYMD(new Date());
+  let lastKnown: number | null = previousWeight?.weight ?? null;
 
   const chartData = allDays.map((date) => {
     const w = dataMap.get(date);
-    // Inject anchor at startDate if we have one and this day has no logged weight
-    if (anchorWeight && date === startDate && w == null) {
-      return { date, weight: anchorWeight.weight, isAnchor: true };
+
+    if (w != null) {
+      lastKnown = w;
+      return { date, weight: w, isAnchor: false, isCarryForward: false };
     }
-    return { date, weight: w ?? null, isAnchor: false };
+
+    // Don't fill future days
+    if (date > today) {
+      return { date, weight: null, isAnchor: false, isCarryForward: false };
+    }
+
+    if (lastKnown == null) {
+      return { date, weight: null, isAnchor: false, isCarryForward: false };
+    }
+
+    // Anchor point at startDate (silent — connects the line but hides in tooltip)
+    const isAnchor = previousWeight != null && date === startDate;
+    return { date, weight: lastKnown, isAnchor, isCarryForward: !isAnchor };
   });
 
   const weights = rawData.map((d) => d.weight);
-  if (anchorWeight) weights.push(anchorWeight.weight);
+  if (previousWeight) weights.push(previousWeight.weight);
   if (goalWeight) weights.push(goalWeight);
   const { ticks: yTicks, domain: [minW, maxW] } = niceYTicks(
     Math.min(...weights) - 0.5,
@@ -273,7 +285,7 @@ export function ObiettivoPeso({
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const d = payload[0].payload;
-                if (d.weight == null || d.isAnchor) return null;
+                if (d.weight == null || d.isAnchor || d.isCarryForward) return null;
                 return (
                   <div
                     style={{
@@ -296,8 +308,14 @@ export function ObiettivoPeso({
               stroke="var(--primary-action)"
               strokeWidth={2}
               connectNulls
-              dot={showDots ? { r: 4, fill: "var(--primary-action)", stroke: "var(--color-white)", strokeWidth: 2 } : false}
-              activeDot={{ r: 5, fill: "var(--primary-action)" }}
+              dot={showDots ? (props: any) => {
+                if (props.payload?.isAnchor || props.payload?.isCarryForward) return <g key={props.key} />;
+                return <circle key={props.key} cx={props.cx} cy={props.cy} r={4} fill="var(--primary-action)" stroke="var(--color-white)" strokeWidth={2} />;
+              } : false}
+              activeDot={(props: any) => {
+                if (props.payload?.isAnchor || props.payload?.isCarryForward) return <g key={props.key} />;
+                return <circle key={props.key} cx={props.cx} cy={props.cy} r={5} fill="var(--primary-action)" />;
+              }}
             />
           </LineChart>
         </ResponsiveContainer>
