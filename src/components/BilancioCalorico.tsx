@@ -77,11 +77,11 @@ function classifyBar(
 }
 
 const BAR_COLORS: Record<string, string> = {
-  pocoSopra: "var(--primary-surface)",
+  pocoSopra: "var(--color-ciano-400)",
   pocoSotto: "var(--color-ciano-200)",
   troppoSopra: "var(--danger-surface)",
-  troppoSotto: "var(--color-danger-200)",
-  onTarget: "var(--primary-surface)",
+  troppoSotto: "var(--warning-100)",
+  onTarget: "var(--color-ciano-400)",
   noLog: "var(--neutral-bg)",
   empty: "transparent",
 };
@@ -169,7 +169,7 @@ export function BilancioCalorico({
   }, [rawData]);
 
   if (loading) {
-    return <CardShell title="Bilancio calorico" emoji="🍽️" loading />;
+    return <CardShell title="Giorni in target" emoji="🍽️" loading />;
   }
 
   const loggedDays = rawData.filter((d) => d.calories > 0);
@@ -241,13 +241,13 @@ export function BilancioCalorico({
 
 
   return (
-    <CardShell title="Bilancio calorico" emoji="🍽️">
+    <CardShell title="Giorni in target" emoji="🍽️">
       {/* Metric */}
       <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
         <span className="card-number-md" style={{ display: "inline" }}>
           {daysNearTarget}
         </span>{" "}
-        /{totalDays} giorni vicino al target
+        /{totalDays} giorni vicino al obiettivo
       </div>
 
       {/* Chart */}
@@ -338,10 +338,9 @@ export function BilancioCalorico({
         }}
       >
         <LegendItem color="var(--primary-action)" label="Target in kcal" type="line-dot" />
-        <LegendItem color="var(--color-ciano-200)" label="Poco sotto" />
-        <LegendItem color="var(--primary-surface)" label="Poco sopra" />
-        <LegendItem color="var(--color-danger-200)" label="Troppo sotto" />
-        <LegendItem color="var(--danger-surface)" label="Troppo sopra" />
+        <LegendItem color="var(--color-ciano-400)" label="Vicino" />
+        <LegendItem color="var(--danger-surface)" label="Sopra" />
+        <LegendItem color="var(--warning-100)" label="Sotto" />
       </div>
     </CardShell>
   );
