@@ -301,14 +301,12 @@ function PeriodNavigator({
   onPrev:  () => void;
   onNext:  () => void;
 }) {
-  const days      = PERIOD_DAYS[period];
-  const startDate = addDays(endDate, -(days - 1));
-  const today     = startOfDay(new Date());
-  const isToday   = startOfDay(endDate).getTime() === today.getTime();
+  const days       = PERIOD_DAYS[period];
+  const startDate  = addDays(endDate, -(days - 1));
+  const yesterday  = startOfDay(addDays(new Date(), -1));
+  const isYesterday = startOfDay(endDate).getTime() === yesterday.getTime();
 
-  const rangeLabel = isToday
-    ? `${formatDate(startDate)} – ${formatDate(endDate)} (oggi)`
-    : `${formatDate(startDate)} – ${formatDate(endDate)}`;
+  const rangeLabel = `${formatDate(startDate)} – ${formatDate(endDate)}`;
 
   const chevronStyle = (disabled: boolean): React.CSSProperties => ({
     display:        "inline-flex",
@@ -363,9 +361,9 @@ function PeriodNavigator({
       </span>
 
       <button
-        style={chevronStyle(isToday)}
+        style={chevronStyle(isYesterday)}
         onClick={onNext}
-        disabled={isToday}
+        disabled={isYesterday}
       >
         <ChevronRight size={15} strokeWidth={2.5} />
       </button>
@@ -383,8 +381,9 @@ function ProgressoContent() {
   const [tab,    setTab]    = useState<Tab>("obiettivo");
   const [period, setPeriod] = useState<Period>("settimana");
 
-  const today = useMemo(() => startOfDay(new Date()), []);
-  const [endDate, setEndDate] = useState<Date>(today);
+  const today     = useMemo(() => startOfDay(new Date()), []);
+  const yesterday = useMemo(() => addDays(today, -1), [today]);
+  const [endDate, setEndDate] = useState<Date>(yesterday);
 
   // CostanzaCard state (mock + API)
   const [loggedDates,       setLoggedDates]       = useState<string[]>([]);
@@ -465,13 +464,13 @@ function ProgressoContent() {
 
   function handleNext() {
     const next = addDays(endDate, days);
-    if (next.getTime() > today.getTime()) return;
+    if (next.getTime() > yesterday.getTime()) return;
     setEndDate(next);
   }
 
   function handlePeriodChange(p: Period) {
     setPeriod(p);
-    setEndDate(today);
+    setEndDate(yesterday);
   }
 
   function handleOpenChat() {

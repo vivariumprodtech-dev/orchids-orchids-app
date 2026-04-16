@@ -88,28 +88,15 @@ const BAR_COLORS: Record<string, string> = {
 
 // ─── Custom X-axis tick ──────────────────────────────────────────────────────
 
-function XTick({ x, y, payload, period, todayLabel }: any) {
+function XTick({ x, y, payload, period }: any) {
   const d = parseYMD(payload.value);
-  const isBold = payload.value === todayLabel;
   if (period === "settimana") {
     return (
       <g transform={`translate(${x},${y})`}>
-        <text
-          textAnchor="middle"
-          dy={12}
-          fontSize={11}
-          fill="var(--placeholder)"
-          fontWeight={isBold ? 700 : 400}
-        >
+        <text textAnchor="middle" dy={12} fontSize={11} fill="var(--placeholder)" fontWeight={400}>
           {DOW_IT[d.getDay()]}
         </text>
-        <text
-          textAnchor="middle"
-          dy={24}
-          fontSize={11}
-          fill="var(--placeholder)"
-          fontWeight={isBold ? 700 : 400}
-        >
+        <text textAnchor="middle" dy={24} fontSize={11} fill="var(--placeholder)" fontWeight={400}>
           {d.getDate()}
         </text>
       </g>
@@ -251,7 +238,7 @@ export function BilancioCalorico({
   const absMax = diffs.length > 0 ? Math.max(...diffs.map(Math.abs)) : 500;
   const { ticks: yTicks, domain: yDomain } = niceSymmetricTicks(absMax, 5);
 
-  const today = toYMD(new Date());
+
 
   return (
     <CardShell title="Bilancio calorico" emoji="🍽️">
@@ -281,7 +268,7 @@ export function BilancioCalorico({
               axisLine={false}
               tickLine={false}
               tick={(props: any) => (
-                <XTick {...props} period={period} todayLabel={today} />
+                <XTick {...props} period={period} />
               )}
               interval={period === "settimana" ? 0 : "preserveStartEnd"}
             />

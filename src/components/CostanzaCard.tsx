@@ -300,16 +300,11 @@ function WeekView({
         }}
       >
         {weekDays.map((day) => {
-          const isToday = day === today;
           const isLogged = loggedSet.has(day);
           const dow = parseYMD(day).getDay();
           const label = DOW_IT[dow];
 
-          let variant: "neutral-tonal-disabled" | "primary" | "primary-darker" =
-            "neutral-tonal-disabled";
-          if (isLogged && isToday) variant = "primary-darker";
-          else if (isLogged) variant = "primary";
-
+          const variant: "neutral-tonal-disabled" | "primary" = isLogged ? "primary" : "neutral-tonal-disabled";
           const Icon = isLogged ? Check : Utensils;
 
           return (
@@ -334,13 +329,11 @@ function WeekView({
               <span
                 className="label-sm"
                 style={{
-                  color: isToday && isLogged
-                    ? "var(--primary-action-hover)"
-                    : "var(--neutral-surface-light)",
+                  color: "var(--neutral-surface-light)",
                   fontSize: "0.75rem",
                 }}
               >
-                {isToday ? "oggi" : label}
+                {label}
               </span>
             </div>
           );
@@ -419,32 +412,10 @@ function MonthView({
         }}
       >
         {allDays.map((day) => {
-          const isToday = day === today;
           const isLogged = loggedSet.has(day);
+          const variant: "neutral-tonal-disabled" | "primary" = isLogged ? "primary" : "neutral-tonal-disabled";
 
-          let variant: "neutral-tonal-disabled" | "primary" | "primary-darker" =
-            "neutral-tonal-disabled";
-          if (isLogged && isToday) variant = "primary-darker";
-          else if (isLogged) variant = "primary";
-
-          return (
-            <React.Fragment key={day}>
-              <BadgeDot size={dotSize} variant={variant} />
-              {isToday && (
-                <span
-                  className="label-sm"
-                  style={{
-                    color: "var(--neutral-surface-light)",
-                    fontSize: "0.625rem",
-                    lineHeight: 0.625,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  oggi
-                </span>
-              )}
-            </React.Fragment>
-          );
+          return <BadgeDot key={day} size={dotSize} variant={variant} />;
         })}
       </div>
 
