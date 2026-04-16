@@ -8,6 +8,7 @@ import { CostanzaCard } from "@/components/CostanzaCard";
 import { BilancioCalorico } from "@/components/BilancioCalorico";
 import { ObiettivoPeso } from "@/components/ObiettivoPeso";
 import { CalorieAttive } from "@/components/CalorieAttive";
+import { DeficitCalorico } from "@/components/DeficitCalorico";
 import { isMockUser, getMockLoggedDates, isMockNewUser } from "@/lib/mock-progress-data";
 import { fetchAllUserData, AllUserData } from "@/lib/api";
 
@@ -600,6 +601,17 @@ function ProgressoContent() {
           {/* Bilancio Calorico */}
           {userId && (
             <BilancioCalorico
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.calorieData}
+            />
+          )}
+
+          {/* Deficit Calorico */}
+          {userId && (
+            <DeficitCalorico
               userId={userId}
               startDate={startStr}
               endDate={endStr}
