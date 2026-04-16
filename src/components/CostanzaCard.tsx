@@ -109,11 +109,11 @@ function resolveWeekState(
   streakFromEnd: number
 ): WeekState {
   const logsThisWeek = weekDays.filter((d) => loggedSet.has(d)).length;
-  const missingThisWeek = weekDays.filter((d) => !loggedSet.has(d)).length;
   const consecutiveDays = computeCurrentStreak(loggedSet, endDay);
   const loggedDaysThisWeek = weekDays.filter((d) => loggedSet.has(d));
-  const lastLoggedDay = loggedDaysThisWeek[loggedDaysThisWeek.length - 1];
   const endDayIsLogged = loggedSet.has(endDay);
+  const lastThreeDays = weekDays.slice(-3);
+  const lastThreeMissing = lastThreeDays.every((d) => !loggedSet.has(d));
 
   // Rule 1 — Long streak (8+ days)
   if (consecutiveDays >= 8) {
@@ -156,8 +156,18 @@ function resolveWeekState(
     };
   }
 
-  // Rule 5 — Good consistency (4+ logs this week, not consecutive)
-  if (logsThisWeek >= 4 && !areConsecutive(loggedDaysThisWeek)) {
+  // Rule 5 — Ricomincia: 3 or fewer logs and endDay not logged, OR last 3 days all missing
+  if ((logsThisWeek <= 3 && !endDayIsLogged) || lastThreeMissing) {
+    return {
+      title: "Ricomincia, ci siamo",
+      emoji: "🤝",
+      metric: `${logsThisWeek} giorni di log nella settimana`,
+      buttonAlways: true,
+    };
+  }
+
+  // Rule 6 — Good consistency (4+ logs, endDay logged)
+  if (logsThisWeek >= 4 && endDayIsLogged) {
     return {
       title: "Buona costanza, continua",
       emoji: "🤝",
@@ -166,35 +176,13 @@ function resolveWeekState(
     };
   }
 
-  // Rule 6 — 3 or fewer logs: return or restart
-  if (logsThisWeek <= 3) {
-    // last logged day is endDay → returning
-    if (endDayIsLogged) {
-      if (logsThisWeek === 1) return {
-        title: "Bentornato!",
-        emoji: "🤝",
-        metric: `${logsThisWeek} giorni di log nella settimana`,
-        buttonAlways: false,
-      };
-      if (logsThisWeek === 2) return {
-        title: "Stai riprendendo",
-        emoji: "🤝",
-        metric: `${logsThisWeek} giorni di log nella settimana`,
-        buttonAlways: false,
-      };
-      if (logsThisWeek === 3) return {
-        title: "Buona ripresa, continua",
-        emoji: "🌱",
-        metric: `${logsThisWeek} giorni di log nella settimana`,
-        buttonAlways: false,
-      };
-    }
-    // last logged day is NOT endDay → restart
+  // Rule 7 — Return (3 logs, endDay logged)
+  if (logsThisWeek >= 3 && endDayIsLogged) {
     return {
-      title: "Ricomincia, ci siamo",
-      emoji: "🤝",
+      title: "Buona ripresa, continua",
+      emoji: "🌱",
       metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: true,
+      buttonAlways: false,
     };
   }
 
