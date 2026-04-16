@@ -130,7 +130,7 @@ function resolveWeekState(
   if (consecutiveDays === 7) {
     return {
       title: "Costanza perfetta",
-      emoji: "⚡",
+      emoji: "⚡️",
       metric: `${streakFromEnd} giorni di log in sequenza`,
       buttonAlways: false,
     };
