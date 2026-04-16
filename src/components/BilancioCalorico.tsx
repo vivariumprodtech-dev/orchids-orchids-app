@@ -299,7 +299,7 @@ export function BilancioCalorico({
                     <div style={{ fontWeight: 600, marginBottom: 2 }}>{formatTooltipDate(d.date)}</div>
                     <div>Calorie: <strong>{fmt1(d.calories)}</strong></div>
                     <div>Target: <strong>{fmt1(d.target)}</strong></div>
-                    <div>Diff: <strong style={{ color: BAR_COLORS[d.category] }}>{d.diff > 0 ? "+" : ""}{fmt1(d.diff)}</strong></div>
+                    <div>Diff: <strong>{d.diff > 0 ? "+" : ""}{fmt1(d.diff)}</strong></div>
                   </div>
                 );
               }}
