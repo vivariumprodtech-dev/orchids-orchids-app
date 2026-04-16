@@ -195,9 +195,8 @@ export function ObiettivoPeso({
   const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
-  // Carry the last known weight forward to today so the line always reaches the present.
-  // "previousWeight" anchors the line start when < 2 entries exist in the period.
-  const today = toYMD(new Date());
+  // Carry the last known weight forward through endDate — line always reaches the last day.
+  // "previousWeight" anchors the line start when the period starts without a measurement.
   let lastKnown: number | null = previousWeight?.weight ?? null;
 
   const chartData = allDays.map((date) => {
@@ -208,16 +207,11 @@ export function ObiettivoPeso({
       return { date, weight: w, isAnchor: false, isCarryForward: false };
     }
 
-    // Don't fill future days
-    if (date > today) {
-      return { date, weight: null, isAnchor: false, isCarryForward: false };
-    }
-
     if (lastKnown == null) {
       return { date, weight: null, isAnchor: false, isCarryForward: false };
     }
 
-    // Anchor point at startDate (silent — connects the line but hides in tooltip)
+    // Anchor point at startDate (silent — connects the line but hidden in tooltip/dots)
     const isAnchor = previousWeight != null && date === startDate;
     return { date, weight: lastKnown, isAnchor, isCarryForward: !isAnchor };
   });
