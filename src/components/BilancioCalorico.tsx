@@ -80,9 +80,9 @@ const BAR_COLORS: Record<string, string> = {
   pocoSopra: "var(--color-ciano-400)",
   pocoSotto: "var(--color-ciano-200)",
   troppoSopra: "var(--danger-surface)",
-  troppoSotto: "var(--warning-100)",
+  troppoSotto: "var(--color-warning-100)",
   onTarget: "var(--color-ciano-400)",
-  noLog: "var(--neutral-bg)",
+  noLog: "var(--color-neutral-200)",
   empty: "transparent",
 };
 
@@ -299,7 +299,7 @@ export function BilancioCalorico({
                     <div style={{ fontWeight: 600, marginBottom: 2 }}>{formatTooltipDate(d.date)}</div>
                     <div>Calorie: <strong>{fmt1(d.calories)}</strong></div>
                     <div>Target: <strong>{fmt1(d.target)}</strong></div>
-                    <div>Diff: <strong>{d.diff > 0 ? "+" : ""}{fmt1(d.diff)}</strong></div>
+                    <div>Diff: <strong style={{ color: BAR_COLORS[d.category] }}>{d.diff > 0 ? "+" : ""}{fmt1(d.diff)}</strong></div>
                   </div>
                 );
               }}
@@ -340,7 +340,8 @@ export function BilancioCalorico({
         <LegendItem color="var(--primary-action)" label="Target in kcal" type="line-dot" />
         <LegendItem color="var(--color-ciano-400)" label="Vicino" />
         <LegendItem color="var(--danger-surface)" label="Sopra" />
-        <LegendItem color="var(--warning-100)" label="Sotto" />
+        <LegendItem color="var(--color-warning-100)" label="Sotto" />
+        <LegendItem color="var(--color-neutral-200)" label="Senza log" />
       </div>
     </CardShell>
   );
