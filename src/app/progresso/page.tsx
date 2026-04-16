@@ -578,6 +578,7 @@ function ProgressoContent() {
               startDate={startStr}
               endDate={endStr}
               period={period}
+              isCurrentPeriod={period === "settimana" && endStr === toYMD(yesterday)}
               isNewUser={isNewUser}
               onOpenChat={handleOpenChat}
             />

@@ -20,6 +20,8 @@ export interface CostanzaCardProps {
   /** ISO date string of the last day to display (inclusive) */
   endDate: string;
   period: CostanzaPeriod;
+  /** True when this is the most recent period (motivational rules apply for week view) */
+  isCurrentPeriod?: boolean;
   /** Whether this user is in their first week of usage */
   isNewUser?: boolean;
   /** Called when the CTA button is tapped */
@@ -229,6 +231,7 @@ function WeekView({
   streakSet,
   weekDays,
   today,
+  isCurrentPeriod,
   isNewUser,
   onOpenChat,
 }: {
@@ -236,22 +239,21 @@ function WeekView({
   streakSet: Set<string>;
   weekDays: string[];
   today: string;
+  isCurrentPeriod: boolean;
   isNewUser: boolean;
   onOpenChat?: () => void;
 }) {
-  const todayInRange = weekDays.includes(today);
   const todayLogged = loggedSet.has(today);
 
-  // Streak ending at the last day of this period (using full history)
-  const lastDayInPeriod = [...weekDays].reverse().find((d) => d <= today) ?? weekDays[weekDays.length - 1];
-  const streakFromEnd = computeCurrentStreak(streakSet, lastDayInPeriod);
+  // Streak ending at the last displayed day (using full history)
+  const lastDay = weekDays[weekDays.length - 1];
+  const streakFromEnd = computeCurrentStreak(streakSet, lastDay);
 
-  // Past periods: show neutral "Costanza" title with streak-from-end metric
-  const isPast = !todayInRange;
-  // Use streakSet (full history) for streak calculation, loggedSet for badge display
+  // Motivational rules only for the current (most recent) week
+  const isPast = !isCurrentPeriod;
   const state = isPast ? null : resolveWeekState(streakSet, weekDays, today, isNewUser, streakFromEnd);
 
-  const showButton = todayInRange && !todayLogged && !state?.noButton;
+  const showButton = isCurrentPeriod && !todayLogged && !state?.noButton;
 
   return (
     <div
@@ -442,12 +444,12 @@ export function CostanzaCard({
   startDate,
   endDate,
   period,
+  isCurrentPeriod = false,
   isNewUser = false,
   onOpenChat,
   streakLoggedDates,
 }: CostanzaCardProps) {
   const loggedSet = new Set(loggedDates);
-  // Use wider history for streak calc if provided, otherwise fall back to display set
   const streakSet = streakLoggedDates ? new Set(streakLoggedDates) : loggedSet;
   const today = toYMD(new Date());
 
@@ -460,6 +462,7 @@ export function CostanzaCard({
         streakSet={streakSet}
         weekDays={weekDays}
         today={today}
+        isCurrentPeriod={isCurrentPeriod}
         isNewUser={isNewUser}
         onOpenChat={onOpenChat}
       />
