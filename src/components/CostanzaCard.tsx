@@ -104,17 +104,18 @@ interface WeekState {
 function resolveWeekState(
   loggedSet: Set<string>,
   weekDays: string[],
-  today: string,
+  endDay: string,
   isNewUser: boolean,
   streakFromEnd: number
 ): WeekState {
   const logsThisWeek = weekDays.filter((d) => loggedSet.has(d)).length;
   const missingThisWeek = weekDays.filter((d) => !loggedSet.has(d)).length;
-  const consecutiveDays = computeCurrentStreak(loggedSet, today);
+  const consecutiveDays = computeCurrentStreak(loggedSet, endDay);
   const loggedDaysThisWeek = weekDays.filter((d) => loggedSet.has(d));
-  const missingDays = weekDays.filter((d) => !loggedSet.has(d));
+  const lastLoggedDay = loggedDaysThisWeek[loggedDaysThisWeek.length - 1];
+  const endDayIsLogged = loggedSet.has(endDay);
 
-  // Rule 1 — Long streak (8+ days): no button ever
+  // Rule 1 — Long streak (8+ days)
   if (consecutiveDays >= 8) {
     return {
       title: "Sei inarrestabile",
@@ -125,17 +126,7 @@ function resolveWeekState(
     };
   }
 
-  // Rule 2 — Onboarding
-  if (consecutiveDays >= 3 && isNewUser) {
-    return {
-      title: "Ottimo inizio, continua così",
-      emoji: "🌱",
-      metric: `${streakFromEnd} giorni di log in sequenza`,
-      buttonAlways: false,
-    };
-  }
-
-  // Rule 3 — Perfect streak (exactly 7 days)
+  // Rule 2 — Perfect streak (exactly 7 days)
   if (consecutiveDays === 7) {
     return {
       title: "Costanza perfetta",
@@ -145,18 +136,60 @@ function resolveWeekState(
     };
   }
 
+  // Rule 3 — Onboarding (3-6 consecutive days, new user)
+  if (consecutiveDays >= 3 && isNewUser) {
+    return {
+      title: "Ottimo inizio, continua così",
+      emoji: "🌱",
+      metric: `${streakFromEnd} giorni di log in sequenza`,
+      buttonAlways: false,
+    };
+  }
+
   // Rule 4 — No logs this week
   if (logsThisWeek === 0) {
     return {
-      title: "Inizia oggi",
+      title: "Inizia a loggare",
       emoji: "👋",
       metric: "0 log questa settimana",
       buttonAlways: true,
     };
   }
 
-  // Rule 5 — Only today missing
-  if (missingThisWeek >= 3 && missingDays[0] === today) {
+  // Rule 5 — Good consistency (4+ logs this week, not consecutive)
+  if (logsThisWeek >= 4 && !areConsecutive(loggedDaysThisWeek)) {
+    return {
+      title: "Buona costanza, continua",
+      emoji: "🤝",
+      metric: `${logsThisWeek} giorni di log nella settimana`,
+      buttonAlways: false,
+    };
+  }
+
+  // Rule 6 — 3 or fewer logs: return or restart
+  if (logsThisWeek <= 3) {
+    // last logged day is endDay → returning
+    if (endDayIsLogged) {
+      if (logsThisWeek === 1) return {
+        title: "Bentornato!",
+        emoji: "🤝",
+        metric: `${logsThisWeek} giorni di log nella settimana`,
+        buttonAlways: false,
+      };
+      if (logsThisWeek === 2) return {
+        title: "Stai riprendendo",
+        emoji: "🤝",
+        metric: `${logsThisWeek} giorni di log nella settimana`,
+        buttonAlways: false,
+      };
+      if (logsThisWeek === 3) return {
+        title: "Buona ripresa, continua",
+        emoji: "🌱",
+        metric: `${logsThisWeek} giorni di log nella settimana`,
+        buttonAlways: false,
+      };
+    }
+    // last logged day is NOT endDay → restart
     return {
       title: "Ricomincia, ci siamo",
       emoji: "🤝",
@@ -165,57 +198,7 @@ function resolveWeekState(
     };
   }
 
-  // Rule 6 — 2 days missing
-  if (missingThisWeek === 2) {
-    return {
-      title: "Quasi una settimana perfetta",
-      emoji: "🤝",
-      metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: false,
-    };
-  }
-
-  // Rule 7 — Return after break, 1 day
-  if (logsThisWeek === 1 && !isNewUser) {
-    return {
-      title: "Bentornato!",
-      emoji: "🤝",
-      metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: false,
-    };
-  }
-
-  // Rule 8 — Return after break, 2 days, not consecutive
-  if (logsThisWeek === 2 && !isNewUser && !areConsecutive(loggedDaysThisWeek)) {
-    return {
-      title: "Stai riprendendo",
-      emoji: "🤝",
-      metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: false,
-    };
-  }
-
-  // Rule 9 — Return after break, 3+ days, not consecutive
-  if (logsThisWeek >= 3 && !isNewUser && !areConsecutive(loggedDaysThisWeek)) {
-    return {
-      title: "Buona ripresa, continua",
-      emoji: "🌱",
-      metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: false,
-    };
-  }
-
-  // Rule 10 — 3+ days missing
-  if (missingThisWeek >= 3) {
-    return {
-      title: "Ricomincia, ci siamo",
-      emoji: "🤝",
-      metric: `${logsThisWeek} giorni di log nella settimana`,
-      buttonAlways: false,
-    };
-  }
-
-  // Generic fallback
+  // Fallback
   return {
     title: "Continua così",
     emoji: "🌱",
@@ -351,7 +334,7 @@ function WeekView({
           iconStart={MessageCircle}
           onClick={onOpenChat}
         >
-          Scrivimi i tuoi pasti di oggi
+          Scrivimi i tuoi pasti
         </Button>
       )}
     </div>
