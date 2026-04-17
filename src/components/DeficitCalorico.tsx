@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Utensils, TrendingDown } from "lucide-react";
+import { Utensils, TrendingDown, Info } from "lucide-react";
 import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -13,7 +13,6 @@ interface DeficitCaloricoProps {
   startDate: string;
   endDate: string;
   period: Period;
-  /** Pre-fetched calorie data from parent */
   preloadedData?: DayData[];
 }
 
@@ -25,27 +24,13 @@ interface DayData {
 
 // ─── Motivational copy ────────────────────────────────────────────────────────
 
-function resolveMotivation(
-  avgDeficit: number,   // positive = in deficit (ate less than target), negative = surplus
-  totalDeficit: number, // sum of daily deficits over period
-  period: Period
-): { text: string; emoji: string } | null {
-  // No data — no message
+function resolveMotivation(avgDeficit: number): string | null {
   if (!isFinite(avgDeficit)) return null;
-
-  if (avgDeficit > 200) {
-    return { text: "Ottimo! Stai costruendo il tuo risultato!", emoji: "⭐" };
-  }
-  if (avgDeficit > 50) {
-    return { text: "Buon lavoro, sei in deficit calorico", emoji: "🎯" };
-  }
-  if (avgDeficit >= -50) {
-    return { text: "Sei in equilibrio calorico", emoji: "⚖️" };
-  }
-  if (avgDeficit >= -200) {
-    return { text: "Leggero surplus, monitora l'andamento", emoji: "📊" };
-  }
-  return { text: "Surplus elevato, cerca di ridurre un po'", emoji: "💡" };
+  if (avgDeficit > 200) return "Ottimo! Stai costruendo il tuo risultato!";
+  if (avgDeficit > 50)  return "Buon lavoro, sei in deficit calorico";
+  if (avgDeficit >= -50) return "Sei in equilibrio calorico";
+  if (avgDeficit >= -200) return "Leggero surplus, monitora l'andamento";
+  return "Surplus elevato, cerca di ridurre un po'";
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -57,21 +42,18 @@ export function DeficitCalorico({
   period,
   preloadedData,
 }: DeficitCaloricoProps) {
-  // Resolve data — prefer preloaded, fallback to mock
   let data: DayData[] = [];
-
   if (preloadedData !== undefined) {
     data = preloadedData;
   } else if (isMockUser(userId)) {
     data = getMockCalories(userId, startDate, endDate) as DayData[];
   }
 
-  // Only consider days that were actually logged (calories > 0)
   const logged = data.filter((d) => d.calories > 0 && d.target > 0);
 
   if (logged.length === 0) {
     return (
-      <CardShell title="Deficit calorico" emoji="⭐">
+      <CardShell>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "5rem" }}>
           <span className="help-text">Nessun dato disponibile</span>
         </div>
@@ -79,64 +61,54 @@ export function DeficitCalorico({
     );
   }
 
-  // avg deficit per day (positive = ate less than target = good deficit)
-  const avgIntake  = Math.round(logged.reduce((s, d) => s + d.calories, 0) / logged.length);
-  const avgTarget  = Math.round(logged.reduce((s, d) => s + d.target,   0) / logged.length);
-  const avgDeficit = avgTarget - avgIntake; // positive means under target
-
-  // total deficit across all logged days
+  const avgIntake   = Math.round(logged.reduce((s, d) => s + d.calories, 0) / logged.length);
+  const avgTarget   = Math.round(logged.reduce((s, d) => s + d.target,   0) / logged.length);
+  const avgDeficit  = avgTarget - avgIntake;
   const totalDeficit = logged.reduce((s, d) => s + (d.target - d.calories), 0);
 
-  const motivation = resolveMotivation(avgDeficit, totalDeficit, period);
+  const motivation = resolveMotivation(avgDeficit);
 
-  const deficitLabel =
-    avgDeficit >= 0
-      ? `${avgDeficit} kcal in meno al giorno`
-      : `${Math.abs(avgDeficit)} kcal in più al giorno`;
-
-  const totalLabel =
-    totalDeficit >= 0
-      ? `−${Math.round(Math.abs(totalDeficit))} kcal`
-      : `+${Math.round(Math.abs(totalDeficit))} kcal`;
+  const deficitSuffix =
+    avgDeficit >= 0 ? "kcal in meno al giorno" : "kcal in più al giorno";
 
   return (
-    <CardShell title="Deficit calorico" emoji="⭐">
+    <CardShell>
+      {/* Title row */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+        <span className="card-main-title">Deficit calorico</span>
+        <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>⭐</span>
+      </div>
+
       {/* Primary metric */}
-      <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
+      <div
+        className="card-text"
+        style={{ color: "var(--subtitle-1)", display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}
+      >
         <span className="card-number-md" style={{ display: "inline" }}>
           {Math.abs(avgDeficit)}
         </span>{" "}
-        {deficitLabel}
+        {deficitSuffix}
+        <Info size={15} style={{ color: "var(--placeholder)", flexShrink: 0 }} strokeWidth={1.5} />
       </div>
 
-      {/* Two stat rows */}
-      <div
-        style={{
-          display:         "flex",
-          flexDirection:   "column",
-          gap:             "var(--spacing-3)",
-          marginTop:       "var(--spacing-1)",
-          paddingTop:      "var(--spacing-5)",
-          paddingBottom:   "var(--spacing-5)",
-          paddingLeft:     "var(--spacing-5)",
-          paddingRight:    "var(--spacing-5)",
-          borderRadius:    "var(--rounded-4)",
-          backgroundColor: "var(--neutral-bg)",
-        }}
-      >
+      {/* Stat rows */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: "var(--spacing-2)" }}>
+
         {/* Row 1 — avg intake */}
         <div
           style={{
             display:        "flex",
             alignItems:     "center",
             justifyContent: "space-between",
+            paddingTop:     "var(--spacing-3)",
+            paddingBottom:  "var(--spacing-3)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2-5)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
             <div
               style={{
-                width:           "2rem",
-                height:          "2rem",
+                width:           "2.25rem",
+                height:          "2.25rem",
                 borderRadius:    "var(--rounded-full)",
                 backgroundColor: "var(--primary-surface)",
                 display:         "flex",
@@ -145,14 +117,14 @@ export function DeficitCalorico({
                 flexShrink:      0,
               }}
             >
-              <Utensils size={14} color="var(--invert)" strokeWidth={2} />
+              <Utensils size={15} color="var(--invert)" strokeWidth={2} />
             </div>
             <span className="body-sm" style={{ color: "var(--subtitle-2)" }}>
               Media ingerite al giorno
             </span>
           </div>
-          <span className="label-md" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>
-            {avgIntake.toLocaleString("it-IT")} kcal
+          <span className="body-sm" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>
+            <strong>{avgIntake.toLocaleString("it-IT")}</strong> kcal
           </span>
         </div>
 
@@ -165,13 +137,15 @@ export function DeficitCalorico({
             display:        "flex",
             alignItems:     "center",
             justifyContent: "space-between",
+            paddingTop:     "var(--spacing-3)",
+            paddingBottom:  "var(--spacing-3)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2-5)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
             <div
               style={{
-                width:           "2rem",
-                height:          "2rem",
+                width:           "2.25rem",
+                height:          "2.25rem",
                 borderRadius:    "var(--rounded-full)",
                 backgroundColor: "var(--primary-surface)",
                 display:         "flex",
@@ -180,20 +154,14 @@ export function DeficitCalorico({
                 flexShrink:      0,
               }}
             >
-              <TrendingDown size={14} color="var(--invert)" strokeWidth={2} />
+              <TrendingDown size={15} color="var(--invert)" strokeWidth={2} />
             </div>
             <span className="body-sm" style={{ color: "var(--subtitle-2)" }}>
               Totale deficit della settimana
             </span>
           </div>
-          <span
-            className="label-md"
-            style={{
-              color:     totalDeficit >= 0 ? "var(--primary-action)" : "var(--danger-action)",
-              flexShrink: 0,
-            }}
-          >
-            {totalLabel}
+          <span className="body-sm" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>
+            <strong>{totalDeficit >= 0 ? "−" : "+"}{Math.round(Math.abs(totalDeficit)).toLocaleString("it-IT")}</strong> kcal
           </span>
         </div>
       </div>
@@ -202,15 +170,16 @@ export function DeficitCalorico({
       {motivation && (
         <div
           style={{
-            textAlign:  "center",
-            paddingTop: "var(--spacing-1)",
+            marginTop:       "var(--spacing-1)",
+            textAlign:       "center",
+            padding:         "var(--spacing-3) var(--spacing-4)",
+            borderRadius:    "var(--rounded-4)",
+            border:          "var(--border-1) solid var(--border)",
+            backgroundColor: "var(--color-white)",
           }}
         >
-          <span
-            className="body-sm"
-            style={{ color: "var(--subtitle-2)", fontStyle: "italic" }}
-          >
-            {motivation.text}
+          <span className="body-sm" style={{ color: "var(--subtitle-2)", fontStyle: "italic", fontWeight: 600 }}>
+            {motivation}
           </span>
         </div>
       )}
@@ -220,15 +189,7 @@ export function DeficitCalorico({
 
 // ─── Card Shell ──────────────────────────────────────────────────────────────
 
-function CardShell({
-  title,
-  emoji,
-  children,
-}: {
-  title:    string;
-  emoji:    string;
-  children: React.ReactNode;
-}) {
+function CardShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -238,19 +199,9 @@ function CardShell({
         padding:         "var(--spacing-4)",
         display:         "flex",
         flexDirection:   "column",
-        gap:             "var(--spacing-2)",
+        gap:             "var(--spacing-1)",
       }}
     >
-      <div
-        style={{
-          display:        "flex",
-          alignItems:     "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <span className="card-main-title">{title}</span>
-        <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{emoji}</span>
-      </div>
       {children}
     </div>
   );
