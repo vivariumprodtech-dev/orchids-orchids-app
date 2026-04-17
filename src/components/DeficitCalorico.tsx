@@ -129,7 +129,7 @@ export function DeficitCalorico({
         </div>
 
         {/* Divider */}
-        <div style={{ height: "var(--border-1)", backgroundColor: "var(--border)" }} />
+        <div style={{ height: "1px", backgroundColor: "var(--border)" }} />
 
         {/* Row 2 — total deficit */}
         <div
@@ -174,8 +174,7 @@ export function DeficitCalorico({
             textAlign:       "center",
             padding:         "var(--spacing-3) var(--spacing-4)",
             borderRadius:    "var(--rounded-4)",
-            border:          "var(--border-1) solid var(--border)",
-            backgroundColor: "var(--color-white)",
+            backgroundColor: "var(--neutral-bg)",
           }}
         >
           <span className="body-sm" style={{ color: "var(--subtitle-2)", fontStyle: "italic", fontWeight: 600 }}>
