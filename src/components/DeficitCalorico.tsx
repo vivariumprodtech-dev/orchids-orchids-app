@@ -100,15 +100,15 @@ export function DeficitCalorico({
             display:        "flex",
             alignItems:     "center",
             justifyContent: "space-between",
-            paddingTop:     "var(--spacing-3)",
-            paddingBottom:  "var(--spacing-3)",
+            paddingTop:     "var(--spacing-2)",
+            paddingBottom:  "var(--spacing-1-5)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
             <div
               style={{
-                width:           "2.25rem",
-                height:          "2.25rem",
+                width:           "2rem",
+                height:          "2rem",
                 borderRadius:    "var(--rounded-full)",
                 backgroundColor: "var(--primary-surface)",
                 display:         "flex",
@@ -127,9 +127,7 @@ export function DeficitCalorico({
             <strong>{avgIntake.toLocaleString("it-IT")}</strong> kcal
           </span>
         </div>
-
-        {/* Divider */}
-        <div style={{ height: "1px", backgroundColor: "var(--border)" }} />
+       
 
         {/* Row 2 — total deficit */}
         <div
@@ -137,15 +135,15 @@ export function DeficitCalorico({
             display:        "flex",
             alignItems:     "center",
             justifyContent: "space-between",
-            paddingTop:     "var(--spacing-3)",
+            paddingTop:     "var(--spacing-1-5)",
             paddingBottom:  "var(--spacing-3)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
             <div
               style={{
-                width:           "2.25rem",
-                height:          "2.25rem",
+                width:           "2rem",
+                height:          "2rem",
                 borderRadius:    "var(--rounded-full)",
                 backgroundColor: "var(--primary-surface)",
                 display:         "flex",
@@ -157,7 +155,7 @@ export function DeficitCalorico({
               <TrendingDown size={15} color="var(--invert)" strokeWidth={2} />
             </div>
             <span className="body-sm" style={{ color: "var(--subtitle-2)" }}>
-              Totale deficit della settimana
+              Totale deficit periodo
             </span>
           </div>
           <span className="body-sm" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>

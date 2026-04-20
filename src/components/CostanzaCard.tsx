@@ -294,9 +294,9 @@ function WeekView({
               <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                 <Badge
                   iconOnly={Icon}
-                  size="md"
+                  size="sm"
                   variant={variant}
-                  style={{ width: "100%", maxWidth: "2.5rem", aspectRatio: "1" }}
+                  style={{ width: "100%", maxWidth: "2rem", aspectRatio: "1" }}
                 />
               </div>
               <span
