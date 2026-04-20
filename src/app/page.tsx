@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/Button";
 
 const BOOKMARKS = [
@@ -12,10 +13,26 @@ const BOOKMARKS = [
 
 export default function Home() {
   const [chatId, setChatId] = useState("");
+  const [registering, setRegistering] = useState(false);
+  const [webhookStatus, setWebhookStatus] = useState<{ ok: boolean; webhookUrl?: string; error?: string } | null>(null);
   const router = useRouter();
 
   const handleGo = () => {
     if (chatId.trim()) router.push(`/profile?userId=${chatId.trim()}`);
+  };
+
+  const handleRegisterWebhook = async () => {
+    setRegistering(true);
+    setWebhookStatus(null);
+    try {
+      const res = await fetch("/api/setup-webhook", { method: "POST" });
+      const data = await res.json();
+      setWebhookStatus(data);
+    } catch {
+      setWebhookStatus({ ok: false, error: "Network error" });
+    } finally {
+      setRegistering(false);
+    }
   };
 
   return (
@@ -94,33 +111,59 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Setup hint */}
+      {/* Webhook registration card */}
       <div
-        className="w-full max-w-sm rounded-[var(--rounded-5)] p-5"
+        className="w-full max-w-sm rounded-[var(--rounded-5)] p-5 flex flex-col gap-4"
         style={{
           backgroundColor: "var(--color-white)",
           boxShadow: "var(--shadow-xs)",
           border: "var(--border-1) solid var(--border)",
         }}
       >
-        <p className="label-sm mb-3" style={{ color: "var(--subtitle-2)" }}>Telegram Bot Setup</p>
-        <ol className="flex flex-col gap-1.5">
-          {[
-            <>Set <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>TELEGRAM_BOT_TOKEN</code> in .env</>,
-            <>Set <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>NEXT_PUBLIC_WEBAPP_URL</code> to your URL</>,
-            <>Register webhook at <code className="rounded px-1 body-sm" style={{ backgroundColor: "var(--neutral-bg)", color: "var(--subtitle-1)" }}>/api/telegram</code></>,
-          ].map((step, i) => (
-            <li key={i} className="flex items-start gap-2 help-text">
-              <span
-                className="label-sm shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-px"
-                style={{ backgroundColor: "var(--primary-bg)", color: "var(--primary-action)" }}
-              >
-                {i + 1}
+        <div>
+          <p className="label-sm mb-1" style={{ color: "var(--subtitle-2)" }}>Telegram Webhook</p>
+          <p className="body-sm" style={{ color: "var(--placeholder)" }}>
+            After each new deploy, click this button to re-register the webhook with the current URL.
+          </p>
+        </div>
+
+        <Button
+          variant="primary"
+          size="md"
+          fullWidth
+          onClick={handleRegisterWebhook}
+          disabled={registering}
+          iconStart={registering ? Loader2 : RefreshCw}
+        >
+          {registering ? "Registering…" : "Register Webhook"}
+        </Button>
+
+        {webhookStatus && (
+          <div
+            className="flex flex-col gap-1 rounded-[var(--rounded-4)] px-4 py-3 body-sm"
+            style={{
+              backgroundColor: webhookStatus.ok ? "var(--success-bg)" : "var(--danger-bg)",
+              color:           webhookStatus.ok ? "var(--success-text)" : "var(--danger-text)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              {webhookStatus.ok
+                ? <CheckCircle2 size={15} />
+                : <AlertCircle size={15} />}
+              <span className="label-sm">
+                {webhookStatus.ok ? "Webhook registered!" : "Registration failed"}
               </span>
-              <span>{step}</span>
-            </li>
-          ))}
-        </ol>
+            </div>
+            {webhookStatus.webhookUrl && (
+              <span style={{ wordBreak: "break-all", opacity: 0.8 }}>
+                {webhookStatus.webhookUrl}
+              </span>
+            )}
+            {webhookStatus.error && (
+              <span>{webhookStatus.error}</span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

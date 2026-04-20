@@ -3,7 +3,12 @@ import { loadUserFromSupabase, resetUser, resetActiveCalories } from '@/lib/user
 import { syncAirtableToSupabase } from '@/lib/airtable';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const WEBAPP_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || 'http://localhost:3001';
+
+function getBaseUrl(request: NextRequest): string {
+  const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
+  const proto = request.headers.get('x-forwarded-proto') || 'https';
+  return `${proto}://${host}`;
+}
 
 async function sendMessage(chatId: number, text: string, options: Record<string, unknown> = {}) {
   await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -26,11 +31,8 @@ const mainKeyboard = {
   persistent: true,
 };
 
-function buildProgressoUrl(userId: number): string {
-  return `${WEBAPP_URL}/progresso?userId=${userId}`;
-}
-
 export async function POST(request: NextRequest) {
+  const baseUrl = getBaseUrl(request);
   try {
     const update = await request.json();
 
@@ -83,7 +85,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (text === '📊 Statistiche') {
-        const progressoUrl = buildProgressoUrl(userId);
+        const progressoUrl = `${baseUrl}/progresso?userId=${userId}`;
         await sendMessage(
           chatId,
           `📊 *Tuo Progresso*\n\nClicca il bottone per aprire la tua pagina di progresso 👇`,
