@@ -22,6 +22,21 @@ interface DayData {
   target: number;
 }
 
+// ─── Date range label ─────────────────────────────────────────────────────────
+
+const MONTHS_IT = ["gen","feb","mar","apr","mai","giu","lug","ago","set","ott","nov","dic"];
+
+function formatDateRange(start: string, end: string): string {
+  const [sy, sm, sd] = start.split("-").map(Number);
+  const [ey, em, ed] = end.split("-").map(Number);
+  const ddS = String(sd).padStart(2, "0");
+  const ddE = String(ed).padStart(2, "0");
+  if (sm === em && sy === ey) {
+    return `da ${ddS} a ${ddE} ${MONTHS_IT[em - 1]}`;
+  }
+  return `da ${ddS} ${MONTHS_IT[sm - 1]} a ${ddE} ${MONTHS_IT[em - 1]}`;
+}
+
 // ─── Motivational copy ────────────────────────────────────────────────────────
 
 function resolveMotivation(avgDeficit: number): string | null {
@@ -68,8 +83,10 @@ export function DeficitCalorico({
 
   const motivation = resolveMotivation(avgDeficit);
 
+  const dateRange = formatDateRange(startDate, endDate);
   const deficitSuffix =
-    avgDeficit >= 0 ? "kcal in meno al giorno" : "kcal in più al giorno";
+    (avgDeficit >= 0 ? "kcal in meno al giorno" : "kcal in più al giorno") +
+    ` (${dateRange})`;
 
   return (
     <CardShell>
