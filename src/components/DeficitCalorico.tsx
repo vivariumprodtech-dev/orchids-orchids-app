@@ -20,6 +20,7 @@ interface DayData {
   date: string;
   calories: number;
   target: number;
+  fabbisogno?: number; // BMR + active calories (preferred reference)
 }
 
 // ─── Date range label ─────────────────────────────────────────────────────────
@@ -64,7 +65,7 @@ export function DeficitCalorico({
     data = getMockCalories(userId, startDate, endDate) as DayData[];
   }
 
-  const logged = data.filter((d) => d.calories > 0 && d.target > 0);
+  const logged = data.filter((d) => d.calories > 0 && (d.fabbisogno ?? d.target) > 0);
 
   if (logged.length === 0) {
     return (
@@ -76,16 +77,19 @@ export function DeficitCalorico({
     );
   }
 
-  const avgIntake   = Math.round(logged.reduce((s, d) => s + d.calories, 0) / logged.length);
-  const avgTarget   = Math.round(logged.reduce((s, d) => s + d.target,   0) / logged.length);
-  const avgDeficit  = avgTarget - avgIntake;
-  const totalDeficit = logged.reduce((s, d) => s + (d.target - d.calories), 0);
+  // ref = fabbisogno (BMR + active). Positive diff = surplus, negative = deficit.
+  const avgIntake    = Math.round(logged.reduce((s, d) => s + d.calories, 0) / logged.length);
+  const avgRef       = Math.round(logged.reduce((s, d) => s + (d.fabbisogno ?? d.target), 0) / logged.length);
+  const avgDiff      = avgIntake - avgRef;          // + surplus / − deficit
+  const avgDeficit   = -avgDiff;                    // kept for motivational rules (+ = deficit)
+  const totalDiff    = Math.round(logged.reduce((s, d) => s + (d.calories - (d.fabbisogno ?? d.target)), 0));
 
   const motivation = resolveMotivation(avgDeficit);
 
   const dateRange = formatDateRange(startDate, endDate);
+  // avgDiff > 0 = surplus (more than fabbisogno), avgDiff < 0 = deficit (less)
   const deficitSuffix =
-    (avgDeficit >= 0 ? "kcal in meno al giorno" : "kcal in più al giorno") +
+    (avgDiff <= 0 ? "kcal in meno al giorno" : "kcal in più al giorno") +
     ` (${dateRange})`;
 
   return (
@@ -102,7 +106,7 @@ export function DeficitCalorico({
         style={{ color: "var(--subtitle-1)", display: "flex", alignItems: "center", gap: "var(--spacing-1-5)" }}
       >
         <span className="card-number-md" style={{ display: "inline" }}>
-          {Math.abs(avgDeficit)}
+          {Math.abs(avgDiff)}
         </span>{" "}
         {deficitSuffix}
         <Info size={15} style={{ color: "var(--placeholder)", flexShrink: 0 }} strokeWidth={1.5} />
@@ -176,7 +180,7 @@ export function DeficitCalorico({
             </span>
           </div>
           <span className="body-sm" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>
-            <strong>{totalDeficit >= 0 ? "−" : "+"}{Math.round(Math.abs(totalDeficit)).toLocaleString("it-IT")}</strong> kcal
+            <strong>{totalDiff >= 0 ? "+" : "−"}{Math.abs(totalDiff).toLocaleString("it-IT")}</strong> kcal
           </span>
         </div>
       </div>

@@ -37,7 +37,7 @@ interface ProcessedApiData {
   loggedDates:       string[];
   allLoggedDates:    string[]; // full history, for streak calc
   isNewUser:         boolean;
-  calorieData:       { date: string; calories: number; target: number }[];
+  calorieData:       { date: string; calories: number; target: number; fabbisogno: number }[];
   weightData:        { date: string; weight: number }[];
   goalWeight:        number | null;
   startingWeight:    number | null;
@@ -103,7 +103,8 @@ function processApiData(
       return {
         date,
         calories,
-        target: bmrDeficit + activeCal,
+        target:      bmrDeficit + activeCal,
+        fabbisogno:  bmr + activeCal,
       };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
