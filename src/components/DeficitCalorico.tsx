@@ -40,13 +40,40 @@ function formatDateRange(start: string, end: string): string {
 
 // ─── Motivational copy ────────────────────────────────────────────────────────
 
-function resolveMotivation(avgDeficit: number): string | null {
-  if (!isFinite(avgDeficit)) return null;
-  if (avgDeficit > 200) return "Ottimo! Stai costruendo il tuo risultato!";
-  if (avgDeficit > 50)  return "Buon lavoro, sei in deficit calorico";
-  if (avgDeficit >= -50) return "Sei in equilibrio calorico";
-  if (avgDeficit >= -200) return "Leggero surplus, monitora l'andamento";
-  return "Surplus elevato, cerca di ridurre un po'";
+interface MotivationResult {
+  title:   string;
+  emoji:   string;
+  message: string;
+}
+
+function resolveMotivation(avgDiff: number, avgRef: number): MotivationResult {
+  const pct = avgDiff / avgRef;
+
+  if (pct <= -0.50) return {
+    title:   "Deficit calorico",
+    emoji:   "📋",
+    message: "Deficit alto, controlla di aver loggato tutti i pasti",
+  };
+  if (pct <= -0.05) return {
+    title:   "Deficit calorico",
+    emoji:   "🌟",
+    message: "Ogni giorno in deficit è un passo verso il tuo obiettivo",
+  };
+  if (pct < 0.05) return {
+    title:   "Nella media",
+    emoji:   "💪",
+    message: "Stabile e costante, il percorso è questo",
+  };
+  if (pct < 0.50) return {
+    title:   "Surplus calorico",
+    emoji:   "🏃",
+    message: "Essere consapevole è già un passo, continuiamo",
+  };
+  return {
+    title:   "Surplus calorico",
+    emoji:   "🏃",
+    message: "Succede, continua e rientriamo nell'obiettivo",
+  };
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -80,17 +107,10 @@ export function DeficitCalorico({
   // ref = fabbisogno (BMR + active). Positive diff = surplus, negative = deficit.
   const avgIntake    = Math.round(logged.reduce((s, d) => s + d.calories, 0) / logged.length);
   const avgRef       = Math.round(logged.reduce((s, d) => s + (d.fabbisogno ?? d.target), 0) / logged.length);
-  const avgDiff      = avgIntake - avgRef;          // + surplus / − deficit
-  const avgDeficit   = -avgDiff;                    // kept for motivational rules (+ = deficit)
-  const totalDiff    = Math.round(logged.reduce((s, d) => s + (d.calories - (d.fabbisogno ?? d.target)), 0));
+  const avgDiff   = avgIntake - avgRef;
+  const totalDiff = Math.round(logged.reduce((s, d) => s + (d.calories - (d.fabbisogno ?? d.target)), 0));
 
-  const motivation = resolveMotivation(avgDeficit);
-
-  const threshold = avgRef * 0.05;
-  const cardTitle =
-    Math.abs(avgDiff) < threshold ? "Nella media"
-    : avgDiff < 0                 ? "Deficit calorico"
-    :                               "Surplus calorico";
+  const { title: cardTitle, emoji: cardEmoji, message: cardMessage } = resolveMotivation(avgDiff, avgRef);
 
   const dateRange = formatDateRange(startDate, endDate);
   // avgDiff > 0 = surplus (more than fabbisogno), avgDiff < 0 = deficit (less)
@@ -103,7 +123,7 @@ export function DeficitCalorico({
       {/* Title row */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <span className="card-main-title">{cardTitle}</span>
-        <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>⭐</span>
+        <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{cardEmoji}</span>
       </div>
 
       {/* Primary metric */}
@@ -192,7 +212,7 @@ export function DeficitCalorico({
       </div>
 
       {/* Motivational footer */}
-      {motivation && (
+      {cardMessage && (
         <div
           style={{
             marginTop:       "var(--spacing-1)",
@@ -203,7 +223,7 @@ export function DeficitCalorico({
           }}
         >
           <span className="body-sm" style={{ color: "var(--subtitle-2)", fontStyle: "italic", fontWeight: 600 }}>
-            {motivation}
+            {cardMessage}
           </span>
         </div>
       )}
