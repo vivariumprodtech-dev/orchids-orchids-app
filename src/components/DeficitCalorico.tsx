@@ -57,7 +57,7 @@ function resolveMotivation(avgDiff: number, avgRef: number): MotivationResult {
   if (pct <= -0.05) return {
     title:   "Deficit calorico",
     emoji:   "🌟",
-    message: "Ogni giorno in deficit è un passo verso il tuo obiettivo",
+    message: "Ottimo! Stai andando verso il tuo obiettivo",
   };
   if (pct < 0.05) return {
     title:   "Nella media",
