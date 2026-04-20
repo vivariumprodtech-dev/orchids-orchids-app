@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "recharts";
 import { isMockUser, getMockGirovita, getMockPreviousGirovita } from "@/lib/mock-progress-data";
-import { niceYTicks, formatTooltipDate, fmt1 } from "@/lib/chart-utils";
+import { formatTooltipDate, fmt1 } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -206,10 +206,14 @@ export function Girovita({
     metricText = `cm persi → ${fmt1(currentCm)}cm attuale`;
   }
 
+  // Always 3 lines, 1 cm apart, centred on the midpoint of the data range
   const allValues = chartData.map((d) => d.cm).filter((v): v is number => v != null);
   const maxVal = Math.max(...allValues, currentCm);
   const minVal = Math.min(...allValues, currentCm);
-  const { ticks: yTicks, domain: [minW, maxW] } = niceYTicks(minVal - 0.5, maxVal + 0.5, 4);
+  const mid = Math.round((minVal + maxVal) / 2);
+  const yTicks = [mid - 1, mid, mid + 1];
+  const minW = mid - 1.5;
+  const maxW = mid + 1.5;
 
   const showDots = period === "settimana";
 
