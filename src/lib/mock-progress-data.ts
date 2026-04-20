@@ -41,6 +41,11 @@ export interface MockDayActive {
   activeCal: number;
 }
 
+export interface MockDayGirovita {
+  date: string;
+  cm: number;
+}
+
 export interface MockWeightMeta {
   goalWeight: number;
   startingWeight: number;
@@ -60,6 +65,7 @@ function generateCamila() {
   const calories: MockDayCalories[] = [];
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
+  const girovita: MockDayGirovita[] = [];
 
   // BMR=1950, caloricDeficit=150 → bmrDeficit=1800. Target = bmrDeficit + activeCalories.
   const bmrDeficit = 1800;
@@ -90,6 +96,11 @@ function generateCamila() {
       // Weight: 68kg, no real change yet (just 3 days)
       const w = 68.0 + (rand() - 0.5) * 0.4;
       weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
+
+      // Girovita measured on first day only: 73cm
+      if (daysFromStart === 0) {
+        girovita.push({ date: dateStr, cm: 73.0 });
+      }
     }
   }
 
@@ -97,6 +108,7 @@ function generateCamila() {
     calories,
     weights,
     active,
+    girovita,
     weightMeta: { goalWeight: 65, startingWeight: 68 },
   };
 }
@@ -112,6 +124,7 @@ function generateUgo() {
   const calories: MockDayCalories[] = [];
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
+  const girovita: MockDayGirovita[] = [];
 
   // BMR=2500, caloricDeficit=300 → bmrDeficit=2200. Target = bmrDeficit + activeCalories.
   const bmrDeficit = 2200;
@@ -158,12 +171,20 @@ function generateUgo() {
     const fluctuation = (rand() - 0.5) * 0.6;
     const w = trendWeight + fluctuation;
     weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
+
+    // Girovita: measured roughly every 7 days, 90→83cm trend over 3 months
+    if (i % 7 === 0) {
+      const trendCm = 90 - (progress * 7);
+      const cmFluctuation = (rand() - 0.5) * 0.4;
+      girovita.push({ date: dateStr, cm: Math.round((trendCm + cmFluctuation) * 10) / 10 });
+    }
   }
 
   return {
     calories,
     weights,
     active,
+    girovita,
     weightMeta: { goalWeight: 52, startingWeight: 56 },
   };
 }
@@ -179,6 +200,7 @@ function generateAlex() {
   const calories: MockDayCalories[] = [];
   const weights: MockDayWeight[] = [];
   const active: MockDayActive[] = [];
+  const girovita: MockDayGirovita[] = [];
 
   // BMR=2900, caloricDeficit=300 → bmrDeficit=2600. Target = bmrDeficit + activeCalories.
   const bmrDeficit = 2600;
@@ -227,12 +249,19 @@ function generateAlex() {
     const fluctuation = (rand() - 0.5) * 0.8;
     const w = trendWeight + fluctuation;
     weights.push({ date: dateStr, weight: Math.round(w * 10) / 10 });
+
+    // Girovita: measured every ~10 days, stable ~82cm (building muscle, waist holds)
+    if (daysSinceStart % 10 === 0) {
+      const trendCm = 82 + (rand() - 0.5) * 0.6;
+      girovita.push({ date: dateStr, cm: Math.round(trendCm * 10) / 10 });
+    }
   }
 
   return {
     calories,
     weights,
     active,
+    girovita,
     weightMeta: { goalWeight: 78, startingWeight: 75 },
   };
 }
@@ -304,6 +333,33 @@ export function getMockWeights(
 export function getMockWeightMeta(userId: string): MockWeightMeta | null {
   const p = getProfile(userId);
   return p?.weightMeta ?? null;
+}
+
+export function getMockGirovita(
+  userId: string,
+  startDate: string,
+  endDate: string
+): MockDayGirovita[] {
+  const p = getProfile(userId);
+  if (!p) return [];
+  return filterByRange(p.girovita, startDate, endDate);
+}
+
+/**
+ * Returns the first-ever girovita entry (startDate = null) or
+ * the last entry strictly before startDate (for line anchoring).
+ */
+export function getMockPreviousGirovita(
+  userId: string,
+  beforeDate: string | null
+): MockDayGirovita | null {
+  const p = getProfile(userId);
+  if (!p || p.girovita.length === 0) return null;
+  if (beforeDate === null) {
+    return p.girovita[0] ?? null;
+  }
+  const before = p.girovita.filter((d) => d.date < beforeDate).sort((a, b) => b.date.localeCompare(a.date));
+  return before[0] ?? null;
 }
 
 /** Returns the last weight entry strictly before startDate (for line anchoring) */

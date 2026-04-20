@@ -7,9 +7,10 @@ import { Button } from "@/components/Button";
 import { CostanzaCard } from "@/components/CostanzaCard";
 import { BilancioCalorico } from "@/components/BilancioCalorico";
 import { ObiettivoPeso } from "@/components/ObiettivoPeso";
+import { Girovita } from "@/components/Girovita";
 import { CalorieAttive } from "@/components/CalorieAttive";
 import { DeficitCalorico } from "@/components/DeficitCalorico";
-import { isMockUser, getMockLoggedDates, isMockNewUser } from "@/lib/mock-progress-data";
+import { isMockUser, getMockLoggedDates, isMockNewUser, getMockGirovita, getMockPreviousGirovita } from "@/lib/mock-progress-data";
 import { fetchAllUserData, AllUserData } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -34,16 +35,19 @@ const PERIOD_DAYS: Record<Period, number> = {
 // ─── Processed API data shape ─────────────────────────────────────────────────
 
 interface ProcessedApiData {
-  loggedDates:       string[];
-  allLoggedDates:    string[]; // full history, for streak calc
-  isNewUser:         boolean;
-  calorieData:       { date: string; calories: number; target: number; fabbisogno: number }[];
-  weightData:        { date: string; weight: number }[];
-  goalWeight:        number | null;
-  startingWeight:    number | null;
-  previousWeight:    { date: string; weight: number } | null;
-  activeData:        { date: string; activeCal: number }[];
-  userGoal:          "deficit" | "maintain" | "surplus";
+  loggedDates:          string[];
+  allLoggedDates:       string[]; // full history, for streak calc
+  isNewUser:            boolean;
+  calorieData:          { date: string; calories: number; target: number; fabbisogno: number }[];
+  weightData:           { date: string; weight: number }[];
+  goalWeight:           number | null;
+  startingWeight:       number | null;
+  previousWeight:       { date: string; weight: number } | null;
+  girovitaData:         { date: string; cm: number }[];
+  girovitaFirstEver:    { date: string; cm: number } | null;
+  girovitaPrevious:     { date: string; cm: number } | null;
+  activeData:           { date: string; activeCal: number }[];
+  userGoal:             "deficit" | "maintain" | "surplus";
 }
 
 /** Process the raw AllUserData fetched from the API into per-component shapes,
@@ -148,6 +152,31 @@ function processApiData(
     ? { date: prevWeightEntry.date.slice(0, 10), weight: prevWeightEntry.value }
     : null;
 
+  // ── Girovita (waist) ─────────────────────────────────────────────────────
+  const girovitaData = healthData
+    .filter((e) => {
+      const d = e.date?.slice(0, 10);
+      return d && d >= startDate && d <= endDate && e.type === "girovita" && e.value != null;
+    })
+    .map((e) => ({ date: e.date.slice(0, 10), cm: e.value }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const allGirovita = healthData
+    .filter((e) => e.type === "girovita" && e.value != null && e.date)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const girovitaFirstEverRaw = allGirovita[0] ?? null;
+  const girovitaFirstEver = girovitaFirstEverRaw
+    ? { date: girovitaFirstEverRaw.date.slice(0, 10), cm: girovitaFirstEverRaw.value }
+    : null;
+
+  const girovitaPreviousRaw = allGirovita
+    .filter((e) => e.date.slice(0, 10) < startDate)
+    .at(-1) ?? null;
+  const girovitaPrevious = girovitaPreviousRaw
+    ? { date: girovitaPreviousRaw.date.slice(0, 10), cm: girovitaPreviousRaw.value }
+    : null;
+
   // ── Active calories ───────────────────────────────────────────────────────
   const activeData = activeCalories
     .filter((e) => {
@@ -174,9 +203,12 @@ function processApiData(
     isNewUser,
     calorieData,
     weightData,
-    goalWeight:     profile.weightGoalKg ?? null,
-    startingWeight: profile.weightKg     ?? null,
+    goalWeight:       profile.weightGoalKg ?? null,
+    startingWeight:   profile.weightKg     ?? null,
     previousWeight,
+    girovitaData,
+    girovitaFirstEver,
+    girovitaPrevious,
     activeData,
     userGoal,
   };
@@ -643,6 +675,19 @@ function ProgressoContent() {
               preloadedGoalWeight={processed?.goalWeight}
               preloadedStartingWeight={processed?.startingWeight}
               preloadedPreviousWeight={processed?.previousWeight}
+            />
+          )}
+
+          {/* Girovita */}
+          {userId && (
+            <Girovita
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.girovitaData}
+              preloadedFirstEver={processed?.girovitaFirstEver}
+              preloadedPreviousEntry={processed?.girovitaPrevious}
             />
           )}
 
