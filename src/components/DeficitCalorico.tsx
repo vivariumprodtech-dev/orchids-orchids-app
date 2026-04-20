@@ -112,11 +112,7 @@ export function DeficitCalorico({
 
   const { title: cardTitle, emoji: cardEmoji, message: cardMessage } = resolveMotivation(avgDiff, avgRef);
 
-  const dateRange = formatDateRange(startDate, endDate);
-  // avgDiff > 0 = surplus (more than fabbisogno), avgDiff < 0 = deficit (less)
-  const deficitSuffix =
-    (avgDiff <= 0 ? "kcal in meno al giorno" : "kcal in più al giorno") +
-    ` (${dateRange})`;
+  const deficitSuffix = avgDiff <= 0 ? "kcal in meno al giorno" : "kcal in più al giorno";
 
   return (
     <CardShell>
