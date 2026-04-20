@@ -360,7 +360,10 @@ function CardShell({
         gap: "var(--spacing-2)",
       }}
     >
-      <span className="card-main-title">{title}</span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span className="card-main-title">{title}</span>
+        <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>🎯</span>
+      </div>
       {loading ? (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "8rem" }}>
           <span className="help-text">Caricamento…</span>
