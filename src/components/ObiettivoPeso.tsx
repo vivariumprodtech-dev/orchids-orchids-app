@@ -30,6 +30,8 @@ interface ObiettivoPesoProps {
   preloadedStartingWeight?: number | null;
   /** Last weight entry strictly before startDate — used to draw a line when period has ≤ 1 entry */
   preloadedPreviousWeight?: WeightDay | null;
+  /** True when viewing the most recent period — shows 'attuale' in the metric */
+  isCurrentPeriod?: boolean;
 }
 
 interface WeightDay {
@@ -100,6 +102,7 @@ export function ObiettivoPeso({
   preloadedGoalWeight,
   preloadedStartingWeight,
   preloadedPreviousWeight,
+  isCurrentPeriod = true,
 }: ObiettivoPesoProps) {
   const [rawData, setRawData] = useState<WeightDay[]>([]);
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
@@ -238,7 +241,7 @@ export function ObiettivoPeso({
         <span className="card-number-md" style={{ display: "inline" }}>
           {Math.abs(lost)}
         </span>{" "}
-        {lost >= 0 ? "kg persi" : "kg in più"} → da {effectiveStart}kg a {currentWeight}kg attuale
+        {lost >= 0 ? "kg persi" : "kg in più"} → da {effectiveStart}kg a {currentWeight}kg{isCurrentPeriod ? " attuale" : ""}
       </div>
 
       {/* Chart */}

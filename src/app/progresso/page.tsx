@@ -679,6 +679,7 @@ function ProgressoContent() {
               preloadedGoalWeight={processed?.goalWeight}
               preloadedStartingWeight={processed?.startingWeight}
               preloadedPreviousWeight={processed?.previousWeight}
+              isCurrentPeriod={endStr === toYMD(yesterday)}
             />
           )}
 
@@ -717,6 +718,7 @@ function ProgressoContent() {
               preloadedGoalWeight={processed?.goalWeight}
               preloadedStartingWeight={processed?.startingWeight}
               preloadedPreviousWeight={processed?.previousWeight}
+              isCurrentPeriod={endStr === toYMD(yesterday)}
             />
           )}
 
