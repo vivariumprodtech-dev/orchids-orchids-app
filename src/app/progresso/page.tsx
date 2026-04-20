@@ -156,13 +156,13 @@ function processApiData(
   const girovitaData = healthData
     .filter((e) => {
       const d = e.date?.slice(0, 10);
-      return d && d >= startDate && d <= endDate && e.type === "girovita" && e.value != null;
+      return d && d >= startDate && d <= endDate && e.type === "waistline" && e.value != null;
     })
     .map((e) => ({ date: e.date.slice(0, 10), cm: e.value }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const allGirovita = healthData
-    .filter((e) => e.type === "girovita" && e.value != null && e.date)
+    .filter((e) => e.type === "waistline" && e.value != null && e.date)
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const girovitaFirstEverRaw = allGirovita[0] ?? null;
