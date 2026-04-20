@@ -10,7 +10,7 @@ import { ObiettivoPeso } from "@/components/ObiettivoPeso";
 import { Girovita } from "@/components/Girovita";
 import { CalorieAttive } from "@/components/CalorieAttive";
 import { DeficitCalorico } from "@/components/DeficitCalorico";
-import { isMockUser, getMockLoggedDates, isMockNewUser, getMockGirovita, getMockPreviousGirovita } from "@/lib/mock-progress-data";
+import { isMockUser, getMockLoggedDates, isMockNewUser, getMockGirovita, getMockPreviousGirovita, getMockWeightMeta, getMockWeights, getMockPreviousWeight } from "@/lib/mock-progress-data";
 import { fetchAllUserData, AllUserData } from "@/lib/api";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -459,6 +459,21 @@ function ProgressoContent() {
   const startStr    = toYMD(periodStart);
   const endStr      = toYMD(endDate);
 
+  // ── Card ordering flags ───────────────────────────────────────────────────
+  // Derived from processed (real users) or mock helpers (mock users).
+  const hasWeightGoal: boolean = userId
+    ? isMockUser(userId)
+      ? (getMockWeightMeta(userId)?.goalWeight ?? null) != null
+      : (processed?.goalWeight ?? null) != null
+    : false;
+
+  const hasAnyWeight: boolean = userId
+    ? isMockUser(userId)
+      ? getMockWeights(userId, toYMD(addDays(today, -90)), toYMD(today)).length > 0
+          || getMockPreviousWeight(userId, startStr) != null
+      : (processed?.weightData ?? []).length > 0 || processed?.previousWeight != null
+    : false;
+
   // ── Effect 1: fetch ALL raw API data once per userId (real users only) ──────
   useEffect(() => {
     if (!userId || isMockUser(userId)) {
@@ -641,18 +656,7 @@ function ProgressoContent() {
             />
           )}
 
-          {/* Bilancio Calorico */}
-          {userId && (
-            <BilancioCalorico
-              userId={userId}
-              startDate={startStr}
-              endDate={endStr}
-              period={period}
-              preloadedData={processed?.calorieData}
-            />
-          )}
-
-          {/* Deficit Calorico */}
+          {/* 2) Deficit Calorico */}
           {userId && (
             <DeficitCalorico
               userId={userId}
@@ -664,8 +668,8 @@ function ProgressoContent() {
             />
           )}
 
-          {/* Obiettivo di Peso */}
-          {userId && (
+          {/* 3) Obiettivo di Peso — only if user has weight AND a weight goal */}
+          {userId && hasAnyWeight && hasWeightGoal && (
             <ObiettivoPeso
               userId={userId}
               startDate={startStr}
@@ -678,7 +682,7 @@ function ProgressoContent() {
             />
           )}
 
-          {/* Girovita */}
+          {/* 4) Girovita — only if at least one girovita measured (component self-hides) */}
           {userId && (
             <Girovita
               userId={userId}
@@ -691,7 +695,32 @@ function ProgressoContent() {
             />
           )}
 
-          {/* Calorie Attive */}
+          {/* 5) Giorni in target (Bilancio Calorico) */}
+          {userId && (
+            <BilancioCalorico
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.calorieData}
+            />
+          )}
+
+          {/* Obiettivo di Peso — fallback position if user has weight but no goal */}
+          {userId && hasAnyWeight && !hasWeightGoal && (
+            <ObiettivoPeso
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedWeights={processed?.weightData}
+              preloadedGoalWeight={processed?.goalWeight}
+              preloadedStartingWeight={processed?.startingWeight}
+              preloadedPreviousWeight={processed?.previousWeight}
+            />
+          )}
+
+          {/* 6) Calorie Attive */}
           {userId && (
             <CalorieAttive
               userId={userId}
