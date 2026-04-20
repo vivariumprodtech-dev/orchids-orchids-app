@@ -52,9 +52,9 @@ function resolveMotivation(avgDiff: number, avgRef: number, userGoal: "deficit" 
 
   if (userGoal === "maintain") {
     if (pct <= -0.50) return { title: "Deficit calorico", emoji: "📋", message: "Deficit alto, controlla di aver loggato tutti i pasti" };
-    if (pct <= -0.05) return { title: "Sotto la media",   emoji: "🏃", message: "Stai mangiando un po' meno del necessario" };
+    if (pct <= -0.05) return { title: "Deficit calorico",   emoji: "💪", message: "Essere consapevole è già un passo, continuiamo" };
     if (pct <   0.05) return { title: "Nella media",      emoji: "🌟", message: "Perfetto! Stai mantenendo il tuo obiettivo" };
-    if (pct <   0.50) return { title: "Sopra la media",   emoji: "🏃", message: "Essere consapevole è già un passo, continuiamo" };
+    if (pct <   0.50) return { title: "Surplus calorico",   emoji: "🏃", message: "Essere consapevole è già un passo, continuiamo" };
     return                   { title: "Surplus calorico", emoji: "🏃", message: "Succede, continua e rientriamo nell'obiettivo" };
   }
 
