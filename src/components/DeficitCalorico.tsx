@@ -33,9 +33,9 @@ function formatDateRange(start: string, end: string): string {
   const ddS = String(sd).padStart(2, "0");
   const ddE = String(ed).padStart(2, "0");
   if (sm === em && sy === ey) {
-    return `da ${ddS} a ${ddE} ${MONTHS_IT[em - 1]}`;
+    return `${ddS} a ${ddE} ${MONTHS_IT[em - 1]}`;
   }
-  return `da ${ddS} ${MONTHS_IT[sm - 1]} a ${ddE} ${MONTHS_IT[em - 1]}`;
+  return `${ddS} ${MONTHS_IT[sm - 1]} a ${ddE} ${MONTHS_IT[em - 1]}`;
 }
 
 // ─── Motivational copy ────────────────────────────────────────────────────────
