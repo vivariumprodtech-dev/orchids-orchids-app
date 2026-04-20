@@ -14,6 +14,7 @@ interface DeficitCaloricoProps {
   endDate: string;
   period: Period;
   preloadedData?: DayData[];
+  userGoal?: "deficit" | "maintain" | "surplus";
 }
 
 interface DayData {
@@ -46,34 +47,31 @@ interface MotivationResult {
   message: string;
 }
 
-function resolveMotivation(avgDiff: number, avgRef: number): MotivationResult {
+function resolveMotivation(avgDiff: number, avgRef: number, userGoal: "deficit" | "maintain" | "surplus"): MotivationResult {
   const pct = avgDiff / avgRef;
 
-  if (pct <= -0.50) return {
-    title:   "Deficit calorico",
-    emoji:   "📋",
-    message: "Deficit alto, controlla di aver loggato tutti i pasti",
-  };
-  if (pct <= -0.05) return {
-    title:   "Deficit calorico",
-    emoji:   "🌟",
-    message: "Ottimo! Stai andando verso il tuo obiettivo",
-  };
-  if (pct < 0.05) return {
-    title:   "Nella media",
-    emoji:   "💪",
-    message: "Stabile e costante, il percorso è questo",
-  };
-  if (pct < 0.50) return {
-    title:   "Surplus calorico",
-    emoji:   "🏃",
-    message: "Essere consapevole è già un passo, continuiamo",
-  };
-  return {
-    title:   "Surplus calorico",
-    emoji:   "🏃",
-    message: "Succede, continua e rientriamo nell'obiettivo",
-  };
+  if (userGoal === "maintain") {
+    if (pct <= -0.50) return { title: "Deficit calorico", emoji: "📋", message: "Deficit alto, controlla di aver loggato tutti i pasti" };
+    if (pct <= -0.05) return { title: "Sotto la media",   emoji: "🏃", message: "Stai mangiando un po' meno del necessario" };
+    if (pct <   0.05) return { title: "Nella media",      emoji: "🌟", message: "Perfetto! Stai mantenendo il tuo obiettivo" };
+    if (pct <   0.50) return { title: "Sopra la media",   emoji: "🏃", message: "Essere consapevole è già un passo, continuiamo" };
+    return                   { title: "Surplus calorico", emoji: "🏃", message: "Succede, continua e rientriamo nell'obiettivo" };
+  }
+
+  if (userGoal === "surplus") {
+    if (pct >= 0.50)  return { title: "Surplus calorico", emoji: "📋", message: "Surplus alto, controlla di aver loggato tutti i pasti" };
+    if (pct >= 0.05)  return { title: "Surplus calorico", emoji: "🌟", message: "Ottimo! Stai andando verso il tuo obiettivo" };
+    if (pct > -0.05)  return { title: "Nella media",      emoji: "💪", message: "Stabile e costante, continua" };
+    if (pct > -0.50)  return { title: "Deficit calorico", emoji: "🏃", message: "Essere consapevole è già un passo, continuiamo" };
+    return                   { title: "Deficit calorico", emoji: "🏃", message: "Succede, continua e rientriamo nell'obiettivo" };
+  }
+
+  // deficit (default)
+  if (pct <= -0.50) return { title: "Deficit calorico", emoji: "📋", message: "Deficit alto, controlla di aver loggato tutti i pasti" };
+  if (pct <= -0.05) return { title: "Deficit calorico", emoji: "🌟", message: "Ogni giorno in deficit è un passo verso il tuo obiettivo" };
+  if (pct <   0.05) return { title: "Nella media",      emoji: "💪", message: "Stabile e costante, il percorso è questo" };
+  if (pct <   0.50) return { title: "Surplus calorico", emoji: "🏃", message: "Essere consapevole è già un passo, continuiamo" };
+  return                   { title: "Surplus calorico", emoji: "🏃", message: "Succede, continua e rientriamo nell'obiettivo" };
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -84,6 +82,7 @@ export function DeficitCalorico({
   endDate,
   period,
   preloadedData,
+  userGoal = "deficit",
 }: DeficitCaloricoProps) {
   let data: DayData[] = [];
   if (preloadedData !== undefined) {
@@ -110,7 +109,7 @@ export function DeficitCalorico({
   const avgDiff   = avgIntake - avgRef;
   const totalDiff = Math.round(logged.reduce((s, d) => s + (d.calories - (d.fabbisogno ?? d.target)), 0));
 
-  const { title: cardTitle, emoji: cardEmoji, message: cardMessage } = resolveMotivation(avgDiff, avgRef);
+  const { title: cardTitle, emoji: cardEmoji, message: cardMessage } = resolveMotivation(avgDiff, avgRef, userGoal);
 
   const deficitSuffix = avgDiff <= 0 ? "kcal in meno al giorno" : "kcal in più al giorno";
 

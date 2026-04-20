@@ -43,6 +43,7 @@ interface ProcessedApiData {
   startingWeight:    number | null;
   previousWeight:    { date: string; weight: number } | null;
   activeData:        { date: string; activeCal: number }[];
+  userGoal:          "deficit" | "maintain" | "surplus";
 }
 
 /** Process the raw AllUserData fetched from the API into per-component shapes,
@@ -159,6 +160,14 @@ function processApiData(
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
+  // Derive userGoal from the most recent caloricDeficit value
+  const latestGoalDate = sortedGoalDates[sortedGoalDates.length - 1];
+  const latestDeficit  = latestGoalDate
+    ? (dailyGoals.find((g) => g.date?.slice(0, 10) === latestGoalDate)?.caloricDeficit ?? 0)
+    : 0;
+  const userGoal: "deficit" | "maintain" | "surplus" =
+    latestDeficit > 0 ? "deficit" : latestDeficit < 0 ? "surplus" : "maintain";
+
   return {
     loggedDates,
     allLoggedDates,
@@ -169,6 +178,7 @@ function processApiData(
     startingWeight: profile.weightKg     ?? null,
     previousWeight,
     activeData,
+    userGoal,
   };
 }
 
@@ -618,6 +628,7 @@ function ProgressoContent() {
               endDate={endStr}
               period={period}
               preloadedData={processed?.calorieData}
+              userGoal={processed?.userGoal ?? "deficit"}
             />
           )}
 
