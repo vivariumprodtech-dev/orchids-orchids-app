@@ -86,6 +86,12 @@ export function DeficitCalorico({
 
   const motivation = resolveMotivation(avgDeficit);
 
+  const threshold = avgRef * 0.05;
+  const cardTitle =
+    Math.abs(avgDiff) < threshold ? "Nella media"
+    : avgDiff < 0                 ? "Deficit calorico"
+    :                               "Surplus calorico";
+
   const dateRange = formatDateRange(startDate, endDate);
   // avgDiff > 0 = surplus (more than fabbisogno), avgDiff < 0 = deficit (less)
   const deficitSuffix =
@@ -96,7 +102,7 @@ export function DeficitCalorico({
     <CardShell>
       {/* Title row */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-        <span className="card-main-title">Deficit calorico</span>
+        <span className="card-main-title">{cardTitle}</span>
         <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>⭐</span>
       </div>
 
