@@ -427,9 +427,7 @@ export function DeficitCalorico({
               <strong>{avgIntake.toLocaleString("it-IT")}</strong> kcal
             </span>
           </div>
-
-          {/* Divider */}
-          <div style={{ height: "1px", backgroundColor: "var(--border)" }} />
+      
 
           {/* Row 2 — total diff */}
           <div
