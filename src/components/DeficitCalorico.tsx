@@ -96,7 +96,7 @@ function InfoModal({
         background:      "rgba(117, 127, 160, 0.20)",
         backdropFilter:  "blur(10px)",
         display:         "flex",
-        alignItems:      "flex-end",
+        alignItems:      "center",
         justifyContent:  "center",
         paddingLeft:     "var(--spacing-5)",
         paddingRight:    "var(--spacing-5)",
