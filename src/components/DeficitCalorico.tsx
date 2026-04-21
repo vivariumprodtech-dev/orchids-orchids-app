@@ -479,10 +479,12 @@ export function DeficitCalorico({
                   flexShrink:      0,
                 }}
               >
-                <TrendingDown size={15} color="var(--invert)" strokeWidth={2} />
+                {totalDiff <= 0
+                  ? <TrendingDown size={15} color="var(--invert)" strokeWidth={2} />
+                  : <TrendingUp   size={15} color="var(--invert)" strokeWidth={2} />}
               </div>
               <span className="body-sm" style={{ color: "var(--subtitle-2)" }}>
-                Totale deficit periodo
+                {totalDiff <= 0 ? "Totale deficit periodo" : "Totale surplus periodo"}
               </span>
             </div>
             <span className="body-sm" style={{ color: "var(--subtitle-1)", flexShrink: 0 }}>
