@@ -450,9 +450,9 @@ function ProgressoContent() {
   const [isNewUser,         setIsNewUser]          = useState(false);
   const [loadingLogs,       setLoadingLogs]        = useState(false);
 
-  // Centralized API data for real users
+  // Centralized API data for real users — start true so cards never flash empty
   const [rawApiData,  setRawApiData]  = useState<AllUserData | null>(null);
-  const [loadingApi,  setLoadingApi]  = useState(false);
+  const [loadingApi,  setLoadingApi]  = useState(true);
   // Processed/filtered slice for the current view window
   const [processed,   setProcessed]   = useState<ProcessedApiData | null>(null);
 
@@ -481,6 +481,7 @@ function ProgressoContent() {
     if (!userId || isMockUser(userId)) {
       setRawApiData(null);
       setProcessed(null);
+      setLoadingApi(false);  // mock users need no API fetch
       return;
     }
 
@@ -604,30 +605,39 @@ function ProgressoContent() {
         Tuo progresso
       </h1>
 
-      {/* Global loading state for real users */}
-      {loadingApi && (
+      {/* Full-page 3-dot loader while data is loading */}
+      {loadingApi ? (
         <div
           style={{
+            flex:            1,
             display:         "flex",
             alignItems:      "center",
             justifyContent:  "center",
+            minHeight:       "12rem",
             gap:             "var(--spacing-2)",
-            backgroundColor: "var(--color-white)",
-            boxShadow:       "var(--shadow-sm)",
-            borderRadius:    "var(--rounded-6)",
-            padding:         "var(--spacing-6)",
           }}
         >
-          <Loader2
-            size={18}
-            style={{ color: "var(--primary-action)", animation: "spin 1s linear infinite" }}
-          />
-          <span className="help-text">Caricamento dati…</span>
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              style={{
+                display:         "inline-block",
+                width:           "12px",
+                height:          "12px",
+                borderRadius:    "50%",
+                backgroundColor: "var(--color-neutral-100)",
+                animation:       `dotPulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+              }}
+            />
+          ))}
+          <style>{`
+            @keyframes dotPulse {
+              0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+              40%            { opacity: 1;   transform: scale(1);   }
+            }
+          `}</style>
         </div>
-      )}
-
-      {/* Cards — show once data is ready */}
-      {!loadingApi && (
+      ) : (
         <>
           {/* Costanza Card */}
           {isLoading ? (
@@ -741,7 +751,7 @@ function ProgressoContent() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function ProgressoPage() {
   return (
