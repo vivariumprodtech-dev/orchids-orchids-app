@@ -48,6 +48,7 @@ interface ProcessedApiData {
   girovitaPrevious:     { date: string; cm: number } | null;
   activeData:           { date: string; activeCal: number }[];
   userGoal:             "deficit" | "maintain" | "surplus";
+  bmr:                  number;
 }
 
 /** Process the raw AllUserData fetched from the API into per-component shapes,
@@ -211,6 +212,7 @@ function processApiData(
     girovitaPrevious,
     activeData,
     userGoal,
+    bmr,
   };
 }
 
@@ -665,6 +667,7 @@ function ProgressoContent() {
               period={period}
               preloadedData={processed?.calorieData}
               userGoal={processed?.userGoal ?? "deficit"}
+              bmr={processed?.bmr ?? 0}
             />
           )}
 
