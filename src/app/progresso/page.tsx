@@ -553,6 +553,7 @@ function ProgressoContent() {
   }
 
   const isLoading = loadingApi || loadingLogs;
+  const showLoader = loadingApi || (!!userId && !isMockUser(userId) && processed === null);
 
   return (
     <div
@@ -606,7 +607,7 @@ function ProgressoContent() {
       </h1>
 
       {/* Full-page 3-dot loader while data is loading */}
-      {loadingApi ? (
+      {showLoader ? (
         <div
           style={{
             flex:            1,
