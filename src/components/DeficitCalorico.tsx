@@ -216,7 +216,7 @@ function InfoModal({
             iconBg="var(--color-orange-400-a12)"
             bg="var(--color-orange-50)"
             color="var(--color-orange-800)"
-            label="MEDIA DI CALORIE ATTIVE PERIODO"
+            label="MEDIA CALORIE ATTIVE PERIODO"
             value={avgActiveCal}
             valuePrefix={avgActiveCal >= 0 ? "+ " : ""}
             style={{ flex: 1 }}
@@ -232,7 +232,7 @@ function InfoModal({
           iconBg="var(--color-ciano-400-a12)"
           bg="var(--color-ciano-50)"
           color="var(--color-ciano-800)"
-          label="MEDIA DI CALORIE INGERITE PERIODO"
+          label="MEDIA CALORIE INGERITE PERIODO"
           value={avgIntake}
           style={{ width: "100%" }}
         />
