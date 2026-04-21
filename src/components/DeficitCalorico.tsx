@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Utensils, TrendingDown, Info, X, Zap, Flame, TrendingUp } from "lucide-react";
+import { Utensils, TrendingDown, TrendingUp, MoveRight, Info, X, Zap, Flame } from "lucide-react";
 import { isMockUser, getMockCalories } from "@/lib/mock-progress-data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -77,13 +77,40 @@ function InfoModal({
   bmr:          number;
   avgDiff:      number;
 }) {
-  const isDeficit = avgDiff <= 0;
-  const absDiff   = Math.abs(avgDiff);
+  const absDiff = Math.abs(avgDiff);
 
-  const summaryLabel = isDeficit ? "DEFICIT" : "SURPLUS";
-  const summaryText  = isDeficit
-    ? `${absDiff} kcal in meno per giorno`
-    : `${absDiff} kcal in più per giorno`;
+  // Derive modal type from the card title (the single source of truth)
+  const modalType: "deficit" | "surplus" | "media" =
+    cardTitle === "Surplus calorico" ? "surplus"
+    : cardTitle === "Nella media" || cardTitle === "Sotto la media" || cardTitle === "Sopra la media" ? "media"
+    : "deficit";
+
+  const headerIcon =
+    modalType === "surplus" ? <TrendingUp  size={14} color="var(--invert)" strokeWidth={2} /> :
+    modalType === "media"   ? <MoveRight   size={14} color="var(--invert)" strokeWidth={2} /> :
+                              <TrendingDown size={14} color="var(--invert)" strokeWidth={2} />;
+
+  const headerTitle =
+    modalType === "surplus" ? "Surplus calorico" :
+    modalType === "media"   ? "Nella media"      :
+                              "Deficit calorico";
+
+  const descriptionText =
+    modalType === "surplus" ? "Le calorie che mangi sono più di quelle che consumi."   :
+    modalType === "media"   ? "Le calorie che mangi sono molto vicine a quelle che consumi." :
+                              "Le calorie che mangi sono meno di quelle che consumi.";
+
+  const summaryLabel =
+    modalType === "surplus" ? "SURPLUS"    :
+    modalType === "media"   ? "NELLA MEDIA" :
+                              "DEFICIT";
+
+  const summarySuffix = avgDiff <= 0 ? "kcal in meno per giorno" : "kcal in più per giorno";
+
+  const summaryIcon =
+    modalType === "surplus" ? <TrendingUp  size={14} color="var(--color-ciano-600)" strokeWidth={2} /> :
+    modalType === "media"   ? <MoveRight   size={14} color="var(--color-ciano-600)" strokeWidth={2} /> :
+                              <TrendingDown size={14} color="var(--color-ciano-600)" strokeWidth={2} />;
 
   return (
     // Backdrop
@@ -134,9 +161,9 @@ function InfoModal({
                 flexShrink:      0,
               }}
             >
-              <TrendingDown size={14} color="var(--invert)" strokeWidth={2} />
+              {headerIcon}
             </div>
-            <span className="heading-5" style={{ color: "var(--heading)" }}>{cardTitle}</span>
+            <span className="heading-5" style={{ color: "var(--heading)" }}>{headerTitle}</span>
           </div>
 
           {/* Close button */}
@@ -164,7 +191,7 @@ function InfoModal({
 
         {/* Description text */}
         <p className="body-md" style={{ color: "var(--body)", margin: 0 }}>
-          Le calorie che mangi sono meno di quelle che consumi.
+          {descriptionText}
         </p>
 
         {/* BMR + Attive row */}
@@ -230,7 +257,7 @@ function InfoModal({
             </span>
             <div style={{ display: "flex", alignItems: "baseline", gap: "var(--spacing-1)" }}>
               <span className="heading-3" style={{ color: "var(--invert)" }}>{absDiff}</span>
-              <span className="body-sm" style={{ color: "var(--invert)" }}>{summaryText.replace(`${absDiff} `, "")}</span>
+              <span className="body-sm" style={{ color: "var(--invert)" }}>{summarySuffix}</span>
             </div>
           </div>
           {/* Badge icon */}
@@ -246,7 +273,7 @@ function InfoModal({
               flexShrink:      0,
             }}
           >
-            <TrendingDown size={14} color="var(--color-ciano-600)" strokeWidth={2} />
+            {summaryIcon}
           </div>
         </div>
       </div>
