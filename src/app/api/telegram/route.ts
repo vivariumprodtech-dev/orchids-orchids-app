@@ -3,9 +3,11 @@ import { loadUserFromSupabase, resetUser, resetActiveCalories } from '@/lib/user
 import { syncAirtableToSupabase } from '@/lib/airtable';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL;
 
 function getBaseUrl(request: NextRequest): string {
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
+  if (SITE_URL) return SITE_URL.replace(/\/$/, '');
+  const host  = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
   const proto = request.headers.get('x-forwarded-proto') || 'https';
   return `${proto}://${host}`;
 }

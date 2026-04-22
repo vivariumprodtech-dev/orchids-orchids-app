@@ -432,10 +432,12 @@ function PeriodNavigator({
 
 // ─── Main content ─────────────────────────────────────────────────────────────
 
+const DEMO_USER_ID = "ugo_demo";
+
 function ProgressoContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
-  const userId       = searchParams.get("userId");
+  const userId       = searchParams.get("userId") || DEMO_USER_ID;
 
   const [tab,    setTab]    = useState<Tab>("obiettivo");
   const [period, setPeriod] = useState<Period>("settimana");
