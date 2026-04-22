@@ -3,5 +3,5 @@
   "createdAt": 1769093464282,
   "version": "1.0.0",
   "templateId": "nextjs",
-  "startupCommands": ["npm install; node_modules/.bin/next dev --port 3001"]
+  "startupCommands": ["npm install; node_modules/.bin/next dev --port 3000"]
 }
