@@ -1,0 +1,10 @@
+{
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://orchids-orchids-app-2.vercel.app"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_SITE_URL": "https://orchids-orchids-app-2.vercel.app"
+    }
+  }
+}

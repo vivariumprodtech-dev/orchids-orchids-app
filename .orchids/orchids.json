@@ -1,0 +1,7 @@
+{
+  "projectId": "cd6ba842-c95d-4dd6-91f4-1159d6d09b1e",
+  "createdAt": 1769093464282,
+  "version": "1.0.0",
+  "templateId": "nextjs",
+  "startupCommands": ["npm install; node_modules/.bin/next dev --port 3000"]
+}

@@ -1,0 +1,237 @@
+{
+  "backup_date": "2026-01-26",
+  "users": {
+    "6217569048": {
+      "name": "Alex",
+      "profile": {
+        "telegram_id": "6217569048",
+        "target_calories": 1600,
+        "target_protein": 96,
+        "target_carbs": 160,
+        "target_fats": 64,
+        "target_fiber": 30,
+        "target_water": 2,
+        "bmr": 2200,
+        "state": {
+          "awaitingWater": false,
+          "awaitingActivity": false,
+          "awaitingQuantity": null
+        },
+        "updated_at": "2026-01-24T16:44:59.305Z"
+      },
+      "daily_logs": [
+        {
+          "id": "cef9abfe-5f9d-47c9-b5c8-e21eddb08831",
+          "date": "2026-01-26",
+          "water": 2501,
+          "calories": 2100,
+          "protein": 160,
+          "carbs": 180,
+          "fats": 70,
+          "fiber": 25,
+          "active_calories": 450,
+          "target_calories": 2000,
+          "target_protein": 150,
+          "target_carbs": 200,
+          "target_fats": 70,
+          "target_fiber": 30,
+          "target_water": 2.5,
+          "target_deficit": 500,
+          "bmr": 2200,
+          "food_entries": [
+            {
+              "id": "5ad93af3-3ae4-4ee5-97eb-b52224201ee4",
+              "name": "Pollo alla piastra",
+              "grams": 200,
+              "calories": 330,
+              "protein": 62,
+              "carbs": 0,
+              "fats": 7,
+              "fiber": 0,
+              "meal": "Pranzo",
+              "created_at": "2026-01-26T16:51:49.425Z"
+            },
+            {
+              "id": "40f26ff0-075e-455f-a940-f5b033b596d6",
+              "name": "Riso Basmati",
+              "grams": 100,
+              "calories": 360,
+              "protein": 8,
+              "carbs": 78,
+              "fats": 1,
+              "fiber": 1,
+              "meal": "Cena",
+              "created_at": "2026-01-26T16:51:51.355Z"
+            }
+          ]
+        },
+        {
+          "id": "8c1f31ff-09ee-4ab2-8ca9-c72cf29aaa7e",
+          "date": "2026-01-25",
+          "water": 2200,
+          "calories": 1950,
+          "protein": 150,
+          "carbs": 160,
+          "fats": 65,
+          "fiber": 22,
+          "active_calories": 380,
+          "bmr": 2200,
+          "food_entries": []
+        },
+        {
+          "id": "7cbe45dd-a9e9-4ae9-ae91-812bc2f39259",
+          "date": "2026-01-24",
+          "water": 2800,
+          "calories": 2300,
+          "protein": 170,
+          "carbs": 220,
+          "fats": 75,
+          "fiber": 28,
+          "active_calories": 600,
+          "bmr": 2200,
+          "food_entries": []
+        },
+        {
+          "id": "4e66d864-9bc3-4c33-a7a5-dd8bc5595725",
+          "date": "2026-01-23",
+          "water": 2000,
+          "calories": 1800,
+          "protein": 140,
+          "carbs": 150,
+          "fats": 60,
+          "fiber": 20,
+          "active_calories": 300,
+          "bmr": 2200,
+          "food_entries": []
+        },
+        {
+          "id": "aa24d5a1-f004-48fe-ac46-a2d10ac7c2c2",
+          "date": "2026-01-22",
+          "water": 2400,
+          "calories": 2050,
+          "protein": 155,
+          "carbs": 175,
+          "fats": 68,
+          "fiber": 24,
+          "active_calories": 420,
+          "bmr": 2200,
+          "food_entries": []
+        }
+      ]
+    },
+    "1722322879": {
+      "name": "Camila",
+      "profile": {
+        "telegram_id": "1722322879",
+        "target_calories": 1600,
+        "target_protein": 96,
+        "target_carbs": 160,
+        "target_fats": 64,
+        "target_fiber": 30,
+        "target_water": 2,
+        "bmr": 1500,
+        "state": {},
+        "updated_at": "2026-01-26T17:55:04.509Z"
+      },
+      "daily_logs": [
+        {
+          "id": "42b37899-7287-4646-ac91-67d6409630ba",
+          "date": "2026-01-26",
+          "water": 1800,
+          "calories": 1650,
+          "protein": 110,
+          "carbs": 140,
+          "fats": 55,
+          "fiber": 18,
+          "active_calories": 250,
+          "target_calories": 1600,
+          "target_protein": 100,
+          "target_carbs": 150,
+          "target_fats": 50,
+          "target_fiber": 25,
+          "target_water": 2,
+          "target_deficit": 300,
+          "bmr": 1500,
+          "food_entries": [
+            {
+              "id": "bfda0bf2-043d-4d0f-8938-7dbbf94ed8f7",
+              "name": "Salmone",
+              "grams": 150,
+              "calories": 300,
+              "protein": 30,
+              "carbs": 0,
+              "fats": 20,
+              "fiber": 0,
+              "meal": "Pranzo",
+              "created_at": "2026-01-26T16:51:52.932Z"
+            },
+            {
+              "id": "4b78cd9c-a351-400f-a2d5-f777346cdfe9",
+              "name": "Insalata mista",
+              "grams": 100,
+              "calories": 50,
+              "protein": 2,
+              "carbs": 5,
+              "fats": 2,
+              "fiber": 4,
+              "meal": "Cena",
+              "created_at": "2026-01-26T16:51:54.476Z"
+            }
+          ]
+        },
+        {
+          "id": "7eddb4ca-377f-4647-aa9d-558d90c1d1a0",
+          "date": "2026-01-25",
+          "water": 2000,
+          "calories": 1750,
+          "protein": 120,
+          "carbs": 150,
+          "fats": 60,
+          "fiber": 20,
+          "active_calories": 300,
+          "bmr": 1500,
+          "food_entries": []
+        },
+        {
+          "id": "73dc8591-8b64-4b77-a89c-872f6812fda2",
+          "date": "2026-01-24",
+          "water": 1600,
+          "calories": 1500,
+          "protein": 100,
+          "carbs": 130,
+          "fats": 50,
+          "fiber": 15,
+          "active_calories": 200,
+          "bmr": 1500,
+          "food_entries": []
+        },
+        {
+          "id": "39baf28c-faba-40c8-8bf4-9ea44c558575",
+          "date": "2026-01-23",
+          "water": 2100,
+          "calories": 1850,
+          "protein": 125,
+          "carbs": 160,
+          "fats": 65,
+          "fiber": 22,
+          "active_calories": 350,
+          "bmr": 1500,
+          "food_entries": []
+        },
+        {
+          "id": "98a6e5c4-1ced-4d77-855f-036a6a09d2cf",
+          "date": "2026-01-22",
+          "water": 1900,
+          "calories": 1700,
+          "protein": 115,
+          "carbs": 145,
+          "fats": 58,
+          "fiber": 19,
+          "active_calories": 280,
+          "bmr": 1500,
+          "food_entries": []
+        }
+      ]
+    }
+  }
+}
