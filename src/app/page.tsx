@@ -123,7 +123,7 @@ export default function Home() {
         <div>
           <p className="label-sm mb-1" style={{ color: "var(--subtitle-2)" }}>Telegram Webhook</p>
           <p className="body-sm" style={{ color: "var(--placeholder)" }}>
-            After each new deploy, click this button to re-register the webhook with the current URL.
+            The webhook is auto-registered on every deploy. Use this only if you need to manually force a re-registration.
           </p>
         </div>
 
