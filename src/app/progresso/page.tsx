@@ -39,6 +39,8 @@ interface ProcessedApiData {
   allLoggedDates:       string[]; // full history, for streak calc
   isNewUser:            boolean;
   calorieData:          { date: string; calories: number; target: number; fabbisogno: number }[];
+  /** Per-day target for every day in range — (BMR + activeCalories) − deficit. Used only by BilancioCalorico. */
+  bilancioTargets:      { date: string; target: number }[];
   weightData:           { date: string; weight: number }[];
   goalWeight:           number | null;
   startingWeight:       number | null;
@@ -114,6 +116,25 @@ function processApiData(
       };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
+
+  // ── Per-day targets for BilancioCalorico covering ALL days in range ─────
+  // Formula: (BMR + activeCalories) − deficit, applied to every calendar day.
+  const bilancioTargets = (() => {
+    const result: { date: string; target: number }[] = [];
+    const cur = new Date(startDate + "T00:00:00");
+    const last = new Date(endDate + "T00:00:00");
+    while (cur <= last) {
+      const yy   = cur.getFullYear();
+      const mm   = String(cur.getMonth() + 1).padStart(2, "0");
+      const dd   = String(cur.getDate()).padStart(2, "0");
+      const date = `${yy}-${mm}-${dd}`;
+      const activeCal  = activeCalByDate.get(date) ?? 0;
+      const bmrDeficit = bmrDeficitByDate.get(date) ?? nearestBmrDeficit(date);
+      result.push({ date, target: bmrDeficit + activeCal });
+      cur.setDate(cur.getDate() + 1);
+    }
+    return result;
+  })();
 
   // Logged dates in current view range
   const loggedDates = Array.from(calByDate.keys())
@@ -203,6 +224,7 @@ function processApiData(
     allLoggedDates,
     isNewUser,
     calorieData,
+    bilancioTargets,
     weightData,
     goalWeight:       profile.weightGoalKg ?? null,
     startingWeight:   profile.weightKg     ?? null,
@@ -720,6 +742,7 @@ function ProgressoContent() {
               endDate={endStr}
               period={period}
               preloadedData={processed?.calorieData}
+              preloadedTargets={processed?.bilancioTargets}
             />
           )}
 

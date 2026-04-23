@@ -28,6 +28,8 @@ interface BilancioCaloricoProp {
   period: Period;
   /** Pre-fetched data from parent (skips internal fetch when provided) */
   preloadedData?: DayData[];
+  /** Per-day targets for every day in range: (BMR + activeCalories) − deficit */
+  preloadedTargets?: { date: string; target: number }[];
 }
 
 interface DayData {
@@ -119,6 +121,7 @@ export function BilancioCalorico({
   endDate,
   period,
   preloadedData,
+  preloadedTargets,
 }: BilancioCaloricoProp) {
   const [rawData, setRawData] = useState<DayData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -167,6 +170,11 @@ export function BilancioCalorico({
     rawData.forEach((d) => m.set(d.date, d));
     return m;
   }, [rawData]);
+  const targetMap = useMemo(() => {
+    const m = new Map<string, number>();
+    preloadedTargets?.forEach((t) => m.set(t.date, t.target));
+    return m;
+  }, [preloadedTargets]);
 
   if (loading) {
     return <CardShell title="Giorni in target" emoji="🍽️" loading />;
@@ -194,7 +202,8 @@ export function BilancioCalorico({
   const chartData = allDays.map((date) => {
     const d = dataMap.get(date);
     const cal = d?.calories ?? 0;
-    const target = d?.target ?? avgTarget;
+    // Use per-day target from preloadedTargets (all days), else the baked-in target, else avgTarget
+    const target = targetMap.get(date) ?? d?.target ?? avgTarget;
     const hasLog = !!d && cal > 0;
     // Days before the user's first log are inactive (no bar, no line)
     const isInactive = !firstLogDate || date < firstLogDate;
