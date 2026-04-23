@@ -218,7 +218,6 @@ function InfoModal({
             color="var(--color-orange-800)"
             label="MEDIA CALORIE ATTIVE PERIODO"
             value={avgActiveCal}
-            valuePrefix={avgActiveCal >= 0 ? "+ " : ""}
             style={{ flex: 1 }}
           />
         </div>
