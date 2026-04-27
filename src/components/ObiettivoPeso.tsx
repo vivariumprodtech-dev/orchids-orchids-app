@@ -434,10 +434,16 @@ function WeekProgressView({
     ? "linear-gradient(to right, var(--danger-surface), var(--primary-action))"
     : "linear-gradient(to right, var(--primary-action), var(--primary-surface))";
 
-  // Balloon replaces the start label only if current == starting (bubblePct == 0, normal)
-  // Balloon replaces the goal label only if current == goal (bubblePct == 100)
-  const balloonAtStart = !wrongDirection && bubblePct < 4;
-  const balloonAtGoal  = bubblePct > 96;
+  // Balloon is left-anchored when bubblePct <= 15, right-anchored when >= 85.
+  // Hide static labels whenever they would overlap with the balloon.
+  const balloonLeftAnchored  = bubblePct <= 15;
+  const balloonRightAnchored = bubblePct >= 85;
+  // In normal mode: start label sits at left edge — hide it when balloon is left-anchored
+  // In wrong-direction mode: start label floats at startMarkerPct — hide when balloon is near it
+  const balloonAtStart = !wrongDirection
+    ? balloonLeftAnchored
+    : Math.abs(bubblePct - startMarkerPct) < 15;
+  const balloonAtGoal  = balloonRightAnchored;
 
   const message = resolveWeekMessage(currentWeight, startingWeight, goalWeight, userGoal);
 
