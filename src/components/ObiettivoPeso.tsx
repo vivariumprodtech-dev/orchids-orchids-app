@@ -397,31 +397,42 @@ function WeekProgressView({
 }) {
   const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
 
-  // Bar spans from startingWeight (left=0%) to goalWeight (right=100%).
-  // Fallback spread when no goal set.
-  const barStart = startingWeight;
-  const barEnd   = goalWeight !== null ? goalWeight : startingWeight + (userGoal === "surplus" ? 5 : -5);
-  const barRange = barEnd - barStart || 1;
-
-  // Bubble: currentWeight mapped into the bar range, clamped so label stays visible
-  const rawPct    = ((currentWeight - barStart) / barRange) * 100;
-  const bubblePct = Math.min(96, Math.max(4, rawPct));
-
-  // Correct direction: moving toward goal from starting point
-  const correctDirection =
+  // Correct direction: moving toward goal
+  const wrongDirection =
     userGoal === "surplus"
-      ? currentWeight >= startingWeight
-      : currentWeight <= startingWeight;
+      ? currentWeight < startingWeight
+      : currentWeight > startingWeight;
 
-  // Fill always starts from left edge (0%) to bubble position.
-  // Wrong direction: bubble is left of start for surplus, right of start for deficit —
-  // in both cases rawPct < 0 or > some value, so we show fill from 0 → bubblePct
-  // with the danger gradient.
-  const fillWidth = Math.max(0, bubblePct);
+  // ── Bar coordinate space ─────────────────────────────────────────────────────
+  // Normal: left = startingWeight, right = goalWeight
+  // Wrong direction: left = currentWeight (balloon at far left), right = goalWeight
+  //   startingWeight appears somewhere in the middle of the bar
+  const effectiveGoal = goalWeight !== null
+    ? goalWeight
+    : startingWeight + (userGoal === "surplus" ? 5 : -5);
 
-  const gradient = correctDirection
-    ? "linear-gradient(to right, var(--primary-action), var(--primary-surface))"
-    : "linear-gradient(to right, var(--danger-surface), var(--primary-action))";
+  const barLeft  = wrongDirection ? currentWeight : startingWeight;
+  const barRight = effectiveGoal;
+  // Ensure barRight != barLeft and direction is consistent with goal
+  const barRange = barRight - barLeft || 1;
+
+  // % positions within the bar
+  const bubblePct  = wrongDirection ? 0 : Math.min(100, Math.max(0, ((currentWeight - barLeft) / barRange) * 100));
+  const startPct   = wrongDirection ? Math.min(100, Math.max(0, ((startingWeight - barLeft) / barRange) * 100)) : 0;
+
+  // Fill: from left edge to bubble position
+  // Normal: 0% → bubblePct  (green gradient)
+  // Wrong:  0% → startPct   (danger gradient from current to starting)
+  const fillEndPct = wrongDirection ? startPct : bubblePct;
+
+  const gradient = wrongDirection
+    ? "linear-gradient(to right, var(--danger-surface), var(--primary-action))"
+    : "linear-gradient(to right, var(--primary-action), var(--primary-surface))";
+
+  // Hide the static start/goal labels when balloon is within ~8% of them
+  const HIDE_THRESHOLD = 8;
+  const hideStartLabel = !wrongDirection && Math.abs(bubblePct - 0) < HIDE_THRESHOLD;
+  const hideGoalLabel  = Math.abs(bubblePct - 100) < HIDE_THRESHOLD;
 
   const message = resolveWeekMessage(currentWeight, startingWeight, goalWeight, userGoal);
 
@@ -435,8 +446,8 @@ function WeekProgressView({
         {diff >= 0 ? "kg persi rispetto all'inizio" : "kg in più rispetto all'inizio"}
       </div>
 
-      {/* Progress bar */}
-      <div style={{ position: "relative", paddingTop: "2rem", paddingBottom: "1.5rem" }}>
+      {/* Progress bar + labels row */}
+      <div style={{ marginTop: "var(--spacing-2)" }}>
         {/* Track */}
         <div
           style={{
@@ -447,78 +458,116 @@ function WeekProgressView({
             overflow: "visible",
           }}
         >
-          {/* Fill — always from left edge to bubble */}
-          {fillWidth > 0 && (
+          {/* Fill */}
+          {fillEndPct > 0 && (
             <div
               style={{
                 position: "absolute",
                 top: 0,
                 bottom: 0,
                 left: 0,
-                width: `${fillWidth}%`,
+                width: `${fillEndPct}%`,
                 background: gradient,
                 borderRadius: 999,
               }}
             />
           )}
 
-          {/* Bubble (dot + label above) */}
+          {/* Dot on bar at bubble position */}
           <div
             style={{
               position: "absolute",
               top: "50%",
               left: `${bubblePct}%`,
               transform: "translate(-50%, -50%)",
+              width: 16,
+              height: 16,
+              borderRadius: "50%",
+              backgroundColor: "var(--subtitle-1)",
+              border: "2px solid var(--color-white)",
               pointerEvents: "none",
+              zIndex: 1,
             }}
-          >
-            {/* Pill label above the dot */}
+          />
+
+          {/* Wrong-direction: dot for starting weight on the bar */}
+          {wrongDirection && (
             <div
               style={{
                 position: "absolute",
-                bottom: "calc(100% + 6px)",
-                left: "50%",
-                transform: "translateX(-50%)",
-                backgroundColor: "var(--subtitle-1)",
-                borderRadius: 999,
-                padding: "2px 8px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              <span className="label-sm" style={{ color: "var(--invert)" }}>
-                {fmt1(currentWeight)}kg
-              </span>
-            </div>
-            {/* Dot on bar */}
-            <div
-              style={{
-                width: 16,
-                height: 16,
+                top: "50%",
+                left: `${startPct}%`,
+                transform: "translate(-50%, -50%)",
+                width: 10,
+                height: 10,
                 borderRadius: "50%",
-                backgroundColor: "var(--subtitle-1)",
+                backgroundColor: "var(--primary-action)",
                 border: "2px solid var(--color-white)",
-                position: "relative",
-                top: 0,
+                pointerEvents: "none",
+                zIndex: 1,
               }}
             />
-          </div>
+          )}
         </div>
 
-        {/* Labels below bar */}
+        {/* Labels row below bar */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
+            position: "relative",
+            height: "2rem",
             marginTop: "var(--spacing-1)",
           }}
         >
-          <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
-            {fmt1(startingWeight)}kg
-          </span>
-          {goalWeight !== null && (
-            <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
-              {fmt1(goalWeight)}kg
+          {/* Balloon — positioned at bubblePct */}
+          <div
+            style={{
+              position: "absolute",
+              left: `${bubblePct}%`,
+              top: 0,
+              transform: "translateX(-50%)",
+              backgroundColor: "var(--subtitle-1)",
+              borderRadius: 999,
+              padding: "2px 8px",
+              whiteSpace: "nowrap",
+              zIndex: 2,
+            }}
+          >
+            <span className="label-sm" style={{ color: "var(--invert)" }}>
+              {fmt1(currentWeight)}kg
             </span>
+          </div>
+
+          {/* Start label — left edge in normal mode, at startPct in wrong-direction mode */}
+          {!hideStartLabel && (
+            wrongDirection ? (
+              <div
+                style={{
+                  position: "absolute",
+                  left: `${startPct}%`,
+                  top: 0,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
+                  {fmt1(startingWeight)}kg
+                </span>
+              </div>
+            ) : (
+              <div style={{ position: "absolute", left: 0, top: 0 }}>
+                <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
+                  {fmt1(startingWeight)}kg
+                </span>
+              </div>
+            )
+          )}
+
+          {/* Goal label — right edge */}
+          {goalWeight !== null && !hideGoalLabel && (
+            <div style={{ position: "absolute", right: 0, top: 0 }}>
+              <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
+                {fmt1(goalWeight)}kg
+              </span>
+            </div>
           )}
         </div>
       </div>
