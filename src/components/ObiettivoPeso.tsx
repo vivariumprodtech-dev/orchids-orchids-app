@@ -14,6 +14,7 @@ import {
 import { isMockUser, getMockWeights, getMockWeightMeta, getMockPreviousWeight } from "@/lib/mock-progress-data";
 import { niceYTicks, formatTooltipDate, fmt1 } from "@/lib/chart-utils";
 import { supabase } from "@/lib/supabase";
+import MessageFooter from "./MessageFooter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ interface ObiettivoPesoProps {
   preloadedPreviousWeight?: WeightDay | null;
   /** True when viewing the most recent period — shows 'attuale' in the metric */
   isCurrentPeriod?: boolean;
+  userGoal?: "deficit" | "maintain" | "surplus";
 }
 
 interface WeightDay {
@@ -103,6 +105,7 @@ export function ObiettivoPeso({
   preloadedStartingWeight,
   preloadedPreviousWeight,
   isCurrentPeriod = true,
+  userGoal = "deficit",
 }: ObiettivoPesoProps) {
   const [rawData, setRawData] = useState<WeightDay[]>([]);
   const [goalWeight, setGoalWeight] = useState<number | null>(null);
@@ -202,6 +205,22 @@ export function ObiettivoPeso({
   const lost = Math.round((effectiveStart - currentWeight) * 100) / 100;
   const goalLabel = goalWeight ? `${goalWeight}kg` : "—";
 
+  // ── Week view ────────────────────────────────────────────────────────────────
+  if (period === "settimana") {
+    return (
+      <CardShell title={`Obiettivo di peso → ${goalLabel}`}>
+        <WeekProgressView
+          currentWeight={currentWeight}
+          startingWeight={effectiveStart}
+          goalWeight={goalWeight}
+          userGoal={userGoal}
+          isCurrentPeriod={isCurrentPeriod}
+        />
+      </CardShell>
+    );
+  }
+
+  // ── Month / multi-month view (unchanged) ─────────────────────────────────────
   // Carry the last known weight forward through endDate — line always reaches the last day.
   // "previousWeight" anchors the line start when the period starts without a measurement.
   let lastKnown: number | null = previousWeight?.weight ?? null;
@@ -232,8 +251,6 @@ export function ObiettivoPeso({
     4
   );
 
-  const showDots = period === "settimana";
-
   return (
     <CardShell title={`Obiettivo di peso → ${goalLabel}`}>
       {/* Metric */}
@@ -245,11 +262,11 @@ export function ObiettivoPeso({
       </div>
 
       {/* Chart */}
-      <div style={{ width: "100%", height: period === "settimana" ? 180 : 160 }}>
+      <div style={{ width: "100%", height: 160 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 10, right: 4, bottom: period === "settimana" ? 16 : 4, left: -12 }}
+            margin={{ top: 10, right: 4, bottom: 4, left: -12 }}
           >
             <CartesianGrid
               strokeDasharray="0"
@@ -262,7 +279,7 @@ export function ObiettivoPeso({
               axisLine={false}
               tickLine={false}
               tick={(props: any) => <XTick {...props} period={period} />}
-              interval={period === "settimana" ? 0 : "preserveStartEnd"}
+              interval="preserveStartEnd"
             />
             <YAxis
               domain={[minW, maxW]}
@@ -309,10 +326,7 @@ export function ObiettivoPeso({
               stroke="var(--primary-action)"
               strokeWidth={2}
               connectNulls
-              dot={showDots ? (props: any) => {
-                if (props.payload?.isAnchor || props.payload?.isCarryForward) return <g key={props.key} />;
-                return <circle key={props.key} cx={props.cx} cy={props.cy} r={4} fill="var(--primary-action)" stroke="var(--color-white)" strokeWidth={2} />;
-              } : false}
+              dot={false}
               activeDot={(props: any) => {
                 if (props.payload?.isAnchor || props.payload?.isCarryForward) return <g key={props.key} />;
                 return <circle key={props.key} cx={props.cx} cy={props.cy} r={5} fill="var(--primary-action)" />;
@@ -337,6 +351,184 @@ export function ObiettivoPeso({
         )}
       </div>
     </CardShell>
+  );
+}
+
+// ─── Week Progress View ───────────────────────────────────────────────────────
+
+function resolveWeekMessage(
+  currentWeight: number,
+  startingWeight: number,
+  goalWeight: number | null,
+  userGoal: "deficit" | "maintain" | "surplus"
+): string {
+  const CLOSE_THRESHOLD = 1.0;
+
+  if (goalWeight !== null && Math.abs(currentWeight - goalWeight) < 0.05) {
+    return "Obiettivo raggiunto! Il tuo impegno ha pagato 🎉";
+  }
+
+  if (userGoal === "deficit") {
+    if (currentWeight > startingWeight) return "Succede, continuiamo a lavorarci insieme";
+    if (Math.abs(currentWeight - startingWeight) < 0.05) return "Andiamo insieme verso l'obiettivo";
+    if (goalWeight !== null && currentWeight - goalWeight <= CLOSE_THRESHOLD) return "Manca poco, continua così";
+    return "Sei nel cammino giusto verso l'obiettivo";
+  }
+
+  // surplus
+  if (currentWeight < startingWeight) return "Succede, continuiamo a lavorarci insieme";
+  if (Math.abs(currentWeight - startingWeight) < 0.05) return "Andiamo insieme verso l'obiettivo";
+  if (goalWeight !== null && goalWeight - currentWeight <= CLOSE_THRESHOLD) return "Manca poco, continua così";
+  return "Sei nel cammino giusto verso l'obiettivo";
+}
+
+function WeekProgressView({
+  currentWeight,
+  startingWeight,
+  goalWeight,
+  userGoal,
+  isCurrentPeriod,
+}: {
+  currentWeight: number;
+  startingWeight: number;
+  goalWeight: number | null;
+  userGoal: "deficit" | "maintain" | "surplus";
+  isCurrentPeriod: boolean;
+}) {
+  const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
+  const diffLabel = diff >= 0 ? `${Math.abs(diff)} kg persi rispetto all'inizio` : `${Math.abs(diff)} kg in più rispetto all'inizio`;
+
+  // Progress bar: left = startingWeight, right = goalWeight (or fallback spread)
+  const barLeft  = goalWeight !== null ? Math.min(startingWeight, goalWeight) - 0.5 : startingWeight - 3;
+  const barRight = goalWeight !== null ? Math.max(startingWeight, goalWeight) + 0.5 : startingWeight + 3;
+  const barRange = barRight - barLeft || 1;
+
+  // Clamp bubble position to [2%, 98%]
+  const rawPct    = ((currentWeight - barLeft) / barRange) * 100;
+  const bubblePct = Math.min(98, Math.max(2, rawPct));
+
+  // Direction: are we moving toward goal?
+  const movingRight = goalWeight !== null ? goalWeight > startingWeight : userGoal === "surplus";
+  const correctDirection =
+    goalWeight === null
+      ? false
+      : movingRight
+        ? currentWeight >= startingWeight
+        : currentWeight <= startingWeight;
+
+  // Bar fill: from startingWeight toward currentWeight
+  const startPct = Math.min(98, Math.max(2, ((startingWeight - barLeft) / barRange) * 100));
+  const fillLeft  = Math.min(startPct, bubblePct);
+  const fillRight = Math.max(startPct, bubblePct);
+
+  const gradient = correctDirection
+    ? "linear-gradient(to right, var(--primary-action), var(--primary-surface))"
+    : "linear-gradient(to right, var(--danger-surface), var(--primary-action))";
+
+  const message = resolveWeekMessage(currentWeight, startingWeight, goalWeight, userGoal);
+
+  return (
+    <>
+      {/* Metric */}
+      <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
+        <span className="card-number-md" style={{ display: "inline" }}>
+          {Math.abs(diff)}
+        </span>{" "}
+        {diff >= 0 ? "kg persi rispetto all'inizio" : "kg in più rispetto all'inizio"}
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ position: "relative", paddingTop: "1.75rem", paddingBottom: "1.5rem" }}>
+        {/* Track */}
+        <div
+          style={{
+            height: 20,
+            borderRadius: 999,
+            backgroundColor: "var(--neutral-tonal-hover)",
+            position: "relative",
+            overflow: "visible",
+          }}
+        >
+          {/* Fill */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: `${fillLeft}%`,
+              width: `${fillRight - fillLeft}%`,
+              background: gradient,
+              borderRadius: 999,
+            }}
+          />
+
+          {/* Bubble */}
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: `${bubblePct}%`,
+              transform: "translate(-50%, -50%)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
+              pointerEvents: "none",
+            }}
+          >
+            {/* Label above */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "calc(100% + 4px)",
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "var(--subtitle-1)",
+                borderRadius: 999,
+                padding: "2px 8px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span className="label-sm" style={{ color: "var(--invert)" }}>
+                {fmt1(currentWeight)}kg
+              </span>
+            </div>
+            {/* Dot */}
+            <div
+              style={{
+                width: 14,
+                height: 14,
+                borderRadius: "50%",
+                backgroundColor: "var(--subtitle-1)",
+                border: "2px solid var(--color-white)",
+                flexShrink: 0,
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Labels below bar */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "var(--spacing-1)",
+          }}
+        >
+          <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
+            {fmt1(startingWeight)}kg
+          </span>
+          {goalWeight !== null && (
+            <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
+              {fmt1(goalWeight)}kg
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Message footer — only for current week */}
+      {isCurrentPeriod && <MessageFooter message={message} />}
+    </>
   );
 }
 
