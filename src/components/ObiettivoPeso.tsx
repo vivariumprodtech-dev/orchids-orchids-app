@@ -396,7 +396,6 @@ function WeekProgressView({
   isCurrentPeriod: boolean;
 }) {
   const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
-  const diffLabel = diff >= 0 ? `${Math.abs(diff)} kg persi rispetto all'inizio` : `${Math.abs(diff)} kg in più rispetto all'inizio`;
 
   // Progress bar: left = startingWeight, right = goalWeight (or fallback spread)
   const barLeft  = goalWeight !== null ? Math.min(startingWeight, goalWeight) - 0.5 : startingWeight - 3;
