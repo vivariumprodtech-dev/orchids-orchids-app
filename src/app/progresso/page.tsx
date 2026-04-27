@@ -693,20 +693,7 @@ function ProgressoContent() {
             />
           )}
 
-          {/* 2) Deficit Calorico */}
-          {userId && (
-            <DeficitCalorico
-              userId={userId}
-              startDate={startStr}
-              endDate={endStr}
-              period={period}
-              preloadedData={processed?.calorieData}
-              userGoal={processed?.userGoal ?? "deficit"}
-              bmr={processed?.bmr ?? 0}
-            />
-          )}
-
-          {/* 3) Obiettivo di Peso — only if user has weight AND a weight goal */}
+          {/* 2) Obiettivo di Peso — only if user has weight AND a weight goal */}
           {userId && hasAnyWeight && hasWeightGoal && (
             <ObiettivoPeso
               userId={userId}
@@ -722,32 +709,7 @@ function ProgressoContent() {
             />
           )}
 
-          {/* 4) Girovita — only if at least one girovita measured (component self-hides) */}
-          {userId && (
-            <Girovita
-              userId={userId}
-              startDate={startStr}
-              endDate={endStr}
-              period={period}
-              preloadedData={processed?.girovitaData}
-              preloadedFirstEver={processed?.girovitaFirstEver}
-              preloadedPreviousEntry={processed?.girovitaPrevious}
-            />
-          )}
-
-          {/* 5) Giorni in target (Bilancio Calorico) */}
-          {userId && (
-            <BilancioCalorico
-              userId={userId}
-              startDate={startStr}
-              endDate={endStr}
-              period={period}
-              preloadedData={processed?.calorieData}
-              preloadedTargets={processed?.bilancioTargets}
-            />
-          )}
-
-          {/* Obiettivo di Peso — fallback position if user has weight but no goal */}
+          {/* Obiettivo di Peso — fallback if user has weight but no goal */}
           {userId && hasAnyWeight && !hasWeightGoal && (
             <ObiettivoPeso
               userId={userId}
@@ -760,6 +722,44 @@ function ProgressoContent() {
               preloadedPreviousWeight={processed?.previousWeight}
               isCurrentPeriod={endStr === toYMD(yesterday)}
               userGoal={processed?.userGoal ?? "deficit"}
+            />
+          )}
+
+          {/* 3) Girovita — only if at least one girovita measured (component self-hides) */}
+          {userId && (
+            <Girovita
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.girovitaData}
+              preloadedFirstEver={processed?.girovitaFirstEver}
+              preloadedPreviousEntry={processed?.girovitaPrevious}
+            />
+          )}
+
+          {/* 4) Deficit Calorico */}
+          {userId && (
+            <DeficitCalorico
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.calorieData}
+              userGoal={processed?.userGoal ?? "deficit"}
+              bmr={processed?.bmr ?? 0}
+            />
+          )}
+
+          {/* 5) Giorni in target (Bilancio Calorico) */}
+          {userId && (
+            <BilancioCalorico
+              userId={userId}
+              startDate={startStr}
+              endDate={endStr}
+              period={period}
+              preloadedData={processed?.calorieData}
+              preloadedTargets={processed?.bilancioTargets}
             />
           )}
 
