@@ -443,9 +443,9 @@ function WeekProgressView({
   // Start label sits at left=0 (normal) or at startMarkerPct (wrong-direction).
   // Hide it when the balloon (however anchored) would visually collide.
   const balloonAtStart = !wrongDirection
-    ? balloonLeftAnchored || bubblePct < 25   // covers left-pin zone + nearby centered zone
-    : Math.abs(bubblePct - startMarkerPct) < 20;
-  const balloonAtGoal = balloonRightAnchored || bubblePct > 75;
+    ? bubblePct < 25
+    : startMarkerPct < 30;  // in wrong-direction bubble is always at 0, hide start if it's close
+  const balloonAtGoal = bubblePct > 75;
 
   const message = resolveWeekMessage(currentWeight, startingWeight, goalWeight, userGoal);
 
