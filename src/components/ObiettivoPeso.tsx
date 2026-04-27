@@ -435,9 +435,9 @@ function WeekProgressView({
     : "linear-gradient(to right, var(--primary-action), var(--primary-surface))";
 
   // Balloon anchor zones: left-pinned ≤15%, right-pinned ≥85%, centered otherwise.
-  // A centered balloon at bubblePct% occupies roughly [bubblePct-15, bubblePct+15].
+  // A centered balloon at bubblePct% occupies roughly [bubblePct-12, bubblePct+12].
   // Hide a static label when the balloon's rendered region overlaps with it.
-  const balloonLeftAnchored  = bubblePct <= 15;
+  const balloonLeftAnchored  = bubblePct <= 12;
   const balloonRightAnchored = bubblePct >= 85;
 
   // Start label sits at left=0 (normal) or at startMarkerPct (wrong-direction).
@@ -489,10 +489,11 @@ function WeekProgressView({
               top: "50%",
               left: bubblePct <= 0 ? 0 : `${bubblePct}%`,
               transform: bubblePct <= 0 ? "translateY(-50%)" : "translate(-50%, -50%)",
-              width: 16, height: 16,
+              width: 20, height: 20,
               borderRadius: "50%",
               backgroundColor: "var(--subtitle-1)",
-              border: "2px solid var(--color-white)",
+              border: "4px solid var(--primary-surface)",
+              margin: "0px",
               zIndex: 2,
             }}
           />
@@ -508,7 +509,7 @@ function WeekProgressView({
                 width: 10, height: 10,
                 borderRadius: "50%",
                 backgroundColor: "var(--primary-action)",
-                border: "2px solid var(--color-white)",
+                border: "2px solid var(--neutral-tonal-hover)",
                 zIndex: 2,
               }}
             />
