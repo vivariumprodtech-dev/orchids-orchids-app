@@ -397,28 +397,27 @@ function WeekProgressView({
 }) {
   const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
 
-  // Progress bar: left = startingWeight, right = goalWeight (or fallback spread)
-  const barLeft  = goalWeight !== null ? Math.min(startingWeight, goalWeight) - 0.5 : startingWeight - 3;
-  const barRight = goalWeight !== null ? Math.max(startingWeight, goalWeight) + 0.5 : startingWeight + 3;
-  const barRange = barRight - barLeft || 1;
+  // Bar spans from startingWeight (left=0%) to goalWeight (right=100%).
+  // Fallback spread when no goal set.
+  const barStart = startingWeight;
+  const barEnd   = goalWeight !== null ? goalWeight : startingWeight + (userGoal === "surplus" ? 5 : -5);
+  const barRange = barEnd - barStart || 1;
 
-  // Clamp bubble position to [2%, 98%]
-  const rawPct    = ((currentWeight - barLeft) / barRange) * 100;
-  const bubblePct = Math.min(98, Math.max(2, rawPct));
+  // Bubble: currentWeight mapped into the bar range, clamped so label stays visible
+  const rawPct    = ((currentWeight - barStart) / barRange) * 100;
+  const bubblePct = Math.min(96, Math.max(4, rawPct));
 
-  // Direction: are we moving toward goal?
-  const movingRight = goalWeight !== null ? goalWeight > startingWeight : userGoal === "surplus";
+  // Correct direction: moving toward goal from starting point
   const correctDirection =
-    goalWeight === null
-      ? false
-      : movingRight
-        ? currentWeight >= startingWeight
-        : currentWeight <= startingWeight;
+    userGoal === "surplus"
+      ? currentWeight >= startingWeight
+      : currentWeight <= startingWeight;
 
-  // Bar fill: from startingWeight toward currentWeight
-  const startPct = Math.min(98, Math.max(2, ((startingWeight - barLeft) / barRange) * 100));
-  const fillLeft  = Math.min(startPct, bubblePct);
-  const fillRight = Math.max(startPct, bubblePct);
+  // Fill always starts from left edge (0%) to bubble position.
+  // Wrong direction: bubble is left of start for surplus, right of start for deficit —
+  // in both cases rawPct < 0 or > some value, so we show fill from 0 → bubblePct
+  // with the danger gradient.
+  const fillWidth = Math.max(0, bubblePct);
 
   const gradient = correctDirection
     ? "linear-gradient(to right, var(--primary-action), var(--primary-surface))"
@@ -437,7 +436,7 @@ function WeekProgressView({
       </div>
 
       {/* Progress bar */}
-      <div style={{ position: "relative", paddingTop: "1.75rem", paddingBottom: "1.5rem" }}>
+      <div style={{ position: "relative", paddingTop: "2rem", paddingBottom: "1.5rem" }}>
         {/* Track */}
         <div
           style={{
@@ -448,38 +447,36 @@ function WeekProgressView({
             overflow: "visible",
           }}
         >
-          {/* Fill */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              left: `${fillLeft}%`,
-              width: `${fillRight - fillLeft}%`,
-              background: gradient,
-              borderRadius: 999,
-            }}
-          />
+          {/* Fill — always from left edge to bubble */}
+          {fillWidth > 0 && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: `${fillWidth}%`,
+                background: gradient,
+                borderRadius: 999,
+              }}
+            />
+          )}
 
-          {/* Bubble */}
+          {/* Bubble (dot + label above) */}
           <div
             style={{
               position: "absolute",
               top: "50%",
               left: `${bubblePct}%`,
               transform: "translate(-50%, -50%)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 2,
               pointerEvents: "none",
             }}
           >
-            {/* Label above */}
+            {/* Pill label above the dot */}
             <div
               style={{
                 position: "absolute",
-                bottom: "calc(100% + 4px)",
+                bottom: "calc(100% + 6px)",
                 left: "50%",
                 transform: "translateX(-50%)",
                 backgroundColor: "var(--subtitle-1)",
@@ -492,15 +489,16 @@ function WeekProgressView({
                 {fmt1(currentWeight)}kg
               </span>
             </div>
-            {/* Dot */}
+            {/* Dot on bar */}
             <div
               style={{
-                width: 14,
-                height: 14,
+                width: 16,
+                height: 16,
                 borderRadius: "50%",
                 backgroundColor: "var(--subtitle-1)",
                 border: "2px solid var(--color-white)",
-                flexShrink: 0,
+                position: "relative",
+                top: 0,
               }}
             />
           </div>
