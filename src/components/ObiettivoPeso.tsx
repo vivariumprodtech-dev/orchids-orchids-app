@@ -395,6 +395,7 @@ function WeekProgressView({
   userGoal: "deficit" | "maintain" | "surplus";
   isCurrentPeriod: boolean;
 }) {
+  const [showStartTooltip, setShowStartTooltip] = React.useState(false);
   const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
 
   const wrongDirection =
@@ -506,13 +507,44 @@ function WeekProgressView({
                 top: "50%",
                 left: `${startMarkerPct}%`,
                 transform: "translate(-50%, -50%)",
-                width: 10, height: 10,
-                borderRadius: "50%",
-                backgroundColor: "var(--primary-action)",
-                border: "2px solid var(--neutral-tonal-hover)",
-                zIndex: 2,
+                zIndex: 3,
+                cursor: "pointer",
               }}
-            />
+              onMouseEnter={() => setShowStartTooltip(true)}
+              onMouseLeave={() => setShowStartTooltip(false)}
+              onClick={() => setShowStartTooltip((v) => !v)}
+            >
+              {/* Tooltip */}
+              {showStartTooltip && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "calc(100% + 6px)",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    backgroundColor: "var(--subtitle-1)",
+                    borderRadius: 999,
+                    padding: "2px 8px",
+                    whiteSpace: "nowrap",
+                    pointerEvents: "none",
+                    zIndex: 10,
+                  }}
+                >
+                  <span className="label-sm" style={{ color: "var(--invert)" }}>
+                    {fmt1(startingWeight)}kg
+                  </span>
+                </div>
+              )}
+              {/* Dot */}
+              <div
+                style={{
+                  width: 10, height: 10,
+                  borderRadius: "50%",
+                  backgroundColor: "var(--primary-action)",
+                  border: "2px solid var(--neutral-tonal-hover)",
+                }}
+              />
+            </div>
           )}
         </div>
 
