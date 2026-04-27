@@ -799,6 +799,28 @@ function ProgressoContent() {
           )}
         </>
       )}
+
+      {/* Footer */}
+      <div
+        style={{
+          display:        "flex",
+          flexDirection:  "column",
+          alignItems:     "center",
+          gap:            "var(--spacing-1-5)",
+          paddingTop:     "var(--spacing-4)",
+          paddingBottom:  "var(--spacing-2)",
+        }}
+      >
+        <img
+          src="/giada-logo.png"
+          alt="Giada.care"
+          style={{ height: "1.5rem", width: "auto" }}
+        />
+        <span className="help-text" style={{ color: "var(--placeholder)" }}>
+          Versione 0.1.0
+        </span>
+      </div>
+
       </div>
     </div>
   );
