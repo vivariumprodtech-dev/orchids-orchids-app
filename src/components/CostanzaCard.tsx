@@ -5,6 +5,7 @@ import { MessageCircle, Utensils, Check } from "lucide-react";
 import { Badge } from "./Badge";
 import { BadgeDot } from "./BadgeDot";
 import { Button } from "./Button";
+import MessageFooter from "./MessageFooter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -97,6 +98,7 @@ interface WeekState {
   title: string;
   emoji: string;
   metric: string;
+  message: string;
   buttonAlways: boolean;
   noButton?: boolean;
 }
@@ -118,9 +120,10 @@ function resolveWeekState(
   // Rule 1 — Long streak (8+ days)
   if (consecutiveDays >= 8) {
     return {
-      title: "Sei inarrestabile",
+      title: "Costanza",
       emoji: "💎",
       metric: `${streakFromEnd} giorni di log in sequenza`,
+      message: "Sei inarrestabile",
       buttonAlways: false,
       noButton: true,
     };
@@ -129,9 +132,10 @@ function resolveWeekState(
   // Rule 2 — Perfect streak (exactly 7 days)
   if (consecutiveDays === 7) {
     return {
-      title: "Costanza perfetta",
+      title: "Costanza",
       emoji: "⚡️",
       metric: `${streakFromEnd} giorni di log in sequenza`,
+      message: "Costanza perfetta",
       buttonAlways: false,
     };
   }
@@ -139,9 +143,10 @@ function resolveWeekState(
   // Rule 3 — Onboarding (3-6 consecutive days, new user)
   if (consecutiveDays >= 3 && isNewUser) {
     return {
-      title: "Ottimo inizio, continua così",
+      title: "Costanza",
       emoji: "🌱",
       metric: `${streakFromEnd} giorni di log in sequenza`,
+      message: "Ottimo inizio, continua così",
       buttonAlways: false,
     };
   }
@@ -149,9 +154,10 @@ function resolveWeekState(
   // Rule 4 — No logs this week
   if (logsThisWeek === 0) {
     return {
-      title: "Inizia a loggare",
+      title: "Costanza",
       emoji: "👋",
       metric: "0 log questa settimana",
+      message: "Inizia a loggare",
       buttonAlways: true,
     };
   }
@@ -159,9 +165,10 @@ function resolveWeekState(
   // Rule 5 — Ricomincia: 3 or fewer logs and endDay not logged, OR last 3 days all missing
   if ((logsThisWeek <= 3 && !endDayIsLogged) || lastThreeMissing) {
     return {
-      title: "Ricomincia, ci siamo",
+      title: "Costanza",
       emoji: "🤝",
       metric: `${logsThisWeek} giorni di log nella settimana`,
+      message: "Ricomincia, ci siamo",
       buttonAlways: true,
     };
   }
@@ -169,9 +176,10 @@ function resolveWeekState(
   // Rule 6 — Good consistency (4+ logs, endDay logged)
   if (logsThisWeek >= 4 && endDayIsLogged) {
     return {
-      title: "Buona costanza, continua",
+      title: "Costanza",
       emoji: "🤝",
       metric: `${logsThisWeek} giorni di log nella settimana`,
+      message: "Buona costanza, continua",
       buttonAlways: false,
     };
   }
@@ -179,18 +187,20 @@ function resolveWeekState(
   // Rule 7 — Return (3 logs, endDay logged)
   if (logsThisWeek >= 3 && endDayIsLogged) {
     return {
-      title: "Buona ripresa, continua",
+      title: "Costanza",
       emoji: "🌱",
       metric: `${logsThisWeek} giorni di log nella settimana`,
+      message: "Buona ripresa, continua",
       buttonAlways: false,
     };
   }
 
   // Fallback
   return {
-    title: "Continua così",
+    title: "Costanza",
     emoji: "🌱",
     metric: `${logsThisWeek} giorni di log nella settimana`,
+    message: "Continua così",
     buttonAlways: false,
   };
 }
@@ -251,7 +261,7 @@ function WeekView({
         ) : (
           <>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span className="card-main-title">{state!.title}</span>
+              <span className="card-main-title">Costanza</span>
               <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{state!.emoji}</span>
             </div>
             <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
@@ -312,6 +322,11 @@ function WeekView({
           );
         })}
       </div>
+
+      {/* Motivational footer */}
+      {isCurrentPeriod && state?.message && (
+        <MessageFooter message={state.message} />
+      )}
 
       {/* CTA */}
       {showButton && (
