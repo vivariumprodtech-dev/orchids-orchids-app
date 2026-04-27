@@ -215,7 +215,21 @@ export function Girovita({
   const minW = mid - 1.5;
   const maxW = mid + 1.5;
 
-  const showDots = period === "settimana";
+  // Week view: header + metric only, no chart
+  if (period === "settimana") {
+    return (
+      <CardShell title="Girovita">
+        <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
+          <span className="card-number-md" style={{ display: "inline" }}>
+            {fmt1(absDiff)}
+          </span>{" "}
+          {metricText}
+        </div>
+      </CardShell>
+    );
+  }
+
+  const showDots = false;
 
   return (
     <CardShell title="Girovita">
