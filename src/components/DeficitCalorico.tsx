@@ -503,7 +503,7 @@ export function DeficitCalorico({
               backgroundColor: "var(--neutral-bg)",
             }}
           >
-            <span className="body-sm" style={{ color: "var(--subtitle-2)", fontStyle: "italic", fontWeight: 600 }}>
+            <span className="body-md" style={{ color: "var(--subtitle-2)", fontStyle: "italic", fontWeight: 600 }}>
               {cardMessage}
             </span>
           </div>
