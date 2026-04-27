@@ -584,46 +584,70 @@ function ProgressoContent() {
       className="min-h-screen flex flex-col"
       style={{
         backgroundColor: "var(--neutral-bg)",
-        padding:         "var(--spacing-4)",
-        gap:             "var(--spacing-3)",
       }}
     >
-      {/* Back */}
-      <div style={{ marginLeft: "calc(-1 * var(--spacing-1))" }}>
-        <Button
-          variant="neutral-link"
-          size="sm"
-          iconStart={ChevronLeft}
-          onClick={() => router.back()}
-        >
-          Indietro
-        </Button>
-      </div>
-
-      {/* Tabs + period row */}
+      {/* Sticky header */}
       <div
         style={{
-          display:       "flex",
-          flexDirection: "column",
-          gap:           "var(--spacing-3)",
-          paddingBottom: "var(--spacing-3)",
-          borderBottom:  "var(--border-1) solid var(--border)",
-          marginLeft:    "calc(-1 * var(--spacing-4))",
-          marginRight:   "calc(-1 * var(--spacing-4))",
-          paddingLeft:   "var(--spacing-4)",
-          paddingRight:  "var(--spacing-4)",
+          position:        "sticky",
+          top:             0,
+          zIndex:          50,
+          backgroundColor: "var(--neutral-bg)",
+          paddingLeft:     "var(--spacing-4)",
+          paddingRight:    "var(--spacing-4)",
+          paddingTop:      "var(--spacing-4)",
+          display:         "flex",
+          flexDirection:   "column",
+          gap:             "var(--spacing-3)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-          <PeriodSelect value={period} onChange={handlePeriodChange} />
-          <PeriodNavigator
-            endDate={endDate}
-            period={period}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
+        {/* Back */}
+        <div style={{ marginLeft: "calc(-1 * var(--spacing-1))" }}>
+          <Button
+            variant="neutral-link"
+            size="sm"
+            iconStart={ChevronLeft}
+            onClick={() => router.back()}
+          >
+            Indietro
+          </Button>
+        </div>
+
+        {/* Period row */}
+        <div
+          style={{
+            display:       "flex",
+            flexDirection: "column",
+            gap:           "var(--spacing-3)",
+            paddingBottom: "var(--spacing-3)",
+            borderBottom:  "var(--border-1) solid var(--border)",
+            marginLeft:    "calc(-1 * var(--spacing-4))",
+            marginRight:   "calc(-1 * var(--spacing-4))",
+            paddingLeft:   "var(--spacing-4)",
+            paddingRight:  "var(--spacing-4)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+            <PeriodSelect value={period} onChange={handlePeriodChange} />
+            <PeriodNavigator
+              endDate={endDate}
+              period={period}
+              onPrev={handlePrev}
+              onNext={handleNext}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Scrollable content */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap:     "var(--spacing-3)",
+          padding: "var(--spacing-4)",
+        }}
+      >
 
       {/* Page title */}
       <h1 className="page-title" style={{ paddingLeft: "var(--spacing-1)" }}>
@@ -775,6 +799,7 @@ function ProgressoContent() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }
