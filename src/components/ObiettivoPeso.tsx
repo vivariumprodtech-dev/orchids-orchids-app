@@ -258,7 +258,7 @@ export function ObiettivoPeso({
         <span className="card-number-md" style={{ display: "inline" }}>
           {Math.abs(lost)}
         </span>{" "}
-        {lost >= 0 ? "kg persi" : "kg in più"} → da {effectiveStart}kg a {currentWeight}kg{isCurrentPeriod ? " attuale" : ""}
+        {lost >= 0 ? "kg persi" : "kg in più"} → da {effectiveStart}kg a {currentWeight}kg
       </div>
 
       {/* Chart */}

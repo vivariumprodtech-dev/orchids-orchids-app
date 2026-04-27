@@ -198,12 +198,12 @@ export function Girovita({
 
   let metricText: string;
   if (diff > 0) {
-    metricText = `cm in più → da ${fmt1(initialCm)}cm a ${fmt1(currentCm)}cm attuale`;
+    metricText = `cm in più → da ${fmt1(initialCm)}cm a ${fmt1(currentCm)}cm`;
   } else if (diff < 0) {
     const word = absDiff === 1 ? "cm perso" : "cm persi";
-    metricText = `${word} → da ${fmt1(initialCm)}cm a ${fmt1(currentCm)}cm attuale`;
+    metricText = `${word} → da ${fmt1(initialCm)}cm a ${fmt1(currentCm)}cm`;
   } else {
-    metricText = `cm persi → ${fmt1(currentCm)}cm attuale`;
+    metricText = `cm persi → ${fmt1(currentCm)}cm`;
   }
 
   // Always 3 lines, 1 cm apart, centred on the midpoint of the data range
