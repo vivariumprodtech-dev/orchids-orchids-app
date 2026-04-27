@@ -397,42 +397,47 @@ function WeekProgressView({
 }) {
   const diff = Math.round((startingWeight - currentWeight) * 100) / 100;
 
-  // Correct direction: moving toward goal
   const wrongDirection =
     userGoal === "surplus"
       ? currentWeight < startingWeight
       : currentWeight > startingWeight;
 
-  // ── Bar coordinate space ─────────────────────────────────────────────────────
-  // Normal: left = startingWeight, right = goalWeight
-  // Wrong direction: left = currentWeight (balloon at far left), right = goalWeight
-  //   startingWeight appears somewhere in the middle of the bar
   const effectiveGoal = goalWeight !== null
     ? goalWeight
     : startingWeight + (userGoal === "surplus" ? 5 : -5);
 
+  // ── Bar coordinate space ─────────────────────────────────────────────────────
+  // Normal:          left = startingWeight (0%),   right = goalWeight (100%)
+  // Wrong direction: left = currentWeight  (0%),   right = goalWeight (100%)
+  //                  startingWeight sits at its natural % inside the expanded range
   const barLeft  = wrongDirection ? currentWeight : startingWeight;
   const barRight = effectiveGoal;
-  // Ensure barRight != barLeft and direction is consistent with goal
-  const barRange = barRight - barLeft || 1;
+  const barRange = (barRight - barLeft) || 1;
 
-  // % positions within the bar
-  const bubblePct  = wrongDirection ? 0 : Math.min(100, Math.max(0, ((currentWeight - barLeft) / barRange) * 100));
-  const startPct   = wrongDirection ? Math.min(100, Math.max(0, ((startingWeight - barLeft) / barRange) * 100)) : 0;
+  // bubble always at 0% in wrong-direction (it IS the left edge)
+  // in normal mode: map currentWeight into [barLeft, barRight]
+  const bubblePct = wrongDirection
+    ? 0
+    : Math.min(100, Math.max(0, ((currentWeight - barLeft) / barRange) * 100));
 
-  // Fill: from left edge to bubble position
-  // Normal: 0% → bubblePct  (green gradient)
-  // Wrong:  0% → startPct   (danger gradient from current to starting)
-  const fillEndPct = wrongDirection ? startPct : bubblePct;
+  // startingWeight marker position (only needed in wrong-direction mode)
+  const startMarkerPct = wrongDirection
+    ? Math.min(100, Math.max(0, ((startingWeight - barLeft) / barRange) * 100))
+    : 0;
+
+  // Fill always starts from left edge (0%)
+  // Normal: fill to bubblePct (teal gradient)
+  // Wrong:  fill to startMarkerPct (danger→teal gradient, showing distance gone wrong)
+  const fillEndPct = wrongDirection ? startMarkerPct : bubblePct;
 
   const gradient = wrongDirection
     ? "linear-gradient(to right, var(--danger-surface), var(--primary-action))"
     : "linear-gradient(to right, var(--primary-action), var(--primary-surface))";
 
-  // Hide the static start/goal labels when balloon is within ~8% of them
-  const HIDE_THRESHOLD = 8;
-  const hideStartLabel = !wrongDirection && Math.abs(bubblePct - 0) < HIDE_THRESHOLD;
-  const hideGoalLabel  = Math.abs(bubblePct - 100) < HIDE_THRESHOLD;
+  // Balloon replaces the start label only if current == starting (bubblePct == 0, normal)
+  // Balloon replaces the goal label only if current == goal (bubblePct == 100)
+  const balloonAtStart = !wrongDirection && bubblePct < 4;
+  const balloonAtGoal  = bubblePct > 96;
 
   const message = resolveWeekMessage(currentWeight, startingWeight, goalWeight, userGoal);
 
@@ -446,9 +451,8 @@ function WeekProgressView({
         {diff >= 0 ? "kg persi rispetto all'inizio" : "kg in più rispetto all'inizio"}
       </div>
 
-      {/* Progress bar + labels row */}
+      {/* Progress bar */}
       <div style={{ marginTop: "var(--spacing-2)" }}>
-        {/* Track */}
         <div
           style={{
             height: 20,
@@ -458,14 +462,12 @@ function WeekProgressView({
             overflow: "visible",
           }}
         >
-          {/* Fill */}
+          {/* Gradient fill */}
           {fillEndPct > 0 && (
             <div
               style={{
                 position: "absolute",
-                top: 0,
-                bottom: 0,
-                left: 0,
+                top: 0, bottom: 0, left: 0,
                 width: `${fillEndPct}%`,
                 background: gradient,
                 borderRadius: 999,
@@ -473,52 +475,43 @@ function WeekProgressView({
             />
           )}
 
-          {/* Dot on bar at bubble position */}
+          {/* Current weight dot on bar */}
           <div
             style={{
               position: "absolute",
               top: "50%",
               left: `${bubblePct}%`,
               transform: "translate(-50%, -50%)",
-              width: 16,
-              height: 16,
+              width: 16, height: 16,
               borderRadius: "50%",
               backgroundColor: "var(--subtitle-1)",
               border: "2px solid var(--color-white)",
-              pointerEvents: "none",
-              zIndex: 1,
+              zIndex: 2,
             }}
           />
 
-          {/* Wrong-direction: dot for starting weight on the bar */}
+          {/* Wrong-direction: small dot marking the starting weight position */}
           {wrongDirection && (
             <div
               style={{
                 position: "absolute",
                 top: "50%",
-                left: `${startPct}%`,
+                left: `${startMarkerPct}%`,
                 transform: "translate(-50%, -50%)",
-                width: 10,
-                height: 10,
+                width: 10, height: 10,
                 borderRadius: "50%",
                 backgroundColor: "var(--primary-action)",
                 border: "2px solid var(--color-white)",
-                pointerEvents: "none",
-                zIndex: 1,
+                zIndex: 2,
               }}
             />
           )}
         </div>
 
-        {/* Labels row below bar */}
-        <div
-          style={{
-            position: "relative",
-            height: "2rem",
-            marginTop: "var(--spacing-1)",
-          }}
-        >
-          {/* Balloon — positioned at bubblePct */}
+        {/* Labels row — all absolutely positioned below the bar */}
+        <div style={{ position: "relative", height: "1.6rem", marginTop: 4 }}>
+
+          {/* Balloon (current weight) */}
           <div
             style={{
               position: "absolute",
@@ -529,7 +522,7 @@ function WeekProgressView({
               borderRadius: 999,
               padding: "2px 8px",
               whiteSpace: "nowrap",
-              zIndex: 2,
+              zIndex: 3,
             }}
           >
             <span className="label-sm" style={{ color: "var(--invert)" }}>
@@ -537,13 +530,15 @@ function WeekProgressView({
             </span>
           </div>
 
-          {/* Start label — left edge in normal mode, at startPct in wrong-direction mode */}
-          {!hideStartLabel && (
+          {/* Starting weight label */}
+          {/* Normal: always at left=0, hidden only if balloon is sitting on it */}
+          {/* Wrong direction: floats at startMarkerPct */}
+          {!balloonAtStart && (
             wrongDirection ? (
               <div
                 style={{
                   position: "absolute",
-                  left: `${startPct}%`,
+                  left: `${startMarkerPct}%`,
                   top: 0,
                   transform: "translateX(-50%)",
                 }}
@@ -561,8 +556,8 @@ function WeekProgressView({
             )
           )}
 
-          {/* Goal label — right edge */}
-          {goalWeight !== null && !hideGoalLabel && (
+          {/* Goal weight label — right edge, hidden when balloon is on it */}
+          {goalWeight !== null && !balloonAtGoal && (
             <div style={{ position: "absolute", right: 0, top: 0 }}>
               <span className="help-text" style={{ color: "var(--subtitle-2)" }}>
                 {fmt1(goalWeight)}kg
