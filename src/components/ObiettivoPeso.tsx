@@ -462,26 +462,25 @@ function WeekProgressView({
             overflow: "visible",
           }}
         >
-          {/* Gradient fill */}
-          {fillEndPct > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: 0, bottom: 0, left: 0,
-                width: `${fillEndPct}%`,
-                background: gradient,
-                borderRadius: 999,
-              }}
-            />
-          )}
+          {/* Gradient fill — minimum 20px so a nub is always visible */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0, bottom: 0, left: 0,
+              width: fillEndPct > 0 ? `${fillEndPct}%` : 20,
+              minWidth: 20,
+              background: gradient,
+              borderRadius: 999,
+            }}
+          />
 
           {/* Current weight dot on bar */}
           <div
             style={{
               position: "absolute",
               top: "50%",
-              left: `${bubblePct}%`,
-              transform: "translate(-50%, -50%)",
+              left: bubblePct <= 0 ? 0 : `${bubblePct}%`,
+              transform: bubblePct <= 0 ? "translateY(-50%)" : "translate(-50%, -50%)",
               width: 16, height: 16,
               borderRadius: "50%",
               backgroundColor: "var(--subtitle-1)",
@@ -511,24 +510,60 @@ function WeekProgressView({
         {/* Labels row — all absolutely positioned below the bar */}
         <div style={{ position: "relative", height: "1.6rem", marginTop: 4 }}>
 
-          {/* Balloon (current weight) */}
-          <div
-            style={{
-              position: "absolute",
-              left: `${bubblePct}%`,
-              top: 0,
-              transform: "translateX(-50%)",
-              backgroundColor: "var(--subtitle-1)",
-              borderRadius: 999,
-              padding: "2px 8px",
-              whiteSpace: "nowrap",
-              zIndex: 3,
-            }}
-          >
-            <span className="label-sm" style={{ color: "var(--invert)" }}>
-              {fmt1(currentWeight)}kg
-            </span>
-          </div>
+          {/* Balloon (current weight) — anchored left/right near edges, centered in middle */}
+          {bubblePct <= 15 ? (
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                backgroundColor: "var(--subtitle-1)",
+                borderRadius: 999,
+                padding: "2px 8px",
+                whiteSpace: "nowrap",
+                zIndex: 3,
+              }}
+            >
+              <span className="label-sm" style={{ color: "var(--invert)" }}>
+                {fmt1(currentWeight)}kg
+              </span>
+            </div>
+          ) : bubblePct >= 85 ? (
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                backgroundColor: "var(--subtitle-1)",
+                borderRadius: 999,
+                padding: "2px 8px",
+                whiteSpace: "nowrap",
+                zIndex: 3,
+              }}
+            >
+              <span className="label-sm" style={{ color: "var(--invert)" }}>
+                {fmt1(currentWeight)}kg
+              </span>
+            </div>
+          ) : (
+            <div
+              style={{
+                position: "absolute",
+                left: `${bubblePct}%`,
+                top: 0,
+                transform: "translateX(-50%)",
+                backgroundColor: "var(--subtitle-1)",
+                borderRadius: 999,
+                padding: "2px 8px",
+                whiteSpace: "nowrap",
+                zIndex: 3,
+              }}
+            >
+              <span className="label-sm" style={{ color: "var(--invert)" }}>
+                {fmt1(currentWeight)}kg
+              </span>
+            </div>
+          )}
 
           {/* Starting weight label */}
           {/* Normal: always at left=0, hidden only if balloon is sitting on it */}
