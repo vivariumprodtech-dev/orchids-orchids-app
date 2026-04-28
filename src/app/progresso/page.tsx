@@ -595,7 +595,7 @@ function ProgressoContent() {
           backgroundColor: "var(--neutral-bg)",
           paddingLeft:     "var(--spacing-4)",
           paddingRight:    "var(--spacing-4)",
-          paddingTop:      "var(--spacing-4)",
+          paddingTop:      "var(--spacing-2)",
           display:         "flex",
           flexDirection:   "column",
           gap:             "var(--spacing-3)",
