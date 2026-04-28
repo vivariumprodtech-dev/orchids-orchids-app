@@ -827,11 +827,11 @@ function ProgressoContent() {
           paddingBottom:  "var(--spacing-2)",
         }}
       >
-        <span style={{ fontSize: "1.25rem", fontWeight: 700, lineHeight: 1, letterSpacing: "-0.01em" }}>
-          <span style={{ color: "#3ABCC6" }}>Giada</span>
-          <span style={{ color: "#3ABCC6" }}>.</span>
-          <span style={{ color: "#8390FF" }}>care</span>
-        </span>
+        <img
+          src="/giada-logo.svg"
+          alt="Giada.care"
+          style={{ height: "1.5rem", width: "auto" }}
+        />
         <span className="help-text" style={{ color: "var(--placeholder)" }}>
           Versione 0.1.0
         </span>
