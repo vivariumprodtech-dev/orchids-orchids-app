@@ -60,7 +60,8 @@ function processApiData(
   startDate: string,
   endDate: string
 ): ProcessedApiData {
-  const { profile, foodEntries, dailyGoals, healthData, activeCalories } = data;
+  const { profile: rawProfile, foodEntries, dailyGoals, healthData, activeCalories } = data;
+  const profile = rawProfile ?? {};
 
   // ── Aggregate food entries (multiple meals/day) by date ──────────────────
   const calByDate    = new Map<string, number>();
