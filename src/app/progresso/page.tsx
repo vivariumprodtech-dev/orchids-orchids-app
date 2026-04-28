@@ -595,7 +595,7 @@ function ProgressoContent() {
           backgroundColor: "var(--neutral-bg)",
           paddingLeft:     "var(--spacing-4)",
           paddingRight:    "var(--spacing-4)",
-          paddingTop:      "var(--spacing-2)",
+          paddingTop:      "max(var(--spacing-2), env(safe-area-inset-top, 0px))",
           display:         "flex",
           flexDirection:   "column",
           gap:             "var(--spacing-3)",
@@ -607,7 +607,13 @@ function ProgressoContent() {
             variant="neutral-link"
             size="sm"
             iconStart={ChevronLeft}
-            onClick={() => router.back()}
+            onClick={() => {
+              if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+                window.Telegram.WebApp.close();
+              } else {
+                router.back();
+              }
+            }}
           >
             Indietro
           </Button>
