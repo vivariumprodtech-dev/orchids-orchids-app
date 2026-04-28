@@ -583,7 +583,12 @@ function ProgressoContent() {
   }
 
   function handleOpenChat() {
-    if (userId) router.push(`/?userId=${userId}`);
+    const tg = typeof window !== "undefined" ? (window as any).Telegram?.WebApp : null;
+    if (tg?.close) {
+      tg.close();
+    } else if (typeof window !== "undefined") {
+      window.close();
+    }
   }
 
   const isLoading = loadingApi || loadingLogs;
