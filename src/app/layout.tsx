@@ -1,6 +1,7 @@
 import './globals.css';
 import { ReactNode } from 'react';
 import { DM_Sans } from 'next/font/google';
+import Script from 'next/script';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -11,6 +12,9 @@ const dmSans = DM_Sans({
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={dmSans.variable}>
+      <head>
+        <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
+      </head>
       <body>{children}</body>
     </html>
   );

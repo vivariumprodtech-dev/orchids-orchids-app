@@ -500,6 +500,16 @@ function ProgressoContent() {
       : (processed?.weightData ?? []).length > 0 || processed?.previousWeight != null
     : false;
 
+  // ── Effect 0: Telegram WebApp init ──────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const tg = (window as any).Telegram?.WebApp;
+    if (!tg) return;
+    tg.ready?.();
+    tg.expand?.();
+    tg.setHeaderColor?.("#F9F9FB");
+  }, []);
+
   // ── Effect 1: fetch ALL raw API data once per userId (real users only) ──────
   useEffect(() => {
     if (!userId || isMockUser(userId)) {
@@ -595,7 +605,7 @@ function ProgressoContent() {
           backgroundColor: "var(--neutral-bg)",
           paddingLeft:     "var(--spacing-4)",
           paddingRight:    "var(--spacing-4)",
-          paddingTop:      "max(var(--spacing-2), env(safe-area-inset-top, 0px))",
+          paddingTop:      "max(var(--spacing-4), env(safe-area-inset-top, 16px))",
           display:         "flex",
           flexDirection:   "column",
           gap:             "var(--spacing-3)",
@@ -817,11 +827,11 @@ function ProgressoContent() {
           paddingBottom:  "var(--spacing-2)",
         }}
       >
-        <img
-          src="/giada-logo.png"
-          alt="Giada.care"
-          style={{ height: "1.5rem", width: "auto" }}
-        />
+        <span style={{ fontSize: "1.25rem", fontWeight: 700, lineHeight: 1, letterSpacing: "-0.01em" }}>
+          <span style={{ color: "#3ABCC6" }}>Giada</span>
+          <span style={{ color: "#3ABCC6" }}>.</span>
+          <span style={{ color: "#8390FF" }}>care</span>
+        </span>
         <span className="help-text" style={{ color: "var(--placeholder)" }}>
           Versione 0.1.0
         </span>
