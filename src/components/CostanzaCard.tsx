@@ -364,9 +364,9 @@ function MonthView({
   const todayLogged = loggedSet.has(today);
   const dotSize = period === "1mese" ? "lg" : "sm";
 
-  // Streak ending at the last day of this period (using full history)
-  const lastDayInPeriod = [...allDays].reverse().find((d) => d <= today) ?? allDays[allDays.length - 1];
-  const streak = computeCurrentStreak(streakSet, lastDayInPeriod);
+  // Longest consecutive streak within the filtered period
+  const sortedLogged = allDays.filter((d) => loggedSet.has(d));
+  const streak = longestConsecutiveStreak(sortedLogged);
 
   return (
     <div
