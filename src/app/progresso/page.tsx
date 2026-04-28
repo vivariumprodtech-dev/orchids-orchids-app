@@ -618,10 +618,11 @@ function ProgressoContent() {
             size="sm"
             iconStart={ChevronLeft}
             onClick={() => {
-              if (typeof window !== "undefined" && window.Telegram?.WebApp) {
-                window.Telegram.WebApp.close();
-              } else {
-                router.back();
+              const tg = typeof window !== "undefined" ? (window as any).Telegram?.WebApp : null;
+              if (tg?.close) {
+                tg.close();
+              } else if (typeof window !== "undefined") {
+                window.close();
               }
             }}
           >
