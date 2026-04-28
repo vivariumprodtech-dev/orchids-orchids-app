@@ -226,9 +226,13 @@ function WeekView({
 }) {
   const todayLogged = loggedSet.has(today);
 
-  // Streak ending at the last displayed day (using full history)
+  // Streak ending at the last displayed day (using full history) — for current week rules
   const lastDay = weekDays[weekDays.length - 1];
   const streakFromEnd = computeCurrentStreak(streakSet, lastDay);
+
+  // Longest consecutive streak within this week's window — for past week display
+  const sortedWeekLogged = weekDays.filter((d) => loggedSet.has(d));
+  const longestInWeek = longestConsecutiveStreak(sortedWeekLogged);
 
   // Motivational rules only for the current (most recent) week
   const isPast = !isCurrentPeriod;
@@ -254,7 +258,7 @@ function WeekView({
           <>
             <span className="card-main-title">Costanza</span>
             <div className="card-text" style={{ color: "var(--subtitle-1)" }}>
-              <span className="card-number-md" style={{ display: "inline" }}>{streakFromEnd}</span>
+              <span className="card-number-md" style={{ display: "inline" }}>{longestInWeek}</span>
               {" "}giorni di log in sequenza
             </div>
           </>
