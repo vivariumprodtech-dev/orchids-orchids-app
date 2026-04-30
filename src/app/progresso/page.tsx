@@ -1,4 +1,5 @@
 "use client";
+// v2: safe-area header + Telegram close
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useMemo, useEffect } from "react";
