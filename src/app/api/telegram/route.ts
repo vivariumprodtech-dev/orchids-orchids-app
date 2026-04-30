@@ -25,13 +25,15 @@ async function sendMessage(chatId: number, text: string, options: Record<string,
   });
 }
 
-const mainKeyboard = {
-  keyboard: [
-    ['📊 Statistiche'],
-  ],
-  resize_keyboard: true,
-  persistent: true,
-};
+function getMainKeyboard(userId: number, baseUrl: string) {
+  return {
+    keyboard: [
+      [{ text: '📊 Statistiche', web_app: { url: `${baseUrl}/progresso?userId=${userId}` } }],
+    ],
+    resize_keyboard: true,
+    persistent: true,
+  };
+}
 
 export async function POST(request: NextRequest) {
   const baseUrl = getBaseUrl(request);
@@ -44,12 +46,13 @@ export async function POST(request: NextRequest) {
       const userId = message.from.id;
       const text = message.text || '';
       const firstName = message.from.first_name || 'User';
+      const kb = getMainKeyboard(userId, baseUrl);
 
       if (text === '/start') {
         await sendMessage(
           chatId,
           `Ciao ${firstName}! 👋\n\nBenvenuto nel tuo assistente nutrizionale.\n\nClicca il bottone qui sotto per vedere il tuo progresso.`,
-          { reply_markup: mainKeyboard }
+          { reply_markup: kb }
         );
         return NextResponse.json({ ok: true });
       }
@@ -60,7 +63,7 @@ export async function POST(request: NextRequest) {
         await sendMessage(
           chatId,
           `🔄 *Giornata azzerata!*\n\nTutti i dati di oggi sono stati resettati.`,
-          { reply_markup: mainKeyboard }
+          { reply_markup: kb }
         );
         return NextResponse.json({ ok: true });
       }
@@ -70,42 +73,26 @@ export async function POST(request: NextRequest) {
         await sendMessage(
           chatId,
           `🔄 *Calorie attive azzerate!*\n\nLe calorie attive e le attività sono state resettate a 0.`,
-          { reply_markup: mainKeyboard }
+          { reply_markup: kb }
         );
         return NextResponse.json({ ok: true });
       }
 
       if (text === '/sync') {
-        await sendMessage(chatId, '🔄 *Sincronizzazione Airtable in corso...*', { reply_markup: mainKeyboard });
+        await sendMessage(chatId, '🔄 *Sincronizzazione Airtable in corso...*', { reply_markup: kb });
         try {
           await syncAirtableToSupabase();
-          await sendMessage(chatId, '✅ *Sincronizzazione completata con successo!*', { reply_markup: mainKeyboard });
+          await sendMessage(chatId, '✅ *Sincronizzazione completata con successo!*', { reply_markup: kb });
         } catch (err: any) {
-          await sendMessage(chatId, `❌ *Errore durante la sincronizzazione:*\n${err.message}`, { reply_markup: mainKeyboard });
+          await sendMessage(chatId, `❌ *Errore durante la sincronizzazione:*\n${err.message}`, { reply_markup: kb });
         }
-        return NextResponse.json({ ok: true });
-      }
-
-      if (text === '📊 Statistiche') {
-        const progressoUrl = `${baseUrl}/progresso?userId=${userId}`;
-        await sendMessage(
-          chatId,
-          `📊 *Tuo Progresso*\n\nClicca il bottone per aprire la tua pagina di progresso 👇`,
-          {
-            reply_markup: {
-              inline_keyboard: [[
-                { text: '📊 Apri Tuo Progresso', web_app: { url: progressoUrl } },
-              ]],
-            },
-          }
-        );
         return NextResponse.json({ ok: true });
       }
 
       await sendMessage(
         chatId,
         `Usa il bottone *📊 Statistiche* per vedere il tuo progresso!`,
-        { reply_markup: mainKeyboard }
+        { reply_markup: kb }
       );
     }
 
