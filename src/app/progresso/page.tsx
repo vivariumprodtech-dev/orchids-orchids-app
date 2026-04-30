@@ -612,7 +612,7 @@ function ProgressoContent() {
           backgroundColor: "var(--neutral-bg)",
           paddingLeft:     "var(--spacing-4)",
           paddingRight:    "var(--spacing-4)",
-          paddingTop:      "max(var(--spacing-4), env(safe-area-inset-top, 16px))",
+          paddingTop:      "max(var(--spacing-2), env(safe-area-inset-top, 0px))",
           display:         "flex",
           flexDirection:   "column",
           gap:             "var(--spacing-3)",
