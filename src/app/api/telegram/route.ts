@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
           {
             reply_markup: {
               inline_keyboard: [[
-                { text: '📊 Apri Tuo Progresso', web_app: { url: progressoUrl } },
+                { text: '📊 Apri Tuo Progresso', url: progressoUrl },
               ]],
             },
           }
