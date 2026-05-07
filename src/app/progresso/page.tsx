@@ -213,13 +213,8 @@ function processApiData(
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
-  // Derive userGoal from the most recent caloricDeficit value
-  const latestGoalDate = sortedGoalDates[sortedGoalDates.length - 1];
-  const latestDeficit  = latestGoalDate
-    ? (dailyGoals.find((g) => g.date?.slice(0, 10) === latestGoalDate)?.caloricDeficit ?? 0)
-    : 0;
-  const userGoal: "deficit" | "maintain" | "surplus" =
-    latestDeficit > 0 ? "deficit" : latestDeficit < 0 ? "surplus" : "maintain";
+  // Always treat as deficit (lose weight) for all users
+  const userGoal: "deficit" | "maintain" | "surplus" = "deficit";
 
   return {
     loggedDates,
